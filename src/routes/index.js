@@ -98,5 +98,10 @@ export default [
   {
     path: "*",
     redirect: "/404"
+  },
+  {
+    name: "asset",
+    path: "/asset/:key",
+    component: () => import(/* webpackChunkName: "account" */ "Views/Asset")
   }
 ];

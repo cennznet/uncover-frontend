@@ -4,12 +4,14 @@
   >
     <div class="container align-items-center">
       <router-link class="logo" to="/" tag="a"></router-link>
+      <img :src="this.$customizeConfig.logo" />
       <div class="rate">
         <div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
           <span class="label">{{$t('kusama.short')}}</span>
           <span class="info">{{price}}</span>
         </div>
       </div>
+      {{getCurrencyId}}
       <div class="right-menu align-items-center">
         <ul class="nav-item-list align-items-center">
           <router-link class="nav-item" to="/block" tag="a" active-class="choosed">{{$t('blocks')}}</router-link>
@@ -22,7 +24,8 @@
                 <router-link class="account-nav-item" to="/validator" tag="a" active-class="choosed">{{$t('validators')}}</router-link>
               </el-dropdown-item>
               <el-dropdown-item class="menu-item">
-                <router-link class="account-nav-item" to="/account" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
+              <router-link class="account-nav-item" 
+                :to="`/asset/${getCurrencyId}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -37,11 +40,11 @@
           <el-dropdown-menu slot="dropdown" class="menu-dropdown">
             <li
               class="menu-dropdown-item align-items-center"
-              v-for="item in sourceList"
-              :key="item.value"
+              v-for="item in this.$customizeConfig.chains"
+              :key="item.name"
             >
-              <i class="choosed-icon" :class="{show: sourceSelected===item.value}"></i>
-              <a class="menu-dropdown-item-label" :href="getSourceHref(item.value)">{{item.label}}</a>
+              <i class="choosed-icon" :class="{show: sourceSelected===item.name}"></i>
+              <a class="menu-dropdown-item-label" :href="getSourceHref(item.name)">{{item.name}}</a>
             </li>
           </el-dropdown-menu>
         </el-dropdown>
@@ -165,6 +168,16 @@ export default {
       } else {
         return '';
       }
+    },
+    getCurrencyId(){
+      let currency = this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
+                .currencies.find(ele => ele.type === 1);
+      if(typeof(currency) == "undefined"){
+        currency = this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
+                .currencies.find(ele => ele.type === 3)
+      }
+      return currency.id
+
     },
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,

@@ -54,31 +54,22 @@
                   <div class="label">{{$t('balance')}}</div>
                   <div class="value">
                     <balances
-                      v-if="!showKton"
                       :amount="accountInfo.account.balance"
                       module="balances"
                     ></balances>
-                    <balances v-else :amount="accountInfo.account.kton_balance" module="kton"></balances>
                   </div>
                 </div>
                 <div class="desc-item align-items-center no-border-bottom">
                   <div class="label">{{$t('bonded')}}</div>
                   <div class="value">
                     <balances
-                      v-if="!showKton"
-                      :amount="accountInfo.account.ring_lock"
+                      :amount="accountInfo.account.balance_lock"
                       module="balances"
-                      :hasImg="false"
-                    ></balances>
-                    <balances
-                      v-else
-                      :amount="accountInfo.account.kton_lock"
-                      module="kton"
                       :hasImg="false"
                     ></balances>
                   </div>
                 </div>
-                <div class="balance-switch" v-if="this.shouldShowKton">
+                <div class="balance-switch" >
                   <el-dropdown class="asset-dropdown" trigger="click" @command="changeAssetType">
                     <div class="switch-hotspot">
                       <icon-svg class="icon" icon-class="triangle-down" />

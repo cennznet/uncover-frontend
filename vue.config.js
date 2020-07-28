@@ -114,9 +114,10 @@ module.exports = {
     },
     proxy: {
       "^/api": {
-        target: "https://kusama.subscan.io", // 接口的域名
+        //target: "https://192.168.1.17:9527",
+        //target: "https://kusama.subscan.io", // 接口的域名
         // target: "https://icefrog.subscan.io", // 接口的域名
-        // target: "https://edgeware.subscan.io/", // 接口的域名
+        target: "https://edgeware.subscan.io/", // 接口的域名
         secure: true, // 如果是https接口，需要配置这个参数
         changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
         pathRewrite: {
