@@ -6,8 +6,8 @@
         <chartPie class="chart-component" />
       </div>
       <div class="blocks-transfers-wrapper space-between">
-        <latest-blocks class="latest-blocks-component" :currentTime="currentTime" />
-        <transfers class="transfers-component" :currentTime="currentTime" />
+        <latest-blocks :class="`${getBlockListClass}`" :currentTime="currentTime" />
+        <transfers v-if="this.$customizeConfig.hasModule('transfer')" class="transfers-component" :currentTime="currentTime" />
       </div>
     </div>
   </div>
@@ -54,7 +54,14 @@ export default {
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
       token: state => state.polka.token
-    })
+    }),
+    getBlockListClass(){
+      if(this.$customizeConfig.hasModule('transfer')){
+        return "latest-blocks-component"
+      }else{
+        return "only-lastest-blocks-component"
+      }
+    }
   },
   created() {
     this.init();
@@ -121,6 +128,9 @@ export default {
       .transfers-component {
         width: 580px;
       }
+      .only-lastest-blocks-component{
+        width: 1200px;
+      }
     }
   }
   @media screen and (max-width:$screen-xs) {
@@ -144,6 +154,9 @@ export default {
         .transfers-component {
           width: 100%;
         }
+        .only-lastest-blocks-component{
+        width: 100%;
+      }
         .transfers-component {
           margin-top: 20px;
         }

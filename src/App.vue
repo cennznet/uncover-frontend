@@ -70,7 +70,7 @@ export default {
       const parsedObj = queryString.parse(location.search);
       let networkParam = parsedObj["network"] || "";
       const materialText = location.host + networkParam;
-      let network = this.$customizeConfig.chains[0].name //this.network[1].value;
+      let network = this.$customizeConfig.defaultChain //this.network[1].value;
       this.network.forEach(item => {
         // if (materialText.indexOf(item.key) > -1) {
         //   network = item.value;
@@ -80,6 +80,7 @@ export default {
         }
       });
       this.$store.dispatch("SetSourceSelected", network);
+      this.$customizeConfig.setSelected(network);
     }
   }
 };

@@ -29,6 +29,10 @@
       module: {
         type: String,
         default: 'balances'
+      },
+      currencyType: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
@@ -40,11 +44,14 @@
     },
     methods: {
       formatSource(module, type) {
-        let source = this.$const[`SYMBOL/${this.sourceSelected}`];
-        if (source && source[module]) {
-            return source[module][type] || '';
-        } else {
-            return '';
+        let curDetail = this.$customizeConfig.getCurrencyByType( this.currencyType)
+        if(typeof curDetail !== 'undefined'){
+            if(type === 'icon'){
+              return curDetail.icon
+            }
+            if(type === 'value'){
+              return curDetail.name
+            }
         }
       }
     }

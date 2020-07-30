@@ -3,20 +3,21 @@
     :class="{'is-home-page': isHomePage}"
   >
     <div class="container align-items-center">
-      <router-link class="logo" to="/" tag="a"></router-link>
-      <img :src="this.$customizeConfig.logo" />
+      <router-link to="/" tag="a">
+        <img class ="logo" :src="this.$customizeConfig.logo"/>
+      </router-link>
       <div class="rate">
         <div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
           <span class="label">{{$t('kusama.short')}}</span>
           <span class="info">{{price}}</span>
         </div>
       </div>
-      {{getCurrencyId}}
       <div class="right-menu align-items-center">
         <ul class="nav-item-list align-items-center">
           <router-link class="nav-item" to="/block" tag="a" active-class="choosed">{{$t('blocks')}}</router-link>
           <router-link class="nav-item" to="/extrinsic" tag="a" active-class="choosed">{{$t('extrinsics')}}</router-link>
-          <router-link class="nav-item" to="/transfer" tag="a" active-class="choosed">{{$t('transfers')}}</router-link>
+          <router-link v-if="this.$customizeConfig.hasModule('transfer')"
+          class="nav-item" to="/transfer" tag="a" active-class="choosed">{{$t('transfers')}}</router-link>
           <el-dropdown class="account-dropdown" trigger="click">
             <li class="nav-item">{{$t('accounts')}}</li>
             <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
@@ -24,7 +25,7 @@
                 <router-link class="account-nav-item" to="/validator" tag="a" active-class="choosed">{{$t('validators')}}</router-link>
               </el-dropdown-item>
               <el-dropdown-item class="menu-item">
-              <router-link class="account-nav-item" 
+              <router-link class="account-nav-item"
                 :to="`/asset/${getCurrencyId}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -170,11 +171,9 @@ export default {
       }
     },
     getCurrencyId(){
-      let currency = this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-                .currencies.find(ele => ele.type === 1);
-      if(typeof(currency) == "undefined"){
-        currency = this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-                .currencies.find(ele => ele.type === 3)
+      let currency = this.$customizeConfig.getCurrencyByType( 1)
+      if(typeof currency === 'undefined'){
+        currency = this.$customizeConfig.getCurrencyByType( 3)
       }
       return currency.id
 
@@ -253,10 +252,8 @@ export default {
   .container {
     height: 100%;
     .logo {
-      height: 100%;
-      width: 150px;
-      background: url("../../assets/images/logo@2x.png") no-repeat left center;
-      background-size: 125px 25px;
+      height: 25px;
+      width: 125px;
       cursor: pointer;
     }
     .rate {

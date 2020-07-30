@@ -1,5 +1,6 @@
 const customizeConfig ={
     logo: "/images/logo@2x.png",
+
     chains: [
         {
             name: "edgeware",
@@ -14,7 +15,7 @@ const customizeConfig ={
                     id: 22,
                     name: "spending",
                     type: 2,
-                    icon: "ksm@2x.png"
+                    icon: "/images/ksm@2x.png"
                 }
             ]
         },
@@ -25,10 +26,15 @@ const customizeConfig ={
                     id: 1,
                     name: "ring",
                     type: 3,
-                    icon: "ksm@2x.png"
+                    icon: "/images/ksm@2x.png"
                 }
             ]
         }
-    ]
+    ], 
+    modules:{
+        transfer: false,
+        vote: false,
+        staking: false,
+    }
 }
 window.customizeConfig =customizeConfig;

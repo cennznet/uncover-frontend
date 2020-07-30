@@ -29,14 +29,12 @@
           </el-table-column>
           <el-table-column v-if="this.isStakingCurr" sortable="custom" min-width="150" prop="balance_lock" :label="$t('balance_lock')" >
             <template slot="header">
-              {{`${$t('bonded_currency', {currency: this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-      .currencies.find(ele => ele.id === Number(this.$route.params.key)).name})}`}}
+              {{`${$t('bonded_currency',
+              {currency: this.$customizeConfig.getCurrencyById(this.$route.params.key).name})}`}}
               <img
                 class="currency-icon"
-                :src="this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-      .currencies.find(ele => ele.id === Number(this.$route.params.key)).icon"
-                :alt="this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-      .currencies.find(ele => ele.id === Number(this.$route.params.key)).name"
+                :src="this.$customizeConfig.getCurrencyById(this.$route.params.key).icon"
+                :alt="this.$customizeConfig.getCurrencyById(this.$route.params.key).name"
               />
             </template>
             <template
@@ -45,14 +43,12 @@
           </el-table-column>
           <el-table-column sortable="custom" min-width="150" prop="balance" :label="$t('balance')">
             <template slot="header">
-              {{`${$t('balance_currency', {currency: this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-                   .currencies.find(ele => ele.id === Number(this.$route.params.key)).name})}`}}
+              {{`${$t('balance_currency',
+              {currency: this.$customizeConfig.getCurrencyById(this.$route.params.key).name})}`}}
               <img
                 class="currency-icon"
-                :src="this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-                    .currencies.find(ele => ele.id === Number(this.$route.params.key)).icon"
-                :alt="this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-                    .currencies.find(ele => ele.id === Number(this.$route.params.key)).name"
+                :src="this.$customizeConfig.getCurrencyById(this.$route.params.key).icon"
+                :alt="this.$customizeConfig.getCurrencyById(this.$route.params.key).name"
               />
             </template>
             <template slot-scope="scope">
@@ -77,7 +73,7 @@ import SearchInput from "@/views/Components/SearchInput";
 import CsvDownload from "Components/CsvDownload";
 import Pagination from "Components/Pagination";
 export default {
-  name: "Account",
+  name: "Asset",
   components: {
     SearchInput,
     CsvDownload,
@@ -116,15 +112,11 @@ export default {
   },
   computed: {
     ...mapState({
-      accounts: state => state.polka.assets,
+      accounts: state => state.polka.accounts,
       sourceSelected: state => state.global.sourceSelected
     }),
     isStakingCurr() {
-      let isStaking = this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-      .currencies.find(ele => ele.id === Number(this.$route.params.key)).type == 1 ||
-      this.$customizeConfig.chains.find(ele => ele.name === this.sourceSelected)
-      .currencies.find(ele => ele.id === Number(this.$route.params.key)).type == 3
-      return isStaking
+      return this.$customizeConfig.isStakingCurrencyById(this.$route.params.key)
     }
   },
   created() {
