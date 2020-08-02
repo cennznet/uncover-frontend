@@ -24,7 +24,7 @@ pipelines:
           script:
             - pip install awscli --upgrade --ignore-installed six
             - export REACT_APP_PRODUCTION_PROD=true
-            - export VUE_APP_ASSETS_PATH="https://azalea.scan.onfinality.me"
+            - export VUE_APP_ASSETS_PATH=static
             - yarn install
             - yarn build
             - aws s3 sync ./web s3://azalea.scan.onfinality.me
