@@ -4,6 +4,7 @@ const customizeConfig ={
     chains: [
         {
             name: "azalea",
+            buttonIcon: "/images/icefrog-button.png",
             currencies : [
                 {
                     id: 1,

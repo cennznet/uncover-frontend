@@ -7,10 +7,10 @@
         <img class ="logo" :src="this.$customizeConfig.logo"/>
       </router-link>
       <div class="rate">
-        <div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
+        <!--<div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
           <span class="label">{{$t('kusama.short')}}</span>
           <span class="info">{{price}}</span>
-        </div>
+        </div>-->
       </div>
       <div class="right-menu align-items-center">
         <ul class="nav-item-list align-items-center">
@@ -21,7 +21,7 @@
           <el-dropdown class="account-dropdown" trigger="click">
             <li class="nav-item">{{$t('accounts')}}</li>
             <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
-              <el-dropdown-item class="menu-item">
+              <el-dropdown-item v-if="this.$customizeConfig.hasModule('staking')"  class="menu-item">
                 <router-link class="account-nav-item" to="/validator" tag="a" active-class="choosed">{{$t('validators')}}</router-link>
               </el-dropdown-item>
               <el-dropdown-item class="menu-item">
@@ -34,7 +34,9 @@
         <el-dropdown class="dropdown" trigger="click">
           <span class="el-dropdown-link align-items-center">
             <!--<div class="choosed-source">{{sourceSelectedLabel}}</div>-->
-            <div :class="`network-button ${sourceSelectedValue}-button`"></div>
+            <div>
+              <img class ="network-button" :src="this.$customizeConfig.selected.buttonIcon"/>
+            </div>
 
 
           </span>
@@ -45,7 +47,7 @@
               :key="item.name"
             >
               <i class="choosed-icon" :class="{show: sourceSelected===item.name}"></i>
-              <a class="menu-dropdown-item-label" :href="getSourceHref(item.name)">{{item.name}}</a>
+              <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
             </li>
           </el-dropdown-menu>
         </el-dropdown>
@@ -124,28 +126,28 @@ export default {
           value: "account"
         }
       ],
-      sourceList: [
-        {
-          label: "Kusama CC3",
-          value: "kusama"
-        },
-        {
-          label: "Darwinia Icefrog",
-          value: "icefrog"
-        },
-        {
-          label: "Edgeware Testnet",
-          value: "edgeware"
-        }
-      ]
+      // sourceList: [
+      //   {
+      //     label: "Kusama CC3",
+      //     value: "kusama"
+      //   },
+      //   {
+      //     label: "Darwinia Icefrog",
+      //     value: "icefrog"
+      //   },
+      //   {
+      //     label: "Edgeware Testnet",
+      //     value: "edgeware"
+      //   }
+      // ]
     };
   },
   computed: {
-    sourceSelectedValue() {
-      return this.sourceList.find(item => {
-        return item.value === this.sourceSelected;
-      }).value;
-    },
+    // sourceSelectedValue() {
+    //   return this.sourceList.find(item => {
+    //     return item.value === this.sourceSelected;
+    //   }).value;
+    // },
     isHomePage() {
       let path = this.$route.path;
       let result = false;
@@ -321,23 +323,23 @@ export default {
       .network-button{
         width: 130px;
         height: 30px;
-        background: url("../../assets/images/kusama-button.png") no-repeat left center;
-        background-size: contain;
+        //background: url("../../assets/images/kusama-button.png") no-repeat left center;
+        //background-size: contain;
       }
-      .icefrog-button {
-        background: url("../../assets/images/icefrog-button.png") no-repeat left center;
-        background-size: contain;
-      }
+      // .icefrog-button {
+      //   background: url("../../assets/images/icefrog-button.png") no-repeat left center;
+      //   background-size: contain;
+      // }
 
-      .kusama-button {
-        background: url("../../assets/images/kusama-button.png") no-repeat left center;
-        background-size: contain;
-      }
+      // .kusama-button {
+      //   background: url("../../assets/images/kusama-button.png") no-repeat left center;
+      //   background-size: contain;
+      // }
 
-      .edgeware-button {
-        background: url("../../assets/images/edgeware-button.png") no-repeat left center;
-        background-size: contain;
-      }
+      // .edgeware-button {
+      //   background: url("../../assets/images/edgeware-button.png") no-repeat left center;
+      //   background-size: contain;
+      // }
     }
   }
   .nav-bar-search {

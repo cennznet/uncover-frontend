@@ -23,20 +23,20 @@ export default {
   },
   data() {
     return {
-      network: [
-        {
-          key: "kusama",
-          value: "kusama"
-        },
-        {
-          key: "edgeware",
-          value: "edgeware"
-        },
-        {
-          key: "icefrog",
-          value: "icefrog"
-        }
-      ]
+      // network: [
+      //   {
+      //     key: "kusama",
+      //     value: "kusama"
+      //   },
+      //   {
+      //     key: "edgeware",
+      //     value: "edgeware"
+      //   },
+      //   {
+      //     key: "icefrog",
+      //     value: "icefrog"
+      //   }
+      // ]
     };
   },
   computed: {
@@ -71,7 +71,7 @@ export default {
       let networkParam = parsedObj["network"] || "";
       const materialText = location.host + networkParam;
       let network = this.$customizeConfig.defaultChain //this.network[1].value;
-      this.network.forEach(item => {
+      this.$customizeConfig.chains.forEach(item => {
         // if (materialText.indexOf(item.key) > -1) {
         //   network = item.value;
         // }

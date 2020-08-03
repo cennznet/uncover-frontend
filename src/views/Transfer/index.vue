@@ -6,12 +6,12 @@
         :selectList="selectList"
         :placeholder="$t('placeholder.search_by')"
       />
-      <div class="chart-top space-between align-items-center">
+      <div v-if="this.$customizeConfig.hasModule('transfer').chart" class="chart-top space-between align-items-center">
         <div class="for-block align-items-center">
           <div>{{$t('transfer_history')}}</div>
         </div>
       </div>
-      <chartBar class="chart-component" />
+      <chartBar v-if="this.$customizeConfig.hasModule('transfer').chart" class="chart-component" />
       <div class="table-top space-between align-items-center">
         <div class="for-block align-items-center">
           <div>{{$t('for')}}</div>
@@ -27,6 +27,14 @@
           <div v-else class="all">{{$t('all')}}</div>
           <div>{{`(${total})`}}</div>
         </div>
+        <div>
+            <el-select v-model="currencyId"  placeholder="currency filter" @change="getTransferData">
+              <el-option key="0" label="all" :value="0"></el-option>
+               <el-option v-for="(item) in this.$customizeConfig.selected.currencies"
+                :key="item.id" :label="item.name" :value="item.id">
+                </el-option>
+            </el-select>
+          </div>
       </div>
       <div class="transfer-table subscan-card" v-loading="isLoading">
         <el-table :data="transfersData" style="width: 100%">
@@ -89,7 +97,9 @@
             </template>
           </el-table-column>
           <el-table-column min-width="120" prop="amount" :label="$t('value')" fit>
-            <template slot-scope="scope">{{`${scope.row.amount} ${formatSymbol(scope.row.module)}`}}</template>
+            <template slot-scope="scope">{{`${scope.row.amount} 
+            ${getCurrencyName(scope.row.id)}`}}
+            </template>
           </el-table-column>
           <el-table-column min-width="70" prop="success" :label="$t('result')">
             <template slot-scope="scope">
@@ -131,7 +141,7 @@ import SearchInput from "@/views/Components/SearchInput";
 import CsvDownload from "Components/CsvDownload";
 import Pagination from "Components/Pagination";
 import { timeAgo, hashFormat } from "Utils/filters";
-import { formatSymbol } from "../../utils/tools";
+//import { formatSymbol } from "../../utils/tools";
 export default {
   name: "Transfer",
   components: {
@@ -146,6 +156,7 @@ export default {
       isLoading: false,
       transfersData: [],
       total: 0,
+      currencyId: 0,
       selectList: [
         {
           label: this.$t("all"),
@@ -189,8 +200,11 @@ export default {
       }
       this.getData();
     },
-    formatSymbol(module, isValidate) {
-      return formatSymbol(module, this.$const, this.sourceSelected, isValidate);
+    // formatSymbol(module, isValidate) {
+    //   return formatSymbol(module, this.$const, this.sourceSelected, isValidate);
+    // },
+    getCurrencyName(currencyId){
+      return this.$customizeConfig.getCurrencyById(currencyId).name
     },
     async getData() {
       await Promise.all([this.getTransferData()]);
@@ -199,7 +213,8 @@ export default {
       const data = await this.$api["polkaGetTransfers"]({
         row: 25,
         page,
-        address: this.$route.query.address
+        address: this.$route.query.address,
+        currencyId: this.currencyId
       });
       this.transfersData = data.transfers || [];
       this.total = +data.count;

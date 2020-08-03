@@ -45,16 +45,23 @@
           </el-table-column>
           <el-table-column min-width="150" prop="validator" :label="$t('validator')" fit>
             <template slot-scope="scope">
-              <div class="link">
+              <div class="link" >
                 <el-tooltip
                   class="item"
                   effect="light"
                   :content="scope.row.validator"
                   placement="top-start"
                 >
-                  <router-link
-                    :to="`/validator/${scope.row.validator}`"
-                  >{{scope.row.validator_name | getValidator(scope.row.validator_index_ids, scope.row.validator) | hashFormat}}</router-link>
+                  <router-link v-if="isShowValidatorHref()" :to="`/validator/${scope.row.validator}`"
+                  >{{scope.row.validator_name 
+                  | getValidator(scope.row.validator_index_ids, scope.row.validator) 
+                  | hashFormat}}
+                  </router-link>
+                  <router-link v-else :to="`/account/${scope.row.validator}`"
+                  >{{scope.row.validator_name 
+                  | getValidator(scope.row.validator_index_ids, scope.row.validator) 
+                  | hashFormat}}
+                  </router-link>
                 </el-tooltip>
               </div>
             </template>
@@ -193,6 +200,9 @@ export default {
     currentChange(pageSize) {
       this.isLoading = true;
       this.getBlockData(--pageSize);
+    },
+    isShowValidatorHref(){
+      return this.$customizeConfig.hasModule('staking')
     }
   }
 };

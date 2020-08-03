@@ -59,7 +59,7 @@
         </div>
       </router-link>
     </div>
-    <div>
+    <div v-if="this.$customizeConfig.hasModule('staking')">
       <router-link class="nav-item" to="/validator" tag="a" active-class="choosed">
         <div class="metadata-item">
           <icon-svg class="icon" icon-class="active-accounts"></icon-svg>
@@ -74,7 +74,7 @@
         </div>
       </router-link>
     </div>
-    <div>
+    <div v-if="this.$customizeConfig.hasModule('transfer')">
       <router-link class="nav-item" to="/transfer" tag="a" active-class="choosed">
         <div class="metadata-item">
           <icon-svg class="icon" icon-class="transfers"></icon-svg>
