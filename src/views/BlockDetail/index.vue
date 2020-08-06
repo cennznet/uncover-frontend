@@ -70,11 +70,11 @@
             <div class="info-item">
               <div class="label">{{$t('validators')}}</div>
               <div class="value link copy align-items-center">
-                <router-link v-if="this.$customizeConfig.hasModule('staking')"  
+                <router-link v-if="this.$customizeConfig.hasModule('staking')"
                 :to="`/validator/${blockInfo.validator}`">
                 {{blockInfo.validator_name | getValidator(blockInfo.validator_index_ids, blockInfo.validator)}}
                 </router-link>
-                <router-link v-else 
+                <router-link v-else
                 :to="`/account/${blockInfo.validator}`">
                 {{blockInfo.validator_name | getValidator(blockInfo.validator_index_ids, blockInfo.validator)}}
                 </router-link>

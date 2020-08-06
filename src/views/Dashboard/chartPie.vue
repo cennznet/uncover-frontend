@@ -20,19 +20,19 @@ import {
   bnPlus,
   bnShift
 } from "../../utils/format";
-import ring from "../../assets/images/ring@2x.png";
-import kton from "../../assets/images/kton@2x.png";
-import kusama from "../../assets/images/ksm@2x.png";
-import edgeware from "../../assets/images/edgeware.png";
-import switchIcon from "../../assets/images/switch-purple.png";
+//import ring from "../../assets/images/ring@2x.png";
+//import kton from "../../assets/images/ksm@2x.png";
+//import kusama from "../../assets/images/ksm@2x.png";
+//import edgeware from "../../assets/images/edgeware.png";
+//import switchIcon from "../../assets/images/switch-purple.png";
 
-import lIconBlack from "../../assets/images/l-black.png";
-import tIconBlack from "../../assets/images/t-black.png";
-import lIconPurple from "../../assets/images/l-purple.png";
-import tIconPurple from "../../assets/images/t-purple.png";
-import lIconPink from "../../assets/images/l-pink.png";
-import tIconPink from "../../assets/images/t-pink.png";
-import oIcon from "../../assets/images/o.png";
+// import lIconBlack from "../../assets/images/l-black.png";
+// import tIconBlack from "../../assets/images/t-black.png";
+// import lIconPurple from "../../assets/images/l-purple.png";
+// import tIconPurple from "../../assets/images/t-purple.png";
+// import lIconPink from "../../assets/images/l-pink.png";
+// import tIconPink from "../../assets/images/t-pink.png";
+// import oIcon from "../../assets/images/o.png";
 import { getCurrencyTokenDetail } from "../../utils/tools";
 
 export default {
@@ -44,85 +44,59 @@ export default {
     tokenDetail() {
       return getCurrencyTokenDetail(
         this.token,
-        this.sourceSelected,
-        this.currency
+        this.currency.name
       );
     },
     chartName() {
-      let name = "";
-      switch (this.sourceSelected) {
-        case "kusama":
-          name = this.$t("statistics", { type: "KSM" });
-          break;
-        case "edgeware":
-          name = this.$t("statistics", { type: "testEDG" });
-          break;
-        case "icefrog":
-          name =
-            this.currency === "kton"
-              ? this.$t("statistics", { type: "KTON" })
-              : this.$t("statistics", { type: "RING" });
-          break;
-        default:
-          break;
-      }
+      let name = this.$customizeConfig.selected.name;
       return name;
     },
     iconImg() {
-      let icon = "";
-      switch (this.sourceSelected) {
-        case "kusama":
-          icon = kusama;
-          break;
-        case "edgeware":
-          icon = edgeware;
-          break;
-        case "icefrog":
-          icon = this.currency === "kton" ? kton : ring;
-          break;
-        default:
-          break;
-      }
+      let icon = this.currency.icon
       return icon;
+    },
+    isSwitch(){
+      return true;
     }
   },
   data() {
     return {
-      currency: "ring",
-      colorMap: {
-        icefrog: {
-          mainColor: "#5930dd",
-          colors: ["#5930dd", "#a995eb", "#d7d7d7"],
-          bIcon: lIconPurple,
-          tIcon: tIconPurple,
-          oIcon: oIcon
-        },
-        kusama: {
-          mainColor: "#e90979",
-          colors: ["#e90979", "#ffaccb", "#d7d7d7"],
-          bIcon: lIconPink,
-          tIcon: tIconPink,
-          oIcon: oIcon
-        },
-        polkadot: {
-          mainColor: "#e90979",
-          colors: ["#e90979", "#ffaccb", "#d7d7d7"],
-          bIcon: lIconPink,
-          tIcon: tIconPink,
-          oIcon: oIcon
-        },
-        edgeware: {
-          mainColor: "#000000",
-          colors: ["#000000", "#a6a6a6", "#d7d7d7"],
-          bIcon: lIconBlack,
-          tIcon: tIconBlack,
-          oIcon: oIcon
-        }
-      }
+      currency: this.$customizeConfig.getCurrencyByType(1)
+      || this.$customizeConfig.getCurrencyByType(3),
+      // colorMap: {
+      //   icefrog: {
+      //     mainColor: "#5930dd",
+      //     colors: ["#5930dd", "#a995eb", "#d7d7d7"],
+      //     bIcon: lIconPurple,
+      //     tIcon: tIconPurple,
+      //     oIcon: oIcon
+      //   },
+      //   kusama: {
+      //     mainColor: "#e90979",
+      //     colors: ["#e90979", "#ffaccb", "#d7d7d7"],
+      //     bIcon: lIconPink,
+      //     tIcon: tIconPink,
+      //     oIcon: oIcon
+      //   },
+      //   polkadot: {
+      //     mainColor: "#e90979",
+      //     colors: ["#e90979", "#ffaccb", "#d7d7d7"],
+      //     bIcon: lIconPink,
+      //     tIcon: tIconPink,
+      //     oIcon: oIcon
+      //   },
+      //   edgeware: {
+      //     mainColor: "#000000",
+      //     colors: ["#000000", "#a6a6a6", "#d7d7d7"],
+      //     bIcon: lIconBlack,
+      //     tIcon: tIconBlack,
+      //     oIcon: oIcon
+      //   }
+      // }
     };
   },
   created() {
-    GLOBAL.vbus.$on("CHANGE_SOURCE", source => {
+    GLOBAL.vbus.$on("CHANGE_SOURCE",  function() {
       myChart.setOption({
         series: {
           areaStyle: {
@@ -132,12 +106,12 @@ export default {
               y: 0,
               x2: 0,
               y2: 1,
-              colorStops: this.getColorStop(source)
+              colorStops: this.getColorStop()
             }
           },
           lineStyle: {
             width: 1,
-            color: this.colorMap[source || "kusama"].mainColor
+            color: this.$customizeConfig.selected.colorMap.mainColor
           }
         }
       });
@@ -219,39 +193,8 @@ export default {
                   width: 35,
                   height: 35
                 }
-              },
-              {
-                type: "image",
-                id: "logo_kton",
-                z: 99,
-                left: "center",
-                top: "middle",
-                cursor: "default",
-                bounding: "raw",
-                style: {
-                  image: kton,
-                  width: 35,
-                  height: 35
-                }
               }
             ]
-          },
-          {
-            type: "image",
-            id: "switch_icon",
-            z: -100,
-            left: "38%",
-            bottom: "12",
-            ignore:
-              this.sourceSelected === "kusama" ||
-              this.sourceSelected === "edgeware",
-            bounding: "raw",
-            style: {
-              image: switchIcon,
-              width: 16,
-              height: 16
-            },
-            onclick: this.switchKton
           }
         ],
         legend: {
@@ -323,39 +266,8 @@ export default {
                   width: 35,
                   height: 35
                 }
-              },
-              {
-                type: "image",
-                id: "logo_kton",
-                z: 99,
-                left: "center",
-                top: "middle",
-                cursor: "default",
-                bounding: "raw",
-                style: {
-                  image: kton,
-                  width: 35,
-                  height: 35
-                }
               }
             ]
-          },
-          {
-            type: "image",
-            id: "switch_icon",
-            z: -100,
-            ignore:
-              this.sourceSelected === "kusama" ||
-              this.sourceSelected === "edgeware",
-            left: "38%",
-            bottom: "12",
-            bounding: "raw",
-            style: {
-              image: switchIcon,
-              width: 16,
-              height: 16
-            },
-            onclick: this.switchKton
           }
         ]
       });
@@ -443,39 +355,8 @@ export default {
                   width: 35,
                   height: 35
                 }
-              },
-              {
-                type: "image",
-                id: "logo_kton",
-                z: 99,
-                left: "center",
-                top: "middle",
-                cursor: "default",
-                bounding: "raw",
-                style: {
-                  image: kton,
-                  width: 35,
-                  height: 35
-                }
               }
             ]
-          },
-          {
-            type: "image",
-            id: "switch_icon",
-            z: -100,
-            left: "38%",
-            bottom: "12",
-            ignore:
-              this.sourceSelected === "kusama" ||
-              this.sourceSelected === "edgeware",
-            bounding: "raw",
-            style: {
-              image: switchIcon,
-              width: 16,
-              height: 16
-            },
-            onclick: this.switchKton
           }
         ],
         tooltip: {
@@ -526,7 +407,7 @@ export default {
             avoidLabelOverlap: false,
             legendHoverLink: false,
             hoverAnimation: false,
-            color: this.colorMap[this.sourceSelected || "kusama"].colors,
+            color: this.$customizeConfig.selected.colorMap.colors,
             label: {
               normal: {
                 show: false,
@@ -558,31 +439,24 @@ export default {
         this.setOption(option);
       });
     },
-    switchKton() {
-      if (this.currency === "kton") {
-        this.currency = "ring";
-      } else {
-        this.currency = "kton";
-      }
-    },
     getXAxisData() {
       return [
         {
           name: this.$t("locked"),
-          icon: "image://" + this.colorMap[this.sourceSelected].bIcon
+          icon: "image://" + this.$customizeConfig.selected.colorMap.bIcon
         },
         {
           name: this.$t("transferrable"),
-          icon: "image://" + this.colorMap[this.sourceSelected].tIcon
+          icon: "image://" + this.$customizeConfig.selected.colorMap.tIcon
         },
         {
           name: this.$t("others"),
-          icon: "image://" + this.colorMap[this.sourceSelected].oIcon
+          icon: "image://" + this.$customizeConfig.selected.colorMap.oIcon
         }
       ];
     },
-    getColorStop(source) {
-      let sourceColor = this.colorMap[source || "kusama"].mainColor;
+    getColorStop() {
+      let sourceColor = this.$customizeConfig.selected.colorMap.mainColor;
       return [
         {
           offset: 0,

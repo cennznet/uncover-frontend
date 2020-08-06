@@ -233,7 +233,8 @@ export default {
         success: true
       },
       activeTab: "event",
-      currency: "ring",
+      currency: this.$customizeConfig.getCurrencyByType(2)
+      || this.$customizeConfig.getCurrencyByType(3),
       notFound: false,
       isLoading: false,
       isFold: true,
@@ -263,7 +264,7 @@ export default {
       token: state => state.polka.token
     }),
     tokenDetail() {
-      return getCurrencyTokenDetail(this.token, this.sourceSelected, this.currency);
+      return getCurrencyTokenDetail(this.token, this.currency.name);
     }
   },
 
@@ -310,6 +311,9 @@ export default {
                 return param.type;
               });
             });
+          }
+          if (typeof res.params === 'string') {
+            res.params = JSON.parse(res.params)
           }
           this.extrinsicInfo = res;
           this.extrinsicNum = res.extrinsic_index;

@@ -1,3 +1,6 @@
+import customizeConfig from 'Plugins/customizeConfig'
+const queryString = require("query-string");
+
 // 路由默认配置，路由表并不从此注入
 export const ROUTER_DEFAULT_CONFIG = {
   waitForData: true,
@@ -31,7 +34,7 @@ export const VUEX_DEFAULT_CONFIG = {
 // API 默认配置
 export const API_DEFAULT_CONFIG = {
   // TODO: replace it with customizeConfig
-  baseURL: 'https://scan-azalea.onfinality.me/api',
+  baseURL: getChainURL(), //'https://scan-azalea.onfinality.me/api',
   isTestEnv: process.env.NODE_ENV === 'production' ? false : false,
   testEnvBaseURLPrefix: '/test',
   apiKey: '30f098f2217b1e3be'
@@ -50,4 +53,16 @@ export const PUSHER_CONFIG = {
   wsHost: '52.79.46.240',
   wsPort: '8080',
   APP_KEY: '***'
+}
+function getChainURL(){
+  const parsedObj = queryString.parse(location.search);
+      let networkParam = parsedObj["network"] || "";
+      const materialText = location.host + networkParam;
+      let network = customizeConfig.defaultChain 
+      customizeConfig.config.chains.forEach(item => {
+        if (materialText.indexOf(item.name) > -1) {
+          network = item.name;
+        }
+      });
+  return customizeConfig.config.chains.find(ele => ele.name === network).baseURL
 }

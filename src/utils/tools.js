@@ -210,13 +210,14 @@ export function isMobile() {
     window.innerWidth <= 768;
 }
 
-export function getCurrencyTokenDetail(token, sourceSelected, currency) {
+export function getCurrencyTokenDetail(token, currency) {
   if (token && token.detail) {
-    if (sourceSelected === "kusama" || sourceSelected === "edgeware") {
-      return token.detail[token.token];
-    } else {
+    // if (sourceSelected === "kusama" || sourceSelected === "edgeware") {
+    //   return token.detail[token.token];
+    // } else {
+    //   return token.detail[currency.toUpperCase()];
+    // }
       return token.detail[currency.toUpperCase()];
-    }
   }
   return {};
 }

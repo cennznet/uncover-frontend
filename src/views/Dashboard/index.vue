@@ -97,8 +97,9 @@ export default {
       await Promise.all([
         this.$store.dispatch("SetLatestBlocks", { row: 25, page: 0 }),
         // this.$store.dispatch("SetLatestExtrinsics", { row: 25, page: 0 }),
-        this.$store.dispatch("SetTransfers", { row: 25, page: 0 }),
+        this.$customizeConfig.hasModule('transfer') ? this.$store.dispatch("SetTransfers", { row: 25, page: 0 }) : undefined,
       ]);
+
     },
     changeTime() {
       this.currentTime = Date.now();

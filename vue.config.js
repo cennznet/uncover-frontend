@@ -107,7 +107,7 @@ module.exports = {
     }
   },
   devServer: {
-    port: 9527,
+    port: 3000,
     overlay: {
       warnings: true,
       errors: true

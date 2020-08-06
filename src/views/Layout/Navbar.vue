@@ -1,11 +1,12 @@
 <template>
   <div class="nav-bar-wrapper"
     :class="{'is-home-page': isHomePage}"
+    :style="`background-image:url(${this.$customizeConfig.selected.bannerIcon});`"
   >
     <div class="container align-items-center">
-      <router-link to="/" tag="a">
+      <a :href="`/`" >
         <img class ="logo" :src="this.$customizeConfig.logo"/>
-      </router-link>
+      </a>
       <div class="rate">
         <!--<div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
           <span class="label">{{$t('kusama.short')}}</span>
@@ -435,12 +436,15 @@ export default {
 }
 </style>
 <style lang="scss">
-@each $theme in kusama, icefrog, edgeware {
+$themes: kusama, icefrog, edgeware;
+@each $theme in $themes {
   .#{$theme} {
     > .nav-bar-wrapper {
       background: var(--navbar-bg);
       &.is-home-page {
-        background: url("../../assets/images/#{$theme}-banner.png") no-repeat center center;
+        // background-image: url("../../assets/images/#{$theme}-banner.png");
+        background-repeat: no-repeat;
+        background-position: center center;
         background-size: cover;
       }
     }
