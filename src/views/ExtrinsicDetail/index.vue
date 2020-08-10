@@ -73,7 +73,8 @@
               </div>
             </div>
           </div>
-          <template v-if="extrinsicInfo.call_module_function==='transfer'">
+          <template v-if="extrinsicInfo.call_module_function==='transfer' 
+          && extrinsicInfo.transfer">
             <div class="info-item">
               <div class="label">{{$t('destination')}}</div>
               <div class="value account link copy align-items-center">
@@ -107,7 +108,7 @@
               <div class="label">{{$t('fee')}}</div>
               <div
                 class="value"
-              >{{extrinsicInfo.fee|accuracyFormat(tokenDetail.accuracy)}} {{formatSymbol('balances')}}</div>
+              >{{extrinsicInfo.fee|accuracyFormat(tokenDetail.accuracy)}} {{this.currency.name}}</div>
             </div>
           <div class="info-item" v-if="extrinsicInfo.signature">
             <div class="label">{{$t('nonce')}}</div>
@@ -208,7 +209,7 @@ import {
 import clipboard from "Directives/clipboard";
 import { mapState } from "vuex";
 import Balances from "./Balances";
-import { getCurrencyTokenDetail, formatSymbol } from "../../utils/tools";
+import { getCurrencyTokenDetail } from "../../utils/tools";
 
 export default {
   name: "ExtrinsicDetail",
@@ -288,9 +289,6 @@ export default {
     },
     toggleMobileDetail(isFold) {
       this.isFold = isFold;
-    },
-    formatSymbol(module, isValidate) {
-      return formatSymbol(module, this.$const, this.sourceSelected, isValidate);
     },
     async getExtrinsicInfo() {
       const key = this.$route.params.key;

@@ -54,30 +54,31 @@
                   <div class="label">{{$t('balance')}}</div>
                   <div class="value">
                    <balances
-                      :amount="accountInfo.balance"
-                      :currencyType="accountInfo.type"
+                      :amount="accountInfo.free"
+                      :currencyType="this.currency.type"
                     ></balances>
                   </div>
                 </div>
-                <div v-if="accountInfo.type !== 2" class="desc-item align-items-center no-border-bottom">
+                <div v-if="this.currency.type !== 2 && accountInfo.lock"  class="desc-item align-items-center no-border-bottom">
                   <div class="label">{{$t('bonded')}}</div>
                   <div class="value">
                     <balances
-                      :amount="accountInfo.balance_lock"
-                      :currencyType="accountInfo.type"
+                      :amount="accountInfo.lock"
+                      :currencyType="this.currency.type"
                       :hasImg="false"
                     ></balances>
                   </div>
                 </div>
                 <div class="balance-switch" >
-                  <el-dropdown class="asset-dropdown" trigger="click" @command="changeAssetType">
+                  <el-dropdown class="asset-dropdown" trigger="click" @command="changeAsset">
                     <div class="switch-hotspot">
                       <icon-svg class="icon" icon-class="triangle-down" />
                     </div>
                     <el-dropdown-menu slot="dropdown" class="asset-dropdown-menu">
-                      <el-dropdown-item v-for="item in this.accountRes.account"
-                         :key="item.type" class="menu-item" :command="item.type" >
-                         <balances :amount="item.balance" :currencyType="item.type" ></balances>
+                      <el-dropdown-item v-for="item in this.accountRes.balances"
+                         :key="item.assetId" class="menu-item" :command="item.assetId" >
+                         <balances :amount="item.free" 
+                         :currencyType="getCurrencyType(item.assetId)" ></balances>
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -92,15 +93,15 @@
             </div>
             <div class="subscan-card">
               <div class="desc">
-                <div class="desc-item align-items-center">
+                <div v-if ="account_index" class="desc-item align-items-center">
                   <div class="label">{{$t('account_index')}}</div>
-                  <div class="value">{{accountInfo.account_index}}</div>
+                  <div class="value">{{account_index}}</div>
                 </div>
                 <div class="desc-item align-items-center">
                   <div class="label">{{$t('nonce')}}</div>
-                  <div class="value">{{accountInfo.nonce}}</div>
+                  <div class="value">{{nonce}}</div>
                 </div>
-                <div class="desc-item align-items-center">
+                <div v-if ="role" class="desc-item align-items-center">
                   <div class="label">{{$t('role')}}</div>
                   <div v-if="role==='validator'" class="value link">
                     <router-link :to="`/validator/${accountInfo.stash}`">{{$t('validator')}}</router-link>
@@ -110,7 +111,7 @@
                     class="value link"
                     @click="switch2Vote"
                   >{{$t('nominator')}}</div>
-                  <div v-else class="value">{{$t('none')}}</div>
+                  <div v-else class="value">{{$t('none')}}</div> 
                 </div>
               </div>
             </div>
@@ -398,7 +399,10 @@ export default {
       address: "",
       showKton: false,
       role: "",
-      currency: "ring",
+      currency: this.$customizeConfig.getCurrencyByType(1) 
+        || this.$customizeConfig.getCurrencyByType(3),
+      nonce: "",
+      account_index: "",
       accountInfo: {},
       accountRes: {},
       transfersInfo: {
@@ -461,21 +465,12 @@ export default {
       this.getAccountInfo();
       this.activeTab = "extrinsic";
     },
-    changeAssetType(type) {
+    changeAsset(assetId) {
 
-     if(type !== this.accountInfo.type){
-         let assetDetail;
-        if(type === 1){
-            assetDetail= this.accountRes.account.find(ele => ele.type ==1)
-            || this.accountRes.account.find(ele => ele.type ==3)
-        }
-        if(type === 2){
-            assetDetail= this.accountRes.account.find(ele => ele.type ==2)
-            || this.accountRes.account.find(ele => ele.type ==3)
-        }
+     if(assetId !== this.accountInfo.assetId){
+      let assetDetail = this.accountRes.balances.find(ele => ele.assetId === assetId)
       this.accountInfo = assetDetail;
-      this.address = assetDetail.address;
-      this.role = assetDetail.role;
+      this.currency = this.$customizeConfig.getCurrencyById(assetId)
      }
 
     },
@@ -501,28 +496,29 @@ export default {
       let loadingInstance = this.$loading({
         target: '.main'
       });
-      this.$api["polkaGetSearchRes"]({ key, row: 1, page: 0 })
+      this.$api["polkaGetAccountDetail"]({ address : key })
         .then(async res => {
-          if (res === undefined || typeof res.account !== "object") {
+          if (res === undefined || typeof res !== "object") {
             return Promise.reject();
           }
-        let assetDetail = res.account.find(ele => ele.type ==1)
-            || res.account.find(ele => ele.type ==3);
+        let assetDetail = res.balances.find(ele => ele.assetId === this.currency.id)
           if(assetDetail === undefined || typeof assetDetail !== "object"){
              return Promise.reject();
           }
-          this.address = assetDetail.address;     //res.account.address;
-          this.accountInfo = assetDetail          //res;
-          this.role = assetDetail.role;
+          this.address = res.address;     
+          this.accountInfo = assetDetail 
+          this.nonce = res.nonce
+          this.role = res.role
+          this.account_index = res.account_index
           this.notFound = false;
           this.isIntroLoading = false;
-         // this.isbalanceLoading = false;
+          this.isbalanceLoading = false;
           this.accountRes = res;
           loadingInstance.close();
           await Promise.all([
-            this.getTransferInfo(),
+            this.$customizeConfig.hasModule('transfer') ? this.getTransferInfo() : undefined,
             this.getExtrinsicInfo(),
-            this.getVoteInfo()
+            this.$customizeConfig.hasModule('vote') ? this.getVoteInfo() : undefined
           ])
             .catch(() => {})
             .finally(() => {
@@ -584,6 +580,9 @@ export default {
         type: "success",
         message: this.$t("copy_success")
       });
+    }, 
+    getCurrencyType(assetId){
+      return this.$customizeConfig.getCurrencyById(assetId)?.type;
     }
   }
 };

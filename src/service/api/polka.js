@@ -152,5 +152,15 @@ export default [
     baseURL: "",
     path: "/scan/staking/voted",
     options: {}
+  }, 
+  {
+    name: "getAccountDetail",
+    method: "POST",
+    desc: "获取搜索结果",
+    baseURL: "",
+    path: "/scan/account",
+    options: {
+      noShowDefaultError: true
+    }
   }
 ];

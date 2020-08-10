@@ -111,7 +111,7 @@ export default {
           },
           lineStyle: {
             width: 1,
-            color: this.$customizeConfig.selected.colorMap.mainColor
+            color: this.$customizeConfig.selected.pieColor.mainColor
           }
         }
       });
@@ -407,7 +407,7 @@ export default {
             avoidLabelOverlap: false,
             legendHoverLink: false,
             hoverAnimation: false,
-            color: this.$customizeConfig.selected.colorMap.colors,
+            color: this.$customizeConfig.selected.pieColor.colors,
             label: {
               normal: {
                 show: false,
@@ -443,20 +443,20 @@ export default {
       return [
         {
           name: this.$t("locked"),
-          icon: "image://" + this.$customizeConfig.selected.colorMap.bIcon
+          icon: "image://" + this.$customizeConfig.selected.pieColor.bIcon
         },
         {
           name: this.$t("transferrable"),
-          icon: "image://" + this.$customizeConfig.selected.colorMap.tIcon
+          icon: "image://" + this.$customizeConfig.selected.pieColor.tIcon
         },
         {
           name: this.$t("others"),
-          icon: "image://" + this.$customizeConfig.selected.colorMap.oIcon
+          icon: "image://" + this.$customizeConfig.selected.pieColor.oIcon
         }
       ];
     },
     getColorStop() {
-      let sourceColor = this.$customizeConfig.selected.colorMap.mainColor;
+      let sourceColor = this.$customizeConfig.selected.pieColor.mainColor;
       return [
         {
           offset: 0,

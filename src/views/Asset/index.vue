@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="account-table subscan-card" v-loading="isLoading">
-        <el-table @sort-change="handleSortChange" :data="accountsData" :default-sort = "{prop: 'balance', order: 'descending'}" style="width: 100%" fit>
+        <el-table @sort-change="handleSortChange" :data="accountsData" :default-sort = "{prop: 'free', order: 'descending'}" style="width: 100%" fit>
           <el-table-column min-width="470" prop="address" :label="$t('account')">
             <template slot-scope="scope">
               <div class="link">
@@ -27,7 +27,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column v-if="this.isStakingCurr" sortable="custom" min-width="150" prop="balance_lock" :label="$t('balance_lock')" >
+          <el-table-column v-if="this.isStakingCurr" sortable="custom" min-width="150" prop="lockBalance" :label="$t('balance_lock')" >
             <template slot="header">
               {{`${$t('bonded_currency',
               {currency: this.$customizeConfig.getCurrencyById(this.$route.params.key).name})}`}}
@@ -41,7 +41,7 @@
               slot-scope="scope"
             >{{scope.row.balance_lock}}</template>
           </el-table-column>
-          <el-table-column sortable="custom" min-width="150" prop="balance" :label="$t('balance')">
+          <el-table-column sortable="custom" min-width="150" prop="free" :label="$t('balance')">
             <template slot="header">
               {{`${$t('balance_currency',
               {currency: this.$customizeConfig.getCurrencyById(this.$route.params.key).name})}`}}
@@ -89,7 +89,7 @@ export default {
       allAccounts: 0,
       currentPage: 0,
       currentOrder: 'desc',
-      currentOrderField: 'balance',
+      currentOrderField: 'free',
       selectList: [
         {
           label: this.$t('all'),
@@ -135,7 +135,7 @@ export default {
     },
     async getAccountData(page = 0) {
       const data = await this.$api["polkaGetAccounts"]({
-        currencyId: this.currencyId,
+        currencyId: Number(this.currencyId),
         row: 25,
         page,
         order: this.currentOrder,

@@ -1,97 +1,100 @@
 <template>
   <div class="nav-bar-wrapper"
     :class="{'is-home-page': isHomePage}"
-    :style="`background-image:url(${this.$customizeConfig.selected.bannerIcon});`"
+    :style="`background-image:url(${this.$customizeConfig.selected.bannerBackground};`"
   >
-    <div class="container align-items-center">
-      <a :href="`/`" >
-        <img class ="logo" :src="this.$customizeConfig.logo"/>
-      </a>
-      <div class="rate">
-        <!--<div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
-          <span class="label">{{$t('kusama.short')}}</span>
-          <span class="info">{{price}}</span>
-        </div>-->
-      </div>
-      <div class="right-menu align-items-center">
-        <ul class="nav-item-list align-items-center">
-          <router-link class="nav-item" to="/block" tag="a" active-class="choosed">{{$t('blocks')}}</router-link>
-          <router-link class="nav-item" to="/extrinsic" tag="a" active-class="choosed">{{$t('extrinsics')}}</router-link>
-          <router-link v-if="this.$customizeConfig.hasModule('transfer')"
-          class="nav-item" to="/transfer" tag="a" active-class="choosed">{{$t('transfers')}}</router-link>
-          <el-dropdown class="account-dropdown" trigger="click">
-            <li class="nav-item">{{$t('accounts')}}</li>
-            <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
-              <el-dropdown-item v-if="this.$customizeConfig.hasModule('staking')"  class="menu-item">
-                <router-link class="account-nav-item" to="/validator" tag="a" active-class="choosed">{{$t('validators')}}</router-link>
-              </el-dropdown-item>
-              <el-dropdown-item class="menu-item">
-              <router-link class="account-nav-item"
-                :to="`/asset/${getCurrencyId}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
-              </el-dropdown-item>
+    <div class="nav-bar-mobile"
+      :style="`background-image:url(${this.$customizeConfig.selected.mobileBannerBackground};`">
+      <div class="container align-items-center">
+        <a :href="`/`" >
+          <img class ="logo" :src="this.$customizeConfig.logo"/>
+        </a>
+        <div class="rate">
+          <!--<div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
+            <span class="label">{{$t('kusama.short')}}</span>
+            <span class="info">{{price}}</span>
+          </div>-->
+        </div>
+        <div class="right-menu align-items-center">
+          <ul class="nav-item-list align-items-center">
+            <router-link class="nav-item" to="/block" tag="a" active-class="choosed">{{$t('blocks')}}</router-link>
+            <router-link class="nav-item" to="/extrinsic" tag="a" active-class="choosed">{{$t('extrinsics')}}</router-link>
+            <router-link v-if="this.$customizeConfig.hasModule('transfer')"
+            class="nav-item" to="/transfer" tag="a" active-class="choosed">{{$t('transfers')}}</router-link>
+            <el-dropdown class="account-dropdown" trigger="click">
+              <li class="nav-item">{{$t('accounts')}}</li>
+              <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
+                <el-dropdown-item v-if="this.$customizeConfig.hasModule('staking')"  class="menu-item">
+                  <router-link class="account-nav-item" to="/validator" tag="a" active-class="choosed">{{$t('validators')}}</router-link>
+                </el-dropdown-item>
+                <el-dropdown-item class="menu-item">
+                <router-link class="account-nav-item"
+                  :to="`/asset/${getCurrencyId}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </ul>
+          <el-dropdown class="dropdown" trigger="click">
+            <span class="el-dropdown-link align-items-center">
+              <!--<div class="choosed-source">{{sourceSelectedLabel}}</div>-->
+              <div>
+                <img class ="network-button" :src="this.$customizeConfig.selected.buttonIcon"/>
+              </div>
+
+
+            </span>
+            <el-dropdown-menu slot="dropdown" class="menu-dropdown">
+              <li
+                class="menu-dropdown-item align-items-center"
+                v-for="item in this.$customizeConfig.chains"
+                :key="item.name"
+              >
+                <i class="choosed-icon" :class="{show: sourceSelected===item.name}"></i>
+                <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
+              </li>
             </el-dropdown-menu>
           </el-dropdown>
-        </ul>
-        <el-dropdown class="dropdown" trigger="click">
-          <span class="el-dropdown-link align-items-center">
-            <!--<div class="choosed-source">{{sourceSelectedLabel}}</div>-->
-            <div>
-              <img class ="network-button" :src="this.$customizeConfig.selected.buttonIcon"/>
+          <div class="mobile-menu">
+            <div class="menu-area" @click="drawer = true">
+              <icon-svg icon-class="menu" class="icon"/>
             </div>
-
-
-          </span>
-          <el-dropdown-menu slot="dropdown" class="menu-dropdown">
-            <li
-              class="menu-dropdown-item align-items-center"
-              v-for="item in this.$customizeConfig.chains"
-              :key="item.name"
-            >
-              <i class="choosed-icon" :class="{show: sourceSelected===item.name}"></i>
-              <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
-            </li>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <div class="mobile-menu">
-          <div class="menu-area" @click="drawer = true">
-            <icon-svg icon-class="menu" class="icon"/>
           </div>
-        </div>
-        <el-drawer
-          :title="$t('menu')"
-          class="mobile-drawer"
-          size="40%"
-          :visible.sync="drawer"
-          :direction="direction">
-          <div class="drawer-content">
-            <div class="menu-section">
-              <div class="row">
-                <router-link class="item" to="/block" tag="div" @click.native="drawer = false">{{$t('blocks')}}</router-link>
-                <router-link class="item" to="/extrinsic" tag="div" @click.native="drawer = false">{{$t('extrinsics')}}</router-link>
-                <router-link class="item" to="/transfer" tag="div" @click.native="drawer = false">{{$t('transfers')}}</router-link>
-                <div>
-                  <router-link class="item" to="" tag="div">{{$t('accounts')}}</router-link>
-                  <router-link class="sub-item" to="/validator" tag="div" @click.native="drawer = false">{{$t('validators')}}</router-link>
-                  <router-link class="sub-item" to="/account" tag="div" @click.native="drawer = false">{{$t('holders')}}</router-link>
+          <el-drawer
+            :title="$t('menu')"
+            class="mobile-drawer"
+            size="40%"
+            :visible.sync="drawer"
+            :direction="direction">
+            <div class="drawer-content">
+              <div class="menu-section">
+                <div class="row">
+                  <router-link class="item" to="/block" tag="div" @click.native="drawer = false">{{$t('blocks')}}</router-link>
+                  <router-link class="item" to="/extrinsic" tag="div" @click.native="drawer = false">{{$t('extrinsics')}}</router-link>
+                  <router-link class="item" to="/transfer" tag="div" @click.native="drawer = false">{{$t('transfers')}}</router-link>
+                  <div>
+                    <router-link class="item" to="" tag="div">{{$t('accounts')}}</router-link>
+                    <router-link class="sub-item" to="/validator" tag="div" @click.native="drawer = false">{{$t('validators')}}</router-link>
+                    <router-link class="sub-item" to="/account" tag="div" @click.native="drawer = false">{{$t('holders')}}</router-link>
+                  </div>
+                </div>
+              </div>
+              <div class="language-section">
+                <div class="row">
+                  <div class="item" @click="changeLanguage('zh-CN')">简体中文</div>
+                  <div class="item" @click="changeLanguage('en')">English</div>
                 </div>
               </div>
             </div>
-            <div class="language-section">
-              <div class="row">
-                <div class="item" @click="changeLanguage('zh-CN')">简体中文</div>
-                <div class="item" @click="changeLanguage('en')">English</div>
-              </div>
-            </div>
-          </div>
-        </el-drawer>
+          </el-drawer>
+        </div>
       </div>
-    </div>
-    <div class="nav-bar-search">
-      <search-input
-        class="search-input"
-        :selectList="selectList"
-        :placeholder="$t('placeholder.search_by')"
-      />
+      <div class="nav-bar-search">
+        <search-input
+          class="search-input"
+          :selectList="selectList"
+          :placeholder="$t('placeholder.search_by')"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -436,27 +439,29 @@ export default {
 }
 </style>
 <style lang="scss">
-$themes: kusama, icefrog, edgeware;
-@each $theme in $themes {
-  .#{$theme} {
-    > .nav-bar-wrapper {
-      background: var(--navbar-bg);
-      &.is-home-page {
-        // background-image: url("../../assets/images/#{$theme}-banner.png");
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: cover;
-      }
+.nav-bar-wrapper {
+  background: var(--navbar-bg);
+  &.is-home-page {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  }
+  .nav-bar-mobile {
+    background-size: 0 0;
+  }
+}
+@media screen and (max-width:$screen-xs) {
+  .nav-bar-wrapper {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 0 0;
+    &.is-home-page {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 0 0;
     }
-    @media screen and (max-width:$screen-xs) {
-      > .nav-bar-wrapper {
-        background: url("../../assets/images/#{$theme}-banner-mobile.png") no-repeat center center;
-        background-size: cover;
-        &.is-home-page {
-          background: url("../../assets/images/#{$theme}-banner-mobile.png") no-repeat center center;
-          background-size: cover;
-        }
-      }
+    .nav-bar-mobile {
+      background-size: cover;
     }
   }
 }
