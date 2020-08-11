@@ -28,8 +28,9 @@
                   <router-link class="account-nav-item" to="/validator" tag="a" active-class="choosed">{{$t('validators')}}</router-link>
                 </el-dropdown-item>
                 <el-dropdown-item class="menu-item">
-                <router-link class="account-nav-item"
-                  :to="`/asset/${getCurrencyId}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
+                <!--<router-link class="account-nav-item"
+                  :to="`/asset/${getCurrencyName}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link> -->
+                 <a :href="`/asset/${getCurrencyName}`" class="account-nav-item" active-class="choosed">{{$t('holders')}}</a>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -176,12 +177,12 @@ export default {
         return '';
       }
     },
-    getCurrencyId(){
+    getCurrencyName(){
       let currency = this.$customizeConfig.getCurrencyByType( 1)
       if(typeof currency === 'undefined'){
         currency = this.$customizeConfig.getCurrencyByType( 3)
       }
-      return currency.id
+      return currency.name
 
     },
     ...mapState({

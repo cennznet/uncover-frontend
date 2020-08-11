@@ -1,11 +1,18 @@
 <template>
   <div class="account-wrapper subscan-content">
     <div class="container">
-      <search-input
+      <template v-if="notFound">
+        <search-input
         class="search-input"
         :selectList="selectList"
         :placeholder="$t('placeholder.search_by')"
       />
+        <div class="not-found">
+          <img class="not-found-img" src="./../../assets/images/404.png" alt="404" />
+          <div class="no-data">{{$t('no_data')}}</div>
+        </div>
+      </template>
+      <template v-else>
       <div class="table-top space-between align-items-center">
         <div class="for-block align-items-center">
           <div>{{$t('top_holders', {number: (total).toLocaleString('en-US'), total: (allAccounts).toLocaleString('en-US')})}}</div>
@@ -30,11 +37,11 @@
           <el-table-column v-if="this.isStakingCurr" sortable="custom" min-width="150" prop="lockBalance" :label="$t('balance_lock')" >
             <template slot="header">
               {{`${$t('bonded_currency',
-              {currency: this.$customizeConfig.getCurrencyById(this.$route.params.key).name})}`}}
+              {currency: this.currency.name})}`}}
               <img
                 class="currency-icon"
-                :src="this.$customizeConfig.getCurrencyById(this.$route.params.key).icon"
-                :alt="this.$customizeConfig.getCurrencyById(this.$route.params.key).name"
+                :src="this.currency.icon"
+                :alt="this.currency.name"
               />
             </template>
             <template
@@ -44,11 +51,11 @@
           <el-table-column sortable="custom" min-width="150" prop="free" :label="$t('balance')">
             <template slot="header">
               {{`${$t('balance_currency',
-              {currency: this.$customizeConfig.getCurrencyById(this.$route.params.key).name})}`}}
+              {currency: this.currency.name})}`}}
               <img
                 class="currency-icon"
-                :src="this.$customizeConfig.getCurrencyById(this.$route.params.key).icon"
-                :alt="this.$customizeConfig.getCurrencyById(this.$route.params.key).name"
+                :src="this.currency.icon"
+                :alt="this.currency.name"
               />
             </template>
             <template slot-scope="scope">
@@ -63,6 +70,7 @@
         </div>
         <pagination :page-size="1" :total="total" @currentChange="currentChange" />
       </div>
+    </template>
     </div>
   </div>
 </template>
@@ -81,7 +89,8 @@ export default {
   },
   data() {
     return {
-      currencyid: '',
+      currency: {},
+      inputParam: this.$route.params.key,
       assets_data:[],
       isLoading: false,
       accountsData: [],
@@ -90,6 +99,7 @@ export default {
       currentPage: 0,
       currentOrder: 'desc',
       currentOrderField: 'free',
+      notFound: false,
       selectList: [
         {
           label: this.$t('all'),
@@ -116,11 +126,11 @@ export default {
       sourceSelected: state => state.global.sourceSelected
     }),
     isStakingCurr() {
-      return this.$customizeConfig.isStakingCurrencyById(this.$route.params.key)
+      return this.$customizeConfig.isStakingCurrencyById(this.currency?.id)
     }
   },
   created() {
-    this.currencyId = this.$route.params.key;
+    this.pathRouter();
     this.init();
   },
 
@@ -135,7 +145,7 @@ export default {
     },
     async getAccountData(page = 0) {
       const data = await this.$api["polkaGetAccounts"]({
-        currencyId: Number(this.currencyId),
+        currencyId: this.currency?.id,
         row: 25,
         page,
         order: this.currentOrder,
@@ -147,6 +157,17 @@ export default {
       this.isLoading = false;
       if (page == 0) {
         this.$store.commit("SET_ACCOUNTS", data.list);
+      }
+    },
+    pathRouter(){
+      var numReg = /^\d+$/
+      var numRe = new RegExp(numReg)
+      this.currency = this.$customizeConfig.getCurrencyById(this.inputParam) 
+      || this.$customizeConfig.getCurrencyByName(this.inputParam)
+      if(!this.currency){
+          this.notFound = true
+      }else if(numRe.test(this.inputParam)) {
+        this.$router.push(`/asset/${this.currency.name}`)
       }
     },
     downloadClick() {
@@ -197,6 +218,7 @@ export default {
       this.getAccountData(this.currentPage);
     }
   }
+  
 };
 </script>
 <style lang="scss" scoped>
@@ -264,6 +286,17 @@ export default {
         height: 30px;
       }
     }
+    .not-found {
+    padding: 10%;
+    text-align: center;
+    .not-found-img {
+    }
+    .no-data {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(152, 149, 159, 1);
+    }
+  }
   }
   @media screen and (max-width:$screen-xs) {
     .container {

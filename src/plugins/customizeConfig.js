@@ -27,5 +27,8 @@ class customizeConfig {
     hasModule(moduleName){
       return this.config.modules[moduleName] || false;
     }
+    getCurrencyByName(currencyName){
+      return this.selected?.currencies?.find(ele => ele.name === currencyName);
+    }
 }
 export default new customizeConfig(window.customizeConfig);
