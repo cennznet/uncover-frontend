@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       currency: {},
-      inputParam: this.$route.params.key,
+      inputParam: '',
       assets_data:[],
       isLoading: false,
       accountsData: [],
@@ -129,9 +129,13 @@ export default {
       return this.$customizeConfig.isStakingCurrencyById(this.currency?.id)
     }
   },
+  watch:{
+    "$route.params.key": function() {
+      this.pathRouter();
+    }
+  },
   created() {
     this.pathRouter();
-    this.init();
   },
 
   methods: {
@@ -162,13 +166,20 @@ export default {
     pathRouter(){
       var numReg = /^\d+$/
       var numRe = new RegExp(numReg)
+      this.inputParam = this.$route.params.key
+      this.notFound = false
+
       this.currency = this.$customizeConfig.getCurrencyById(this.inputParam) 
       || this.$customizeConfig.getCurrencyByName(this.inputParam)
+      
       if(!this.currency){
           this.notFound = true
       }else if(numRe.test(this.inputParam)) {
         this.$router.push(`/asset/${this.currency.name}`)
+      }else{
+        this.init()
       }
+        
     },
     downloadClick() {
       const tableData = [

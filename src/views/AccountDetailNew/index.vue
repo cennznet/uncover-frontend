@@ -1,122 +1,89 @@
 <template>
   <div class="account-wrapper subscan-content">
     <div class="container">
+      <search-input
+        class="header-right"
+        :selectList="selectList"
+        :placeholder="$t('placeholder.search_by')"
+      />
       <template v-if="notFound">
-        <search-input
-          class="search-input"
-          :selectList="selectList"
-          :placeholder="$t('placeholder.search_by')"
-        />
+
         <div class="not-found">
           <img class="not-found-img" src="./../../assets/images/404.png" alt="404" />
           <div class="no-data">{{$t('no_data')}}</div>
         </div>
       </template>
-      <template v-else-if="accountInfo">
-        <div class="account-header space-between align-items-center">
-          <div class="header-left align-items-center">
+      <template v-else-if="stakingDetail">
+        <div class="account-info subscan-card">
+          <div class="account-intro">
             <div class="icon">
-              <identicon :size="40" theme="polkadot" :value="address" />
+              <identicon :size="40" theme="polkadot" :value="this.address" />
             </div>
-            <div class="address">{{address}}</div>
-            <div class="copy-btn" v-clipboard:copy="address" v-clipboard:success="clipboardSuccess">
-              <icon-svg class="iconfont" icon-class="copy" />
-            </div>
-            <div v-if="role" class="role" :class="role">
-              <div>{{role === 'nominator' ? 'N' : 'V'}}</div>
-            </div>
-          </div>
-          <div
-            class="header-left align-items-center mobile"
-            v-clipboard:copy="address"
-            v-clipboard:success="clipboardSuccess"
-          >
-            <div class="icon">
-              <identicon :size="40" theme="polkadot" :value="address" />
-            </div>
-            <div class="address">{{address}}</div>
-          </div>
-          <search-input
-            class="header-right"
-            :placeholder="$t('placeholder.search_by')"
-            :isMini="true"
-          />
-        </div>
-        <div class="intro space-between">
-          <div class="asset" v-loading="isIntroLoading">
-            <div class="align-items-center">
-              <icon-svg class="icon" icon-class="asset" />
-              <div class="title">{{$t('asset')}}</div>
-            </div>
-            <div class="subscan-card">
-              <div class="desc">
-                <div class="desc-item align-items-center no-border-bottom">
-                  <div class="label">{{$t('balance')}}</div>
-                  <div class="value">
-                   <balances
-                      :amount="accountInfo.free"
-                      :currencyType="this.currency.type"
-                    ></balances>
-                  </div>
+            <div class="detail">
+              <div class="name-wrapper align-items-center"></div>
+              <div class="address-wrapper align-items-center">
+                 <div class="address">{{address}}</div>
+                 <div class="copy-btn" v-clipboard:copy="address" v-clipboard:success="clipboardSuccess">
+                <icon-svg class="iconfont" icon-class="copy" />
                 </div>
-                <div v-if="this.currency.type !== 2 && accountInfo.lock"  class="desc-item align-items-center no-border-bottom">
-                  <div class="label">{{$t('bonded')}}</div>
-                  <div class="value">
+              </div>
+               <div class="contact-wrapper align-items-center"></div>
+            </div>
+          </div>
+          <div class="split-line"></div>  
+            <div class="balance">
+              <div class="label align-items-center">
+                <div class="text">{{$t('balance')}}</div>
+              </div>
+              <div class="value">
+                <div class="align-items-center">
                     <balances
-                      :amount="accountInfo.lock"
-                      :currencyType="this.currency.type"
-                      :hasImg="false"
+                      :amount="stakingDetail.free"
+                      :currencyType="this.stakingCurrency.type"
                     ></balances>
-                  </div>
                 </div>
-                <div class="balance-switch" >
-                  <el-dropdown class="asset-dropdown" trigger="click" @command="changeAsset">
-                    <div class="switch-hotspot">
-                      <icon-svg class="icon" icon-class="triangle-down" />
-                    </div>
-                    <el-dropdown-menu slot="dropdown" class="asset-dropdown-menu">
-                      <el-dropdown-item v-for="item in this.accountRes.balances"
-                         :key="item.assetId" class="menu-item" :command="item.assetId" >
-                         <balances :amount="item.free" 
-                         :currencyType="getCurrencyType(item.assetId)" ></balances>
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
+              </div>
+              <div v-if="spendingDetail && spendingDetail.free" class="value">
+                <div class="align-items-center">
+                  <balances
+                    :amount="spendingDetail.free"
+                    :currencyType="this.spendingCurrency.type"
+                  ></balances>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="basic" v-loading="isIntroLoading">
-            <div class="align-items-center">
-              <icon-svg class="icon" icon-class="menu-basic" />
-              <div class="title">{{$t('basic')}}</div>
-            </div>
-            <div class="subscan-card">
-              <div class="desc">
-                <div v-if ="account_index" class="desc-item align-items-center">
-                  <div class="label">{{$t('account_index')}}</div>
-                  <div class="value">{{account_index}}</div>
+            
+            <div class="bonded">
+              <div class="label align-items-center">
+                <div class="text">{{$t('bonded')}}</div>
+              </div>
+              <div v-if="stakingDetail.lock" class="value">
+                <div class="align-items-center">
+                    <balances
+                      :amount="stakingDetail.lock"
+                      :currencyType="this.stakingCurrency.type" :hasImg="false"
+                    ></balances>
                 </div>
-                <div class="desc-item align-items-center">
-                  <div class="label">{{$t('nonce')}}</div>
-                  <div class="value">{{nonce}}</div>
-                </div>
-                <div v-if ="role" class="desc-item align-items-center">
-                  <div class="label">{{$t('role')}}</div>
-                  <div v-if="role==='validator'" class="value link">
-                    <router-link :to="`/validator/${accountInfo.stash}`">{{$t('validator')}}</router-link>
-                  </div>
-                  <div
-                    v-else-if="role==='nominator'"
-                    class="value link"
-                    @click="switch2Vote"
-                  >{{$t('nominator')}}</div>
-                  <div v-else class="value">{{$t('none')}}</div> 
+              </div>
+              <div v-if="spendingDetail && spendingDetail.lock" class="value">
+                <div class="align-items-center">
+                    <balances
+                      :amount="spendingDetail.lock"
+                      :currencyType="this.spendingCurrency.type" :hasImg="false"
+                    ></balances>
                 </div>
               </div>
             </div>
-          </div>
+            <div class="nounce">
+              <div class="label align-items-center">
+                <div class="text">{{$t('nonce')}}</div>
+              </div>
+              <div class="value">
+                <div class="align-items-center">{{nonce}} </div>
+              </div>
+            </div>  
         </div>
+        
         <div class="transfer-extrinsic-wrapper subscan-card" v-loading="isLoading">
           <el-tabs v-model="activeTab">
             <el-tab-pane
@@ -398,13 +365,12 @@ export default {
     return {
       address: "",
       showKton: false,
-      role: "",
-      currency: this.$customizeConfig.getCurrencyByType(1) 
+      stakingCurrency: this.$customizeConfig.getCurrencyByType(1) 
         || this.$customizeConfig.getCurrencyByType(3),
+      spendingCurrency: this.$customizeConfig.getCurrencyByType(2),
       nonce: "",
-      account_index: "",
-      accountInfo: {},
-      accountRes: {},
+      stakingDetail: {},
+      spendingDetail: {},
       transfersInfo: {
         count: 0,
         transfers: []
@@ -465,15 +431,6 @@ export default {
       this.getAccountInfo();
       this.activeTab = "extrinsic";
     },
-    changeAsset(assetId) {
-
-     if(assetId !== this.accountInfo.assetId){
-      let assetDetail = this.accountRes.balances.find(ele => ele.assetId === assetId)
-      this.accountInfo = assetDetail;
-      this.currency = this.$customizeConfig.getCurrencyById(assetId)
-     }
-
-    },
     switch2Vote() {
       this.activeTab = "vote";
     },
@@ -501,19 +458,19 @@ export default {
           if (res === undefined || typeof res !== "object") {
             return Promise.reject();
           }
-        let assetDetail = res.balances.find(ele => ele.assetId === this.currency.id)
-          if(assetDetail === undefined || typeof assetDetail !== "object"){
+          let stakingDetail = res.balances.find(ele => ele.assetId === this.stakingCurrency.id)
+          if(stakingDetail === undefined || typeof stakingDetail !== "object"){
              return Promise.reject();
           }
-          this.address = res.address;     
-          this.accountInfo = assetDetail 
-          this.nonce = res.nonce
-          this.role = res.role
-          this.account_index = res.account_index
+          let spendingDetail = res.balances.find(ele => ele.assetId === this.spendingCurrency?.id)
+
+          this.address = res.address;  
+          this.nonce = res.nonce   
+          this.stakingDetail = stakingDetail 
+          this.spendingDetail = spendingDetail
           this.notFound = false;
           this.isIntroLoading = false;
           this.isbalanceLoading = false;
-          this.accountRes = res;
           loadingInstance.close();
           await Promise.all([
             this.$customizeConfig.hasModule('transfer') ? this.getTransferInfo() : undefined,
@@ -637,68 +594,106 @@ export default {
       height: 100%;
     }
   }
-  .intro {
+  .account-info{
     margin-top: 20px;
-    .asset,
-    .basic {
-      width: 580px;
-      .svg-icon {
-        font-size: 26px;
-      }
-      .title {
-        padding-left: 10px;
-        height: 50px;
-        line-height: 50px;
-        font-size: 14px;
-        font-weight: bold;
-        color: #302b3c;
-      }
-      .desc {
-        padding: 10px 20px;
-        height: 140px;
-        .desc-item {
-          height: 40px;
-          line-height: 40px;
-          &:not(:last-child):not(.no-border-bottom) {
-            border-bottom: 1px solid #e7eaf3;
+    display: flex;
+    .account-intro{
+      flex: 0.8;
+      display: flex;
+      padding: 25px 16px 0 25px;
+      .detail{
+        margin-left: 20px;
+        .name-wrapper{
+          min-height: 6px;
+        }
+        .address-wrapper{
+          margin-top:6px;
+          .address{
+            color: var(--link-color);
+            cursor: pointer;
           }
-          .label,
-          .value {
-            padding-left: 10px;
-            font-size: 14px;
-            color: #2a2727;
-            &.link {
-              color: var(--link-color);
-              cursor: pointer;
-            }
+          .copy-btn {
+            margin-left: 10px;
+            font-size: 16px;
+            color: var(--main-color-light);
+            cursor: pointer;
           }
-          .label {
-            width: 120px;
-            font-weight: 600;
-          }
+        }
+        .contact-wrapper{
+          margin-top: 5px;
+          margin-bottom: 25px;
+          font-size: 18px;
+          min-height: 27px;
         }
       }
     }
-    .asset {
-      .desc {
-        position: relative;
-        padding: 20px;
-        .desc-item {
-          height: 50px;
-          line-height: 50px;
+    .split-line{
+      width: 1px;
+      margin: 30px 0;
+      background-color: var(--link-color);
+      opacity: .3;
+    }
+    .balance{
+      padding: 30px 0 30px 30px;
+      color: #2a2727;
+      width: auto;
+      max-width: 300px;
+      .label{
+        height: 40px;
+        .text{
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .currency-icon{
+          margin-left: 5px;
+          width: 20px;
+          height: 20px;
+          vertical-align: middle;
+          
         }
       }
-      .balance-switch {
-        position: absolute;
-        top: 24px;
-        right: 16px;
-        .switch-hotspot {
-          padding: 10px;
-          cursor: pointer;
+      .value{
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+    }
+    .bonded{
+      padding: 30px 0 30px 30px;
+      color: #2a2727;
+      width: auto;
+      min-width: 100px;
+      .label{
+        height: 40px;
+        .text{
+          font-size: 14px;
+          font-weight: 600;
         }
-        .svg-icon {
-          font-size: 10px;
+        .currency-icon{
+          margin-left: 5px;
+          width: 20px;
+          height: 20px;
+          vertical-align: middle;
+          
         }
+      }
+      .value{
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+    }
+    .nounce{
+      padding: 30px 0 0 30px;
+      color: #2a2727;
+      width: 100px;
+      .label{
+        height: 40px;
+        .text{
+          font-size: 14px;
+          font-weight: 600;
+        }
+      }
+      .value{
+        font-size: 14px;
       }
     }
   }
@@ -813,6 +808,26 @@ export default {
         order: 1;
         max-width: 100%;
         margin: 0 20px 20px;
+      }
+    }
+    .account-info {
+      flex-direction: column;
+      .detail {
+        word-break: break-all;
+      }
+      .split-line {
+        display: none;
+      }
+      .balance {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+      .bonded {
+        padding-top: 0;
+        padding-bottom: 0;
+      } 
+      .nounce {
+        padding-bottom: 20px;
       }
     }
     .transfer-extrinsic-wrapper {

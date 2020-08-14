@@ -68,4 +68,7 @@
       transform: translateY(-2px);
     }
   }
+  .currency-num {
+    word-break: break-all;
+  }
 </style>
