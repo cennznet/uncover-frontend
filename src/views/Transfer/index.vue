@@ -29,7 +29,7 @@
         </div>
         <div>
             <el-select v-model="currencyId"  placeholder="currency filter" @change="getTransferData">
-              <el-option key="0" label="all" :value="0"></el-option>
+              <el-option key="-1" label="all" :value="-1"></el-option>
                <el-option v-for="(item) in this.$customizeConfig.selected.currencies"
                 :key="item.id" :label="item.name" :value="item.id">
                 </el-option>
@@ -98,7 +98,7 @@
           </el-table-column>
           <el-table-column min-width="120" prop="amount" :label="$t('value')" fit>
             <template slot-scope="scope">{{`${scope.row.amount} 
-            ${getCurrencyName(scope.row.id)}`}}
+            ${getCurrencyName(scope.row.asset_id)}`}}
             </template>
           </el-table-column>
           <el-table-column min-width="70" prop="success" :label="$t('result')">
@@ -156,7 +156,7 @@ export default {
       isLoading: false,
       transfersData: [],
       total: 0,
-      currencyId: 0,
+      currencyId: -1,
       selectList: [
         {
           label: this.$t("all"),
@@ -214,7 +214,7 @@ export default {
         row: 25,
         page,
         address: this.$route.query.address,
-        currencyId: this.currencyId
+        currencyId: this.currencyId === -1? undefined: this.currencyId 
       });
       this.transfersData = data.transfers || [];
       this.total = +data.count;

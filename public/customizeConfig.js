@@ -40,7 +40,7 @@ const customizeConfig ={
         }
     ],
     modules:{
-        transfer: false,
+        transfer: {chart: false},
         vote: false,
         staking: false,
     }

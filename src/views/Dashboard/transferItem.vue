@@ -35,7 +35,7 @@
           </el-tooltip>
         </div>
       </div>
-      <div class="right">{{`${transferData.amount} ${this.formatSymbol(transferData.module)}`}}</div>
+      <div class="right">{{`${transferData.amount} ${this.getCurrencyName(transferData.asset_id)}`}}</div>
     </div>
   </div>
 </template>
@@ -66,6 +66,9 @@ export default {
   methods: {
     formatSymbol(module, isValidate) {
       return formatSymbol(module, this.$const, this.sourceSelected, isValidate);
+    },
+    getCurrencyName(currencyId){
+      return this.$customizeConfig.getCurrencyById(currencyId)?.name
     },
     isMobile() {
       return isMobile();
