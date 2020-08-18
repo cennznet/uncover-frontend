@@ -6,7 +6,7 @@
     <div class="nav-bar-mobile"
       :style="`background-image:url(${this.$customizeConfig.selected.mobileBannerBackground};`">
       <div class="container align-items-center">
-        <a :href="`/`" >
+        <a class="logo-container" :href="`/`" >
           <img class ="logo" :src="this.$customizeConfig.logo"/>
         </a>
         <div class="rate">
@@ -344,6 +344,9 @@ export default {
       //   background: url("../../assets/images/edgeware-button.png") no-repeat left center;
       //   background-size: contain;
       // }
+    }
+    .logo-container {
+      margin-right: 10px;
     }
   }
   .nav-bar-search {

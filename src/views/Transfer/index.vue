@@ -97,8 +97,8 @@
             </template>
           </el-table-column>
           <el-table-column min-width="120" prop="amount" :label="$t('value')" fit>
-            <template slot-scope="scope">{{`${scope.row.amount} 
-            ${getCurrencyName(scope.row.asset_id)}`}}
+            <template slot-scope="scope">{{scope.row.amount|accuracyFormat(tokenDetail(scope.row.asset_id).accuracy)}}
+            {{`${getCurrencyName(scope.row.asset_id)}`}}
             </template>
           </el-table-column>
           <el-table-column min-width="70" prop="success" :label="$t('result')">
@@ -140,8 +140,8 @@ import { mapState } from "vuex";
 import SearchInput from "@/views/Components/SearchInput";
 import CsvDownload from "Components/CsvDownload";
 import Pagination from "Components/Pagination";
-import { timeAgo, hashFormat } from "Utils/filters";
-//import { formatSymbol } from "../../utils/tools";
+import { timeAgo, hashFormat, accuracyFormat } from "Utils/filters";
+import { getCurrencyTokenDetail } from "../../utils/tools";
 export default {
   name: "Transfer",
   components: {
@@ -180,12 +180,14 @@ export default {
   computed: {
     ...mapState({
       transfers: state => state.polka.transfers,
-      sourceSelected: state => state.global.sourceSelected
+      sourceSelected: state => state.global.sourceSelected,
+      token: state => state.polka.token
     })
   },
   filters: {
     timeAgo,
-    hashFormat
+    hashFormat,
+    accuracyFormat
   },
   created() {
     this.init();
@@ -200,11 +202,11 @@ export default {
       }
       this.getData();
     },
-    // formatSymbol(module, isValidate) {
-    //   return formatSymbol(module, this.$const, this.sourceSelected, isValidate);
-    // },
     getCurrencyName(currencyId){
       return this.$customizeConfig.getCurrencyById(currencyId).name
+    },
+    tokenDetail(currencyId) {
+      return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
     },
     async getData() {
       await Promise.all([this.getTransferData()]);

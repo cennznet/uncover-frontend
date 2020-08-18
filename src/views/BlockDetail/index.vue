@@ -149,8 +149,7 @@
                           :key="item.name"
                         >
                           <div class="label">{{item.name}} :</div>
-                          <div class="value" v-if="item.name==='now'">{{item.value|parseTimeToUtc}}</div>
-                          <div class="value" v-else>{{item.value}}</div>
+                          <div class="value" >{{item.value}}</div>
                         </div>
                       </div>
                       <div v-else>

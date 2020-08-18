@@ -23,7 +23,7 @@
   "commission": "扣留费率",
   "controller": "控制账户",
   "copy": "复制",
-  "copy_right": "Subscan © {year} - 由 Subscan 团队开发维护",
+  "copy_right": "Chainscan © {year} - 由 Chainscan 团队开发维护",
   "copy_success": "复制成功",
   "data": "Data :",
   "destination": "接收账户",

@@ -35,15 +35,18 @@
           </el-tooltip>
         </div>
       </div>
-      <div class="right">{{`${transferData.amount} ${this.getCurrencyName(transferData.asset_id)}`}}</div>
+      <div class="right">{{transferData.amount|accuracyFormat(tokenDetail(transferData.asset_id).accuracy)}} 
+        {{`${getCurrencyName(transferData.asset_id)}`}}
+        
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { timeAgo } from "Utils/filters";
+import { timeAgo, accuracyFormat } from "Utils/filters";
 import { mapState } from "vuex";
-import { isMobile, formatSymbol } from "../../utils/tools";
+import { isMobile, getCurrencyTokenDetail } from "../../utils/tools";
 
 export default {
   props: {
@@ -57,18 +60,20 @@ export default {
   },
   computed: {
     ...mapState({
-      sourceSelected: state => state.global.sourceSelected
+      sourceSelected: state => state.global.sourceSelected,
+      token: state => state.polka.token
     })
   },
   filters: {
-    timeAgo
+    timeAgo,
+    accuracyFormat
   },
   methods: {
-    formatSymbol(module, isValidate) {
-      return formatSymbol(module, this.$const, this.sourceSelected, isValidate);
-    },
     getCurrencyName(currencyId){
       return this.$customizeConfig.getCurrencyById(currencyId)?.name
+    },
+    tokenDetail(currencyId) {
+      return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
     },
     isMobile() {
       return isMobile();

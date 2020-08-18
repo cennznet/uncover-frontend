@@ -1,7 +1,7 @@
 <template>
   <div class="footer-bar">
     <div class="container space-between align-items-center">
-      <div class="partner align-items-center" :class="{'is-home-page': isHomePage}">
+      <!-- <div class="partner align-items-center" :class="{'is-home-page': isHomePage}">
         <span class="partner-title">{{$t('partner')}}</span>
         <a
           class="partner-img-wrapper"
@@ -44,11 +44,11 @@
         >
           <img src="./../../assets/images/partner-7.png" />
         </a>
-      </div>
+      </div> -->
       <div class="info-container align-items-center">
         <div class="copyright">{{$t('copy_right', { year: new Date().getFullYear()})}}</div>
         <div class="icon-group">
-          <el-dropdown class="donate-dropdown" trigger="click">
+          <!--<el-dropdown class="donate-dropdown" trigger="click">
             <div class="donate">
               <icon-svg icon-class="donate" class="icon" />
             </div>
@@ -76,7 +76,7 @@
                 <icon-svg icon-class="mail" class="icon" />
               </div>
             </a>
-          </div>
+          </div> -->
           <el-dropdown class="language-dropdown" trigger="click" @command="changeLanguage">
             <div class="language">
               <icon-svg icon-class="earth" class="icon" />
@@ -90,15 +90,15 @@
       </div>
     </div>
     <div class="container mobile space-between align-items-center">
-      <div class="partner" :class="{'is-home-page': isHomePage}">
+      <!--<div class="partner" :class="{'is-home-page': isHomePage}">
         <div class="partner-title">{{$t('partner')}}:</div>
         <div class="partner-img-wrapper">
           <img src="./../../assets/images/partner-mobile.png" />
         </div>
-      </div>
+      </div> -->
       <div class="split-line" :class="{'is-home-page': isHomePage}"></div>
       <div class="copyright">{{$t('copy_right', { year: new Date().getFullYear()})}}</div>
-      <el-dropdown class="donate-dropdown" trigger="click">
+      <!-- <el-dropdown class="donate-dropdown" trigger="click">
         <div class="donate">
           <icon-svg icon-class="donate" class="icon" />
         </div>
@@ -126,7 +126,7 @@
             <icon-svg icon-class="mail" class="icon" />
           </div>
         </a>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
