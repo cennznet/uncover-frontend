@@ -119,17 +119,18 @@ export default {
         if (this.ss58Check(this.inputValue)) {
           this.$router.push(`/account/${this.inputValue}`);
         } else {
-          this.$api["polkaGetSearchRes"]({
-            key: this.inputValue,
-            row: 1,
-            page: 0
-          })
-            .then(() => {
-              this.$router.push(`/account/${this.inputValue}`);
-            })
-            .catch(() => {
-              this.$router.push(`/noData`);
-            });
+          this.$router.push(`/noData`);
+          // this.$api["polkaGetSearchRes"]({
+          //   key: this.inputValue,
+          //   row: 1,
+          //   page: 0
+          // })
+          //   .then(() => {
+          //     this.$router.push(`/account/${this.inputValue}`);
+          //   })
+          //   .catch(() => {
+          //     this.$router.push(`/noData`);
+          //   });
         }
       }
     }
