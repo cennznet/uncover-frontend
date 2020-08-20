@@ -38,7 +38,7 @@
               <div class="value">
                 <div class="align-items-center">
                     <balances
-                      :amount="stakingDetail.free"
+                      :amount="`${addAccuracy(stakingDetail.free, this.stakingCurrency.id)}`"
                       :currencyType="this.stakingCurrency.type"
                     ></balances>
                 </div>
@@ -46,7 +46,7 @@
               <div v-if="spendingDetail && spendingDetail.free" class="value">
                 <div class="align-items-center">
                   <balances
-                    :amount="spendingDetail.free"
+                    :amount="`${addAccuracy(spendingDetail.free, this.spendingCurrency.id)}`"
                     :currencyType="this.spendingCurrency.type"
                   ></balances>
                 </div>
@@ -60,7 +60,7 @@
               <div v-if="stakingDetail.lock" class="value">
                 <div class="align-items-center">
                     <balances
-                      :amount="stakingDetail.lock"
+                      :amount="`${addAccuracy(stakingDetail.lock, this.stakingCurrency.id)}`"
                       :currencyType="this.stakingCurrency.type" :hasImg="false"
                     ></balances>
                 </div>
@@ -68,7 +68,7 @@
               <div v-if="spendingDetail && spendingDetail.lock" class="value">
                 <div class="align-items-center">
                     <balances
-                      :amount="spendingDetail.lock"
+                      :amount="`${addAccuracy(spendingDetail.lock, this.spendingCurrency.id)}`"
                       :currencyType="this.spendingCurrency.type" :hasImg="false"
                     ></balances>
                 </div>
@@ -228,7 +228,7 @@
                 <el-table-column min-width="120" prop="amount" :label="$t('value')" fit>
                   <template
                     slot-scope="scope"
-                  >{{`${scope.row.amount} ${formatSymbol(scope.row.module)}`}}</template>
+                  >{{addAccuracy(scope.row.amount,scope.row.asset_id)}} {{getCurrencyName(scope.row.asset_id)}}</template>
                 </el-table-column>
                 <el-table-column min-width="70" prop="success" :label="$t('result')">
                   <template slot-scope="scope">
@@ -344,7 +344,7 @@ import { timeAgo, parseTimeToUtc, hashFormat, accuracyFormat } from "Utils/filte
 import clipboard from "Directives/clipboard";
 import Balances from "../ExtrinsicDetail/Balances";
 import { fmtPercentage, getCommission, bnPlus } from "../../utils/format";
-import { getTokenDetail, formatSymbol } from "../../utils/tools";
+import { getTokenDetail, formatSymbol, getCurrencyTokenDetail } from "../../utils/tools";
 export default {
   name: "AccountDetailNew",
   components: {
@@ -415,7 +415,7 @@ export default {
     }),
     tokenDetail() {
       return getTokenDetail(this.token, this.sourceSelected, this.currency);
-    }
+    }    
   },
   created() {
     this.address = this.$route.params.key;
@@ -538,8 +538,14 @@ export default {
         message: this.$t("copy_success")
       });
     }, 
-    getCurrencyType(assetId){
-      return this.$customizeConfig.getCurrencyById(assetId)?.type;
+    tokenDetailNew(currencyId) {
+        return getCurrencyTokenDetail(this.token,this.$customizeConfig.getCurrencyById(currencyId).name);
+    },
+    addAccuracy(amount, currencyId) {
+      return accuracyFormat(amount, this.tokenDetailNew(currencyId).accuracy).toString()
+    }, 
+    getCurrencyName(currencyId){
+      return this.$customizeConfig.getCurrencyById(currencyId).name
     }
   }
 };

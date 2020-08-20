@@ -28,7 +28,7 @@
           <div>{{`(${total})`}}</div>
         </div>
         <div>
-            <el-select v-model="currencyId"  placeholder="currency filter" @change="getTransferData">
+            <el-select v-model="currencyId"  placeholder="currency filter" @change="getData">
               <el-option key="-1" label="all" :value="-1"></el-option>
                <el-option v-for="(item) in this.$customizeConfig.selected.currencies"
                 :key="item.id" :label="item.name" :value="item.id">
