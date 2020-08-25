@@ -145,7 +145,28 @@
                   <template slot-scope="props">
                     <div class="expand-form">
                       <div v-if="props.row.params && props.row.params.length > 0">
-                        <div
+                        <div class="struct-table-content">
+                          <table class="table">
+                            <tbody>
+                              <tr v-for="item in props.row.params"
+                                  :key="item.name">
+                                  <td width="15%" class="td-border">
+                                    <div class="table-cell">{{item.name}}</div>
+                                  </td>
+                                  <td class="td-border">
+                                    <div class="table-cell" v-if="props.row.call_module === 'genericAsset'
+                                      && props.row.call_module_function === 'transfer'
+                                      && item.name==='amount'">
+                                        {{item.value|accuracyFormat(tokenDetailNew(props.row.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
+                                        {{getCurrencyName(props.row.params.find(ele => ele.name === 'asset_id').value)}}
+                                    </div>
+                                    <div class="table-cell" v-else>{{item.value}}</div>
+                                  </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <!-- <div
                           class="form-item align-items-center"
                           v-for="item in props.row.params"
                           :key="item.name"
@@ -153,7 +174,7 @@
                           <div class="label">{{item.name}} :</div>
                           <div class="value" v-if="item.name==='now'">{{item.value|parseTimeToUtc}}</div>
                           <div class="value" v-else>{{item.value}}</div>
-                        </div>
+                        </div> -->
                       </div>
                       <div v-else>
                         <div class="label">{{$t('no_data')}}</div>
@@ -552,7 +573,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.account-wrapper {
+#app .account-wrapper {
   .search-input {
     height: 50px;
   }
@@ -744,18 +765,37 @@ export default {
     .expand-form {
       background: #f3f5f9;
       padding: 10px 28px;
-      .form-item {
-        min-height: 40px;
-        font-size: 14px;
-        color: rgba(48, 43, 60, 1);
-        .label {
-          min-width: 140px;
+      .struct-table-content {
+          padding: 20px;
+          background-color: #f3f5f9;
+          margin: 10px 0;
+          tr:last-child {
+            .td-border {
+              border-bottom: 1px solid #e7eaf3;
+            }
+          }
+          .table {
+            background-color: #fff;
+            color: #363636;
+            width: 100%;
+            border-collapse: separate;
+            border: 1px solid #e7eaf3;
+            border-width: 1px 0 0 1px;
+            table-layout: fixed;
+          }
+          .td-border {
+            border: 1px solid #e7eaf3;
+            border-width: 0 1px 1px 0;
+          }
+          .table-cell {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            padding: 0 10px;
+            line-height: 1.5;
+            min-height: 21px;
+          }
         }
-        .value {
-          width: 900px;
-          word-break: break-all;
-        }
-      }
     }
     .block-log {
       .log-item {

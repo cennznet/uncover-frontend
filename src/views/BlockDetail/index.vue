@@ -143,14 +143,35 @@
                   <template slot-scope="props">
                     <div class="expand-form">
                       <div v-if="props.row.params && props.row.params.length > 0">
-                        <div
+                        <div class="struct-table-content">
+                          <table class="table">
+                            <tbody>
+                              <tr v-for="item in props.row.params"
+                                  :key="item.name">
+                                  <td width="15%" class="td-border">
+                                    <div class="table-cell">{{item.name}}</div>
+                                  </td>
+                                  <td class="td-border">
+                                    <div class="table-cell" v-if="props.row.call_module === 'genericAsset'
+                                      && props.row.call_module_function === 'transfer'
+                                      && item.name==='amount'">
+                                        {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
+                                        {{getCurrencyName(props.row.params.find(ele => ele.name === 'asset_id').value)}}
+                                    </div>
+                                    <div class="table-cell" v-else>{{item.value}}</div>
+                                  </td>
+                              </tr>
+                            </tbody>
+                           </table>
+                        </div>
+                        <!-- <div
                           class="form-item align-items-center"
                           v-for="item in props.row.params"
                           :key="item.name"
                         >
                           <div class="label">{{item.name}} :</div>
                           <div class="value" >{{item.value}}</div>
-                        </div>
+                        </div> -->
                       </div>
                       <div v-else>
                         <div class="label">{{$t('no_data')}}</div>
@@ -189,14 +210,35 @@
                 <el-table-column width="100" type="expand">
                   <template slot-scope="props">
                     <div class="expand-form">
-                      <div
+                      <div class="struct-table-content">
+                          <table class="table">
+                            <tbody>
+                              <tr v-for="(item, index)  in props.row.params"
+                                  :key="item.type + index">
+                                  <td width="15%" class="td-border">
+                                    <div class="table-cell">{{item.type}}</div>
+                                  </td>
+                                  <td class="td-border">
+                                    <div class="table-cell" v-if="props.row.module_id === 'genericAsset'
+                                    && props.row.event_id === 'Transferred'
+                                    && item.type==='Balance'">
+                                      {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.type === 'AssetId').value).accuracy)}}
+                                      {{getCurrencyName(props.row.params.find(ele => ele.type === 'AssetId').value)}}
+                                    </div>
+                                    <div class="table-cell" v-else>{{item.value}}</div>
+                                  </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                       <!-- <div
                         class="form-item align-items-center"
                         v-for="item in props.row.params"
                         :key="item.type"
                       >
                         <div class="label">{{item.type}} :</div>
                         <div class="value">{{item.value}}</div>
-                      </div>
+                      </div> -->
                     </div>
                   </template>
                 </el-table-column>
@@ -241,18 +283,26 @@
 
 <script>
 import SearchInput from "@/views/Components/SearchInput";
-import { timeAgo, parseTimeToUtc, hashFormat } from "Utils/filters";
+import { timeAgo, parseTimeToUtc, hashFormat, accuracyFormat } from "Utils/filters";
 import clipboard from "Directives/clipboard";
 import _ from 'lodash';
+import { mapState } from "vuex";
+import { getCurrencyTokenDetail } from "../../utils/tools";
 export default {
   name: "BlockDetail",
   components: {
     SearchInput
   },
+  computed: {
+    ...mapState({
+      token: state => state.polka.token
+    })
+  },
   filters: {
     timeAgo,
     parseTimeToUtc,
     hashFormat,
+    accuracyFormat,
     getValidator: function(nickname, index, stash) {
       return nickname || index || stash
     }
@@ -355,13 +405,19 @@ export default {
         type: "success",
         message: this.$t('copy_success')
       });
+    },
+    tokenDetail(currencyId) {
+      return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
+    },
+    getCurrencyName(currencyId){
+      return this.$customizeConfig.getCurrencyById(currencyId).name
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.block-detail-wrapper {
+#app .block-detail-wrapper {
   .search-input {
     height: 50px;
   }
@@ -477,6 +533,37 @@ export default {
         .value {
           width: 900px;
           word-break: break-all;
+        }
+      }
+      .struct-table-content {
+        padding: 20px;
+        background-color: #f3f5f9;
+        margin: 10px 0;
+        tr:last-child {
+          .td-border {
+            border-bottom: 1px solid #e7eaf3;
+          }
+        }
+        .table {
+          background-color: #fff;
+          color: #363636;
+          width: 100%;
+          border-collapse: separate;
+          border: 1px solid #e7eaf3;
+          border-width: 1px 0 0 1px;
+          table-layout: fixed;
+        }
+        .td-border {
+          border: 1px solid #e7eaf3;
+          border-width: 0 1px 1px 0;
+        }
+        .table-cell {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: normal;
+          padding: 10px 10px;
+          line-height: 1.5;
+          min-height: 21px;
         }
       }
     }
