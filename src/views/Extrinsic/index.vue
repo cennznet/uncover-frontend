@@ -97,6 +97,9 @@
                                   {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
                                   {{getCurrencyName(props.row.params.find(ele => ele.name === 'asset_id').value)}}
                               </div>
+                              <div class ="table-cell" v-else-if="item.type === 'AccountId'">
+                                  <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
+                              </div>
                               <div class="table-cell" v-else>{{item.value}}</div>
                             </td>
                         </tr>
@@ -140,13 +143,15 @@ import Pagination from "Components/Pagination";
 import { timeAgo, hashFormat, parseTimeToUtc, accuracyFormat } from "Utils/filters";
 import { mapState } from "vuex";
 import { getCurrencyTokenDetail } from "../../utils/tools";
+import AccountHash from "../AccountDetailNew/AccountHash";
 export default {
   name: "Extrinsic",
   components: {
     SearchInput,
     CsvDownload,
     Pagination,
-    Identicon
+    Identicon,
+    AccountHash
   },
   computed: {
     ...mapState({
@@ -353,7 +358,7 @@ export default {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: normal;
-            padding: 0 10px;
+            padding: 10px 10px;
             line-height: 1.5;
             min-height: 21px;
           }

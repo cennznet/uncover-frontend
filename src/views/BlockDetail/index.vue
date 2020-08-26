@@ -158,6 +158,9 @@
                                         {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
                                         {{getCurrencyName(props.row.params.find(ele => ele.name === 'asset_id').value)}}
                                     </div>
+                                    <div class ="table-cell" v-else-if="item.type === 'AccountId'">
+                                      <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
+                                    </div>
                                     <div class="table-cell" v-else>{{item.value}}</div>
                                   </td>
                               </tr>
@@ -210,27 +213,32 @@
                 <el-table-column width="100" type="expand">
                   <template slot-scope="props">
                     <div class="expand-form">
-                      <div class="struct-table-content">
-                          <table class="table">
-                            <tbody>
-                              <tr v-for="(item, index)  in props.row.params"
-                                  :key="item.type + index">
-                                  <td width="15%" class="td-border">
-                                    <div class="table-cell">{{item.type}}</div>
-                                  </td>
-                                  <td class="td-border">
-                                    <div class="table-cell" v-if="props.row.module_id === 'genericAsset'
-                                    && props.row.event_id === 'Transferred'
-                                    && item.type==='Balance'">
-                                      {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.type === 'AssetId').value).accuracy)}}
-                                      {{getCurrencyName(props.row.params.find(ele => ele.type === 'AssetId').value)}}
-                                    </div>
-                                    <div class="table-cell" v-else>{{item.value}}</div>
-                                  </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                      <div v-if="props.row.params && props.row.params.length > 0">
+                        <div  class="struct-table-content">
+                            <table class="table">
+                              <tbody>
+                                <tr v-for="(item, index)  in props.row.params"
+                                    :key="item.type + index">
+                                    <td width="15%" class="td-border">
+                                      <div class="table-cell">{{item.type}}</div>
+                                    </td>
+                                    <td class="td-border">
+                                      <div class="table-cell" v-if="props.row.module_id === 'genericAsset'
+                                      && props.row.event_id === 'Transferred'
+                                      && item.type==='Balance'">
+                                        {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.type === 'AssetId').value).accuracy)}}
+                                        {{getCurrencyName(props.row.params.find(ele => ele.type === 'AssetId').value)}}
+                                      </div>
+                                      <div class ="table-cell" v-else-if="item.type === 'AccountId'">
+                                        <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
+                                      </div>
+                                      <div class="table-cell" v-else>{{item.value}}</div>
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                      </div>
                        <!-- <div
                         class="form-item align-items-center"
                         v-for="item in props.row.params"
@@ -288,10 +296,12 @@ import clipboard from "Directives/clipboard";
 import _ from 'lodash';
 import { mapState } from "vuex";
 import { getCurrencyTokenDetail } from "../../utils/tools";
+import AccountHash from "../AccountDetailNew/AccountHash";
 export default {
   name: "BlockDetail",
   components: {
-    SearchInput
+    SearchInput,
+    AccountHash
   },
   computed: {
     ...mapState({

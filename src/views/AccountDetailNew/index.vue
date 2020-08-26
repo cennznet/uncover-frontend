@@ -16,7 +16,8 @@
       <template v-else-if="stakingDetail">
         <div class="account-info subscan-card">
           <div class="account-intro">
-            <div class="icon">
+            <accountHash :size="40" :hash="address" :adjustHeight="'10px'"></accountHash>
+           <!-- <div class="icon">
               <identicon :size="40" theme="polkadot" :value="this.address" />
             </div>
             <div class="detail">
@@ -28,7 +29,7 @@
                 </div>
               </div>
                <div class="contact-wrapper align-items-center"></div>
-            </div>
+            </div> -->
           </div>
           <div class="split-line"></div>  
             <div class="balance">
@@ -159,6 +160,9 @@
                                       && item.name==='amount'">
                                         {{item.value|accuracyFormat(tokenDetailNew(props.row.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
                                         {{getCurrencyName(props.row.params.find(ele => ele.name === 'asset_id').value)}}
+                                    </div>
+                                    <div class ="table-cell" v-else-if="item.type === 'AccountId'">
+                                      <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
                                     </div>
                                     <div class="table-cell" v-else>{{item.value}}</div>
                                   </td>
@@ -366,12 +370,14 @@ import clipboard from "Directives/clipboard";
 import Balances from "../ExtrinsicDetail/Balances";
 import { fmtPercentage, getCommission, bnPlus } from "../../utils/format";
 import { getTokenDetail, formatSymbol, getCurrencyTokenDetail } from "../../utils/tools";
+import AccountHash from "./AccountHash";
 export default {
   name: "AccountDetailNew",
   components: {
     SearchInput,
     Identicon,
-    Balances
+    Balances,
+    AccountHash
   },
   filters: {
     timeAgo,

@@ -140,6 +140,9 @@
                                   {{item.value|accuracyFormat(tokenDetailByCurrency(extrinsicInfo.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
                                   {{getCurrencyName(extrinsicInfo.params.find(ele => ele.name === 'asset_id').value)}}
                               </div>
+                              <div class ="table-cell" v-else-if="item.type === 'AccountId'">
+                                      <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
+                              </div>
                               <div class="table-cell" v-else>{{`${JSON.stringify(item.value)}`}}</div>
                             </td>
                         </tr>
@@ -225,6 +228,9 @@
                                       {{item.value|accuracyFormat(tokenDetailByCurrency(props.row.params.find(ele => ele.type === 'AssetId').value).accuracy)}}
                                       {{getCurrencyName(props.row.params.find(ele => ele.type === 'AssetId').value)}}
                                   </div>
+                                  <div class ="table-cell" v-else-if="item.type === 'AccountId'">
+                                      <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
+                                  </div>
                                   <div class="table-cell" v-else>{{item.value}}</div>
                                 </td>
                             </tr>
@@ -264,13 +270,15 @@ import clipboard from "Directives/clipboard";
 import { mapState } from "vuex";
 import Balances from "./Balances";
 import { getCurrencyTokenDetail } from "../../utils/tools";
+import AccountHash from "../AccountDetailNew/AccountHash";
 
 export default {
   name: "ExtrinsicDetail",
   components: {
     SearchInput,
     Identicon,
-    Balances
+    Balances,
+    AccountHash
   },
   filters: {
     timeAgo,
