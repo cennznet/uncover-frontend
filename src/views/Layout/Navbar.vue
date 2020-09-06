@@ -62,20 +62,23 @@
           <el-drawer
             :title="$t('menu')"
             class="mobile-drawer"
-            size="40%"
+            size="260px"
             :visible.sync="drawer"
             :direction="direction">
             <div class="drawer-content">
               <div class="menu-section">
                 <div class="row">
-                  <router-link class="item" to="/block" tag="div" @click.native="drawer = false">{{$t('blocks')}}</router-link>
-                  <router-link class="item" to="/extrinsic" tag="div" @click.native="drawer = false">{{$t('extrinsics')}}</router-link>
-                  <router-link class="item" to="/transfer" tag="div" @click.native="drawer = false">{{$t('transfers')}}</router-link>
-                  <div>
-                    <router-link class="item" to="" tag="div">{{$t('accounts')}}</router-link>
-                    <router-link class="sub-item" to="/validator" tag="div" @click.native="drawer = false">{{$t('validators')}}</router-link>
-                    <router-link class="sub-item" to="/account" tag="div" @click.native="drawer = false">{{$t('holders')}}</router-link>
-                  </div>
+                    <router-link class="item" to="/" tag="div" @click.native="drawer = false">{{$t('home')}}</router-link>
+                    <el-collapse v-model="activeNames" @change="handleChange">
+                      <router-link class="item" to="/block" tag="div" @click.native="drawer = false">{{$t('blocks')}}</router-link>
+                      <router-link class="item" to="/extrinsic" tag="div" @click.native="drawer = false">{{$t('extrinsics')}}</router-link>
+                      <router-link class="item" to="/transfer" tag="div" @click.native="drawer = false">{{$t('transfers')}}</router-link>
+                      <el-collapse-item :title="$t('accounts')" name="1">
+                        <router-link v-if="this.$customizeConfig.hasModule('staking')"
+                         class="sub-item" to="/validator" tag="div" @click.native="drawer = false">{{$t('validators')}}</router-link>
+                        <router-link class="sub-item" :to="`/asset/${getCurrencyName}`" tag="div" @click.native="drawer = false">{{$t('holders')}}</router-link>
+                      </el-collapse-item>
+                    </el-collapse>
                 </div>
               </div>
               <div class="language-section">
@@ -130,6 +133,7 @@ export default {
           value: "account"
         }
       ],
+      activeNames: []
       // sourceList: [
       //   {
       //     label: "Kusama CC3",
@@ -245,7 +249,10 @@ export default {
     },
     changeTime() {
       this.currentTime = Date.now();
-    }
+    },
+    handleChange(val) {
+        console.log(val);
+      }
   }
 };
 </script>
@@ -353,13 +360,14 @@ export default {
     display: none;
   }
   &.is-home-page {
-    height: 125px;
+    height: 162px;
     .container {
-      height: 50px;
+      height: 80px;
     }
     .nav-bar-search {
       display: block;
       margin-top: 4px;
+      margin-bottom: 4px;
       > div {
         width: 760px;
         margin: 0 auto;
@@ -412,27 +420,58 @@ export default {
   .menu-section {
     flex: 1 1 auto;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
     text-align: center;
+    background-color: #272727;
+    .row {
+      padding-top: 26px;
+    }
+    /deep/.el-collapse {
+      border: none;
+      padding-left: 30px;
+      .item {
+        margin-left: 0;
+      }
+      .el-collapse-item__header {
+        background-color: initial;
+        color: #fff;
+        border: none;
+        font-size: 20px;
+        font-weight: 400;
+      }
+      .el-collapse-item__wrap {
+        background-color: initial;
+        color: #fff;
+        border: none;
+        text-align: left;
+        padding-left: 10px;
+      }
+      .el-collapse-item__content{
+        padding-bottom: 0;
+        max-height: 200px;
+        overflow: scroll;
+      }
+    }
     .item {
       font-size: 20px;
-      padding: 20px 10px;
-      margin: 10px 0;
+      padding: 10px 0;
+      margin-left: 30px;
       color: #FFF;
+      text-align: left;
     }
     .sub-item {
+      display: block;
       font-size: 14px;
-      padding: 0 10px 10px;
-      margin: 4px 0;
-      color: #FFF;
+      padding: 10px 0;
+      color: #fff;
     }
   }
   .language-section {
-    height: 125px;
-    background-color: #3A3545;
+    height: 70px;
+    background-color: #1D1D1D;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     flex-direction: column;
     text-align: center;
     .item {
@@ -440,8 +479,9 @@ export default {
     }
   }
 }
+
 </style>
-<style lang="scss">
+<style lang="scss"> 
 .nav-bar-wrapper {
   background: var(--navbar-bg);
   &.is-home-page {
@@ -526,13 +566,16 @@ export default {
   .el-drawer__header {
     padding: 10px 0;
     color: #FFF;
-    background-color: #3A3545;
+    background-color: #1D1D1D;
+    margin-bottom: 0;
     > span {
-      margin-left: 20px;
+      margin-left: 10px;
+      font-size: 14px;
     }
     button {
       padding: 0 10px;
     }
   }
 }
+
 </style>

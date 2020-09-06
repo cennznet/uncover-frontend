@@ -17,8 +17,8 @@ import {
   // BreadcrumbItem,
   // InputNumber,
   Dialog,
-  // Collapse,
-  // CollapseItem,
+  Collapse,
+  CollapseItem,
   Input,
   // Col,
   // Row,
@@ -60,8 +60,8 @@ Vue.use(DropdownItem);
 // Vue.use(BreadcrumbItem)
 // Vue.use(InputNumber)
 Vue.use(Dialog)
-// Vue.use(Collapse)
-// Vue.use(CollapseItem)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
 Vue.use(Input);
 Vue.use(Scrollbar);
 Vue.use(Checkbox);

@@ -161,7 +161,7 @@ export default {
       padding-top: 10px;
       color: #302b3c;
       font-size: 14px;
-      font-family: Eina01-SemiBold;
+      //font-family: Eina01-SemiBold;
       font-weight: 600;
     }
     .value {

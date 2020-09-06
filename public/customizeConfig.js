@@ -1,33 +1,33 @@
 const customizeConfig ={
-    logo: "/images/logo@2x.png",
+    logo: "/images/Uncover.png",
 
     chains: [
         {
             name: "azalea",
-            buttonIcon: "/images/icefrog-button.png",
-            bannerBackground: "/images/icefrog-banner.png",
-            mobileBannerBackground: "/images/icefrog-banner-mobile.png",
+            buttonIcon: "/images/Azalea.png",
+            bannerBackground: "/images/banner-background.png",
+            mobileBannerBackground: "/images/banner-mobile-background.png",
             baseURL : 'https://scan-azalea.onfinality.me/api',
             currencies : [
                 {
                     id: 1,
                     name: "CENNZ",
                     type: 1,
-                    icon: "/images/kton@2x.png"
+                    icon: "/images/CENNZ.png"
                 },
                 {
                     id: 2,
                     name: "CPAY",
                     type: 2,
-                    icon: "/images/ksm@2x.png"
+                    icon: "/images/CPAY.png"
                 }
             ],
             pieColor : {
                 mainColor: "#000000",
                 colors: ["#000000", "#a6a6a6", "#d7d7d7"],
-                 bIcon: "/images/l-purple.png",
-                 tIcon: "/images/t-purple.png",
-                 oIcon: "/images/o.png"
+                 bIcon: "/images/Lock.png",
+                 tIcon: "/images/Transferrable.png",
+                 oIcon: "/images/Others.png"
             }, 
             themeColor: {
                 mainColor: "#e90979",

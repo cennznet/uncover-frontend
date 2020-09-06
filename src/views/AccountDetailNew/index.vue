@@ -864,6 +864,9 @@ export default {
     }
     .account-info {
       flex-direction: column;
+      .account-intro {
+        width: auto;
+      }
       .detail {
         word-break: break-all;
       }
@@ -871,15 +874,18 @@ export default {
         display: none;
       }
       .balance {
-        padding-top: 0;
+        padding-top: 10px;
         padding-bottom: 0;
+        width: auto;
       }
       .bonded {
         padding-top: 0;
         padding-bottom: 0;
+        width: auto;
       } 
       .nounce {
         padding-bottom: 20px;
+        padding-top: 0;
       }
     }
     .transfer-extrinsic-wrapper {
