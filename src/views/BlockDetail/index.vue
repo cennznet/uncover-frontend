@@ -144,37 +144,10 @@
                     <div class="expand-form">
                       <div v-if="props.row.params && props.row.params.length > 0">
                         <div class="struct-table-content">
-                          <table class="table">
-                            <tbody>
-                              <tr v-for="item in props.row.params"
-                                  :key="item.name">
-                                  <td width="15%" class="td-border">
-                                    <div class="table-cell">{{item.name}}</div>
-                                  </td>
-                                  <td class="td-border">
-                                    <div class="table-cell" v-if="props.row.call_module === 'genericAsset'
-                                      && props.row.call_module_function === 'transfer'
-                                      && item.name==='amount'">
-                                        {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
-                                        {{getCurrencyName(props.row.params.find(ele => ele.name === 'asset_id').value)}}
-                                    </div>
-                                    <div class ="table-cell" v-else-if="item.type === 'AccountId'">
-                                      <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
-                                    </div>
-                                    <div class="table-cell" v-else>{{item.value}}</div>
-                                  </td>
-                              </tr>
-                            </tbody>
-                           </table>
+                          <TreeItem :treeList="props.row.params" :isFirst="true"
+                            treeType="extrinsic" :moudleName="props.row.call_module" 
+                            :functionName="props.row.call_module_function"></TreeItem>
                         </div>
-                        <!-- <div
-                          class="form-item align-items-center"
-                          v-for="item in props.row.params"
-                          :key="item.name"
-                        >
-                          <div class="label">{{item.name}} :</div>
-                          <div class="value" >{{item.value}}</div>
-                        </div> -->
                       </div>
                       <div v-else>
                         <div class="label">{{$t('no_data')}}</div>
@@ -187,7 +160,7 @@
             <el-tab-pane
               v-if="blockInfo.event_count>0"
               :label="`${$t('events')} (${blockInfo.event_count})`"
-              name="event"
+              name="event" id="pane-event"
             >
               <el-table :data="blockInfo.events" style="width: 100%">
                 <el-table-column min-width="100" prop="event_index" :label="$t('event_id')" fit></el-table-column>
@@ -213,40 +186,13 @@
                 <el-table-column width="100" type="expand">
                   <template slot-scope="props">
                     <div class="expand-form">
-                      <div v-if="props.row.params && props.row.params.length > 0">
-                        <div  class="struct-table-content">
-                            <table class="table">
-                              <tbody>
-                                <tr v-for="(item, index)  in props.row.params"
-                                    :key="item.type + index">
-                                    <td width="15%" class="td-border">
-                                      <div class="table-cell">{{item.type}}</div>
-                                    </td>
-                                    <td class="td-border">
-                                      <div class="table-cell" v-if="props.row.module_id === 'genericAsset'
-                                      && props.row.event_id === 'Transferred'
-                                      && item.type==='Balance'">
-                                        {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.type === 'AssetId').value).accuracy)}}
-                                        {{getCurrencyName(props.row.params.find(ele => ele.type === 'AssetId').value)}}
-                                      </div>
-                                      <div class ="table-cell" v-else-if="item.type === 'AccountId'">
-                                        <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
-                                      </div>
-                                      <div class="table-cell" v-else>{{item.value}}</div>
-                                    </td>
-                                </tr>
-                              </tbody>
-                            </table>
+                      <div class="form-items" v-if="props.row.params && props.row.params.length > 0">
+                          <div  class="struct-table-content">
+                            <TreeItem :treeList="props.row.params" :isFirst="true"
+                            treeType="event" :moudleName="props.row.module_id" 
+                            :functionName="props.row.event_id"></TreeItem>
                           </div>
                       </div>
-                       <!-- <div
-                        class="form-item align-items-center"
-                        v-for="item in props.row.params"
-                        :key="item.type"
-                      >
-                        <div class="label">{{item.type}} :</div>
-                        <div class="value">{{item.value}}</div>
-                      </div> -->
                     </div>
                   </template>
                 </el-table-column>
@@ -291,28 +237,20 @@
 
 <script>
 import SearchInput from "@/views/Components/SearchInput";
-import { timeAgo, parseTimeToUtc, hashFormat, accuracyFormat } from "Utils/filters";
+import { timeAgo, parseTimeToUtc, hashFormat } from "Utils/filters";
 import clipboard from "Directives/clipboard";
 import _ from 'lodash';
-import { mapState } from "vuex";
-import { getCurrencyTokenDetail } from "../../utils/tools";
-import AccountHash from "../AccountDetailNew/AccountHash";
+import TreeItem from "../ExtrinsicDetail/TreeItem"
 export default {
   name: "BlockDetail",
   components: {
     SearchInput,
-    AccountHash
-  },
-  computed: {
-    ...mapState({
-      token: state => state.polka.token
-    })
+    TreeItem
   },
   filters: {
     timeAgo,
     parseTimeToUtc,
     hashFormat,
-    accuracyFormat,
     getValidator: function(nickname, index, stash) {
       return nickname || index || stash
     }
@@ -415,12 +353,6 @@ export default {
         type: "success",
         message: this.$t('copy_success')
       });
-    },
-    tokenDetail(currencyId) {
-      return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
-    },
-    getCurrencyName(currencyId){
-      return this.$customizeConfig.getCurrencyById(currencyId).name
     }
   }
 };
@@ -549,32 +481,40 @@ export default {
         padding: 20px;
         background-color: #f3f5f9;
         margin: 10px 0;
-        tr:last-child {
-          .td-border {
-            border-bottom: 1px solid #e7eaf3;
-          }
-        }
-        .table {
-          background-color: #fff;
-          color: #363636;
-          width: 100%;
-          border-collapse: separate;
-          border: 1px solid #e7eaf3;
-          border-width: 1px 0 0 1px;
-          table-layout: fixed;
-        }
-        .td-border {
-          border: 1px solid #e7eaf3;
-          border-width: 0 1px 1px 0;
-        }
-        .table-cell {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: normal;
-          padding: 10px 10px;
-          line-height: 1.5;
-          min-height: 21px;
-        }
+        // tr:last-child {
+        //   .td-border {
+        //     border-bottom: 1px solid #e7eaf3;
+        //   }
+        // }
+        // .table {
+        //   background-color: #fff;
+        //   color: #363636;
+        //   width: 100%;
+        //   border-collapse: separate;
+        //   border: 1px solid #e7eaf3;
+        //   border-width: 1px 0 0 1px;
+        //   table-layout: fixed;
+        // }
+        // .td-border {
+        //   border: 1px solid #e7eaf3;
+        //   border-width: 0 1px 1px 0;
+        // }
+        // .table-cell {
+        //   overflow: hidden;
+        //   text-overflow: ellipsis;
+        //   white-space: normal;
+        //   padding: 10px 10px;
+        //   line-height: 1.5;
+        //   min-height: 21px;
+        // }
+      }
+    }
+    #pane-event .expand-form {
+      padding: 10px;
+      margin: 0;
+      display: flex;
+      .form-items {
+        width: 1120px;
       }
     }
     .block-log {
@@ -653,6 +593,13 @@ export default {
       }
     }
     .block-extrinsic-event-log {
+      #pane-event .expand-form {
+        overflow: scroll;
+        .form-items {
+          -webkit-box-flex: 0;
+          flex: 0 0 600px;
+        }
+      }
       .view-all-extrinsic {
         display: none;
       }

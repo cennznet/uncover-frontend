@@ -55,7 +55,7 @@ export default {
 <style lang="scss" scoped>
 .account-hash{
     display: flex;
-    height: 27px;
+    word-break: break-all;
     .detail{
         margin-left: 10px;
         .hash-wrapper{

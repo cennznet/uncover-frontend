@@ -83,38 +83,10 @@
               <div class="expand-form">
                 <div v-if="props.row.params && props.row.params.length > 0">
                   <div class="struct-table-content">
-                    <table class="table">
-                      <tbody>
-                        <tr v-for="item in props.row.params"
-                            :key="item.name">
-                            <td width="15%" class="td-border">
-                              <div class="table-cell">{{item.name}}</div>
-                            </td>
-                            <td class="td-border">
-                              <div class="table-cell" v-if="props.row.call_module === 'genericAsset'
-                                && props.row.call_module_function === 'transfer'
-                                && item.name==='amount'">
-                                  {{item.value|accuracyFormat(tokenDetail(props.row.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
-                                  {{getCurrencyName(props.row.params.find(ele => ele.name === 'asset_id').value)}}
-                              </div>
-                              <div class ="table-cell" v-else-if="item.type === 'AccountId'">
-                                  <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
-                              </div>
-                              <div class="table-cell" v-else>{{item.value}}</div>
-                            </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <TreeItem :treeList="props.row.params" :isFirst="true"
+                   treeType="extrinsic" :moudleName="props.row.call_module" 
+                   :functionName="props.row.call_module_function"></TreeItem>
                   </div>
-                  <!--<div
-                    class="form-item align-items-center"
-                    v-for="item in props.row.params"
-                    :key="item.name"
-                  >
-                    <div class="label">{{item.name}} :</div>
-                    <div class="value" v-if="item.name==='now'">{{item.value|parseTimeToUtc}}</div>
-                    <div class="value" v-else>{{item.value}}</div>
-                  </div> -->
                 </div>
                 <div v-else>
                   <div class="label">{{$t('no_data')}}</div>
@@ -140,10 +112,8 @@ import moment from "moment";
 import SearchInput from "@/views/Components/SearchInput";
 import CsvDownload from "Components/CsvDownload";
 import Pagination from "Components/Pagination";
-import { timeAgo, hashFormat, parseTimeToUtc, accuracyFormat } from "Utils/filters";
-import { mapState } from "vuex";
-import { getCurrencyTokenDetail } from "../../utils/tools";
-import AccountHash from "../AccountDetailNew/AccountHash";
+import { timeAgo, hashFormat, parseTimeToUtc } from "Utils/filters";
+import TreeItem from "../ExtrinsicDetail/TreeItem"
 export default {
   name: "Extrinsic",
   components: {
@@ -151,12 +121,7 @@ export default {
     CsvDownload,
     Pagination,
     Identicon,
-    AccountHash
-  },
-  computed: {
-    ...mapState({
-      token: state => state.polka.token
-    })
+    TreeItem
   },
   data() {
     return {
@@ -188,8 +153,7 @@ export default {
   filters: {
     timeAgo,
     hashFormat,
-    parseTimeToUtc,
-    accuracyFormat
+    parseTimeToUtc
   },
   created() {
     this.init();
@@ -267,12 +231,6 @@ export default {
     },
     signedChange() {
       this.getExtrinsicData(this.currentPage);
-    },
-    tokenDetail(currencyId) {
-      return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
-    },
-    getCurrencyName(currencyId){
-      return this.$customizeConfig.getCurrencyById(currencyId).name
     }
   }
 };
@@ -336,32 +294,32 @@ export default {
           padding: 20px;
           background-color: #f3f5f9;
           margin: 10px 0;
-          tr:last-child {
-            .td-border {
-              border-bottom: 1px solid #e7eaf3;
-            }
-          }
-          .table {
-            background-color: #fff;
-            color: #363636;
-            width: 100%;
-            border-collapse: separate;
-            border: 1px solid #e7eaf3;
-            border-width: 1px 0 0 1px;
-            table-layout: fixed;
-          }
-          .td-border {
-            border: 1px solid #e7eaf3;
-            border-width: 0 1px 1px 0;
-          }
-          .table-cell {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: normal;
-            padding: 10px 10px;
-            line-height: 1.5;
-            min-height: 21px;
-          }
+          // tr:last-child {
+          //   .td-border {
+          //     border-bottom: 1px solid #e7eaf3;
+          //   }
+          // }
+          // .table {
+          //   background-color: #fff;
+          //   color: #363636;
+          //   width: 100%;
+          //   border-collapse: separate;
+          //   border: 1px solid #e7eaf3;
+          //   border-width: 1px 0 0 1px;
+          //   table-layout: fixed;
+          // }
+          // .td-border {
+          //   border: 1px solid #e7eaf3;
+          //   border-width: 0 1px 1px 0;
+          // }
+          // .table-cell {
+          //   overflow: hidden;
+          //   text-overflow: ellipsis;
+          //   white-space: normal;
+          //   padding: 10px 10px;
+          //   line-height: 1.5;
+          //   min-height: 21px;
+          // }
         }
       }
     }
@@ -373,6 +331,8 @@ export default {
       }
     }
   }
+
+
   @media screen and (max-width: $screen-xs) {
     .container {
       .table-top {

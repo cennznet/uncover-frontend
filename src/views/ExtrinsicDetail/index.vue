@@ -122,40 +122,17 @@
             </div>
           </div>
           <div class="mobile-detail-wrapper" :class="{'is-fold': isFold}">
-            <div class="info-item">
+            <div class="info-item table-item">
               <div class="label">{{$t('parameters')}}</div>
               <div class="value">
                 <div class="struct-table-content">
-                  <table class="table">
-                      <tbody>
-                        <tr v-for="item in extrinsicInfo.params"
-                            :key="item.type">
-                            <td width="15%" class="td-border">
-                              <div class="table-cell">{{item.name}}</div>
-                            </td>
-                            <td class="td-border">
-                               <div class="table-cell" v-if="extrinsicInfo.call_module === 'genericAsset'
-                                && extrinsicInfo.call_module_function === 'transfer'
-                                && item.name==='amount'">
-                                  {{item.value|accuracyFormat(tokenDetailByCurrency(extrinsicInfo.params.find(ele => ele.name === 'asset_id').value).accuracy)}}
-                                  {{getCurrencyName(extrinsicInfo.params.find(ele => ele.name === 'asset_id').value)}}
-                              </div>
-                              <div class ="table-cell" v-else-if="item.type === 'AccountId'">
-                                      <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
-                              </div>
-                              <div class="table-cell" v-else>{{`${JSON.stringify(item.value)}`}}</div>
-                            </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <TreeItem :treeList="extrinsicInfo.params"
+                   treeType="extrinsic" :moudleName="extrinsicInfo.call_module" :isFirst="true"
+                   :functionName="extrinsicInfo.call_module_function"></TreeItem>
                 </div>
-                <!--<div
-                  v-for="item in extrinsicInfo.params"
-                  :key="item.type"
-                >{{`"${item.name}": ${JSON.stringify(item.value)}`}}</div>-->
               </div>
             </div>
-            <div class="info-item" v-if="extrinsicInfo.signature">
+            <div class="info-item table-item" v-if="extrinsicInfo.signature">
               <div class="label">{{$t('signature')}}</div>
               <div class="value">
                 <div class="struct-table-content">
@@ -213,38 +190,12 @@
                 <el-table-column width="100" type="expand">
                   <template slot-scope="props">
                     <div class="expand-form">
-                      <div class="struct-table-content">
-                        <table class="table">
-                          <tbody>
-                            <tr v-for="(item, index) in props.row.params"
-                                :key="item.type + index">
-                                <td width="15%" class="td-border">
-                                  <div class="table-cell">{{item.type}}</div>
-                                </td>
-                                <td class="td-border">
-                                  <div class="table-cell" v-if="props.row.module_id === 'genericAsset'
-                                    && props.row.event_id === 'Transferred'
-                                    && item.type==='Balance'">
-                                      {{item.value|accuracyFormat(tokenDetailByCurrency(props.row.params.find(ele => ele.type === 'AssetId').value).accuracy)}}
-                                      {{getCurrencyName(props.row.params.find(ele => ele.type === 'AssetId').value)}}
-                                  </div>
-                                  <div class ="table-cell" v-else-if="item.type === 'AccountId'">
-                                      <accountHash :size="24" :hash="item.value" :adjustHeight="'1px'"></accountHash>
-                                  </div>
-                                  <div class="table-cell" v-else>{{item.value}}</div>
-                                </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                      <div class="form-items">
+                        <div class="struct-table-content">
+                          <TreeItem :treeList="props.row.params" :isFirst="true"
+                          treeType="event" :moudleName="props.row.module_id" :functionName="props.row.event_id"></TreeItem>
+                        </div>
                       </div>
-                      <!-- <div
-                        class="form-item align-items-center"
-                        v-for="(item, index) in props.row.params"
-                        :key="item.type + index"
-                      >
-                        <div class="label">{{item.type}} :</div>
-                        <div class="value">{{item.value}}</div>
-                      </div> -->
                     </div>
                   </template>
                 </el-table-column>
@@ -270,15 +221,14 @@ import clipboard from "Directives/clipboard";
 import { mapState } from "vuex";
 import Balances from "./Balances";
 import { getCurrencyTokenDetail } from "../../utils/tools";
-import AccountHash from "../AccountDetailNew/AccountHash";
-
+import TreeItem from "./TreeItem"
 export default {
   name: "ExtrinsicDetail",
   components: {
     SearchInput,
     Identicon,
     Balances,
-    AccountHash
+    TreeItem
   },
   filters: {
     timeAgo,
@@ -393,12 +343,6 @@ export default {
         type: "success",
         message: this.$t("copy_success")
       });
-    },
-    getCurrencyName(currencyId){
-      return this.$customizeConfig.getCurrencyById(currencyId).name
-    },
-    tokenDetailByCurrency(currencyId) {
-      return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
     }
   }
 };
@@ -561,7 +505,11 @@ export default {
     }
     .expand-form {
       background: #f3f5f9;
-      padding: 10px 28px;
+      padding: 10px;
+      display: flex;
+      .form-items {
+        width: 1120px;
+      }
       .form-item {
         min-height: 40px;
         font-size: 14px;
@@ -655,11 +603,21 @@ export default {
         }
         border-bottom: 1px solid #e7eaf3;
       }
+      .info-item.table-item {
+        -webkit-box-align: start;
+        align-items: flex-start;
+        .value {
+          overflow: scroll;
+          > div {
+            width: 948px;
+          }
+        }
+      }
       .info-item {
-        height: initial;
+        height: auto;
         flex-direction: column;
         align-items: initial;
-        line-height: initial;
+        line-height: normal;
         padding: 10px 0;
         position: relative;
         &.toggle-btn {
@@ -724,6 +682,13 @@ export default {
       }
     }
     .extrinsic-extrinsic-event-log {
+      .expand-form {
+        overflow: scroll;
+        .form-items {
+          -webkit-box-flex: 0;
+          flex: 0 0 600px;
+        }
+      }
       .view-all-extrinsic {
         display: none;
       }
