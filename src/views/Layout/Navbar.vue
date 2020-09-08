@@ -309,7 +309,6 @@ export default {
       .dropdown {
         margin-left: 15px;
         margin-right: 1px;
-        background: #fff;
         border-radius: 2px;
         .el-dropdown-link {
           /*padding: 0 10px;*/
@@ -332,25 +331,12 @@ export default {
       }
 
       .network-button{
-        width: 130px;
         height: 30px;
-        //background: url("../../assets/images/kusama-button.png") no-repeat left center;
-        //background-size: contain;
+        border-radius: 2px;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
       }
-      // .icefrog-button {
-      //   background: url("../../assets/images/icefrog-button.png") no-repeat left center;
-      //   background-size: contain;
-      // }
-
-      // .kusama-button {
-      //   background: url("../../assets/images/kusama-button.png") no-repeat left center;
-      //   background-size: contain;
-      // }
-
-      // .edgeware-button {
-      //   background: url("../../assets/images/edgeware-button.png") no-repeat left center;
-      //   background-size: contain;
-      // }
     }
     .logo-container {
       margin-right: 10px;

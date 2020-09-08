@@ -1,6 +1,5 @@
 const customizeConfig ={
     logo: "/images/Uncover.png",
-
     chains: [
         {
             name: "azalea",
