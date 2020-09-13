@@ -211,12 +211,7 @@ export function isMobile() {
 }
 
 export function getCurrencyTokenDetail(token, currency) {
-  if (token && token.detail) {
-    // if (sourceSelected === "kusama" || sourceSelected === "edgeware") {
-    //   return token.detail[token.token];
-    // } else {
-    //   return token.detail[currency.toUpperCase()];
-    // }
+  if (token && token.detail && currency) {
       return token.detail[currency.toUpperCase()];
   }
   return {};

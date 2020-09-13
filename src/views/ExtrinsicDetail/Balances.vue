@@ -8,14 +8,15 @@
     </div>
     <div
       class="currency-num"
-    >{{`${amount} ${symbol}`}}
+    >{{this.accuracyAmount}} {{this.hasSymbol?this.symbol:''}}
     </div>
   </div>
 </template>
 
 <script>
   import {mapState} from "vuex";
-
+  import { accuracyFormat } from "../../utils/filters";
+  import { getCurrencyTokenDetail } from "../../utils/tools";
   export default {
     props: {
       amount: {
@@ -26,35 +27,43 @@
         type: Boolean,
         default: true
       },
-      module: {
-        type: String,
-        default: 'balances'
+      currencyId: {
+        type: [Number,String],
+        default: -1
       },
-      currencyType: {
-        type: Number,
-        default: 0
+      hasSymbol: {
+        type: Boolean,
+        default: true
+      }
+    },
+    data() {
+      return {
+        accuracyAmount: 0,
+        symbol: '',
+        icon: ''
       }
     },
     computed: {
       ...mapState({
-        sourceSelected: state => state.global.sourceSelected
-      }),
-      symbol: function() {return this.formatSource(this.module, 'value')},
-      icon:  function() {return this.formatSource(this.module, 'icon')},
+        token: state => state.polka.token
+      })
+    },
+    created() {
+      this.init();
     },
     methods: {
-      formatSource(module, type) {
-        let curDetail = this.$customizeConfig.getCurrencyByType( this.currencyType)
+      init() {
+        const curDetail = this.$customizeConfig.getCurrencyById(this.currencyId)
         if(typeof curDetail !== 'undefined'){
-            if(type === 'icon'){
-              return curDetail.icon
-            }
-            if(type === 'value'){
-              return curDetail.name
-            }
+          const accuracy = getCurrencyTokenDetail(this.token, curDetail.name)?.accuracy
+          this.accuracyAmount = accuracyFormat(this.amount, typeof accuracy === 'undefined'? 0: accuracy)
+          this.symbol = curDetail.name
+          this.icon = curDetail.icon
+        }else {
+          this.accuracyAmount = this.amount
         }
       }
-    }
+     }
   };
 </script>
 

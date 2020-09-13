@@ -106,9 +106,12 @@
           </template>
           <div class="info-item" v-if="extrinsicInfo.fee !== '0'">
               <div class="label">{{$t('fee')}}</div>
-              <div
-                class="value"
-              >{{extrinsicInfo.fee|accuracyFormat(tokenDetail.accuracy)}} {{this.currency.name}}</div>
+              <div class="value">
+                <balances
+                  :amount="extrinsicInfo.fee" 
+                  :currencyId="this.currency.id" :hasImg="false"
+                ></balances>
+              </div>
             </div>
           <div class="info-item" v-if="extrinsicInfo.signature">
             <div class="label">{{$t('nonce')}}</div>

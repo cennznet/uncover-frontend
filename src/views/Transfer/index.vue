@@ -97,8 +97,11 @@
             </template>
           </el-table-column>
           <el-table-column min-width="120" prop="amount" :label="$t('value')" fit>
-            <template slot-scope="scope">{{scope.row.amount|accuracyFormat(tokenDetail(scope.row.asset_id).accuracy)}}
-            {{`${getCurrencyName(scope.row.asset_id)}`}}
+            <template slot-scope="scope">
+              <balances
+                :amount="scope.row.amount"
+                :currencyId="scope.row.asset_id" :hasImg="false"
+              ></balances>
             </template>
           </el-table-column>
           <el-table-column min-width="70" prop="success" :label="$t('result')">
@@ -140,8 +143,8 @@ import { mapState } from "vuex";
 import SearchInput from "@/views/Components/SearchInput";
 import CsvDownload from "Components/CsvDownload";
 import Pagination from "Components/Pagination";
-import { timeAgo, hashFormat, accuracyFormat } from "Utils/filters";
-import { getCurrencyTokenDetail } from "../../utils/tools";
+import { timeAgo, hashFormat } from "Utils/filters";
+import Balances from "../ExtrinsicDetail/Balances";
 export default {
   name: "Transfer",
   components: {
@@ -149,7 +152,8 @@ export default {
     CsvDownload,
     Pagination,
     Identicon,
-    ChartBar
+    ChartBar,
+    Balances
   },
   data() {
     return {
@@ -186,8 +190,7 @@ export default {
   },
   filters: {
     timeAgo,
-    hashFormat,
-    accuracyFormat
+    hashFormat
   },
   created() {
     this.init();
@@ -201,12 +204,6 @@ export default {
         this.isLoading = true;
       }
       this.getData();
-    },
-    getCurrencyName(currencyId){
-      return this.$customizeConfig.getCurrencyById(currencyId).name
-    },
-    tokenDetail(currencyId) {
-      return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
     },
     async getData() {
       await Promise.all([this.getTransferData()]);

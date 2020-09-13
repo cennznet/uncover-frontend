@@ -44,9 +44,12 @@
                 :alt="this.currency.name"
               />
             </template>
-            <template
-              slot-scope="scope" v-if="scope.row.lock"
-            >{{scope.row.lock|accuracyFormat(tokenDetail.accuracy)}}</template>
+            <template slot-scope="scope" v-if="scope.row.lock">
+              <balances
+                :amount="scope.row.lock" :hasSymbol="false"
+                :currencyId="currency.id" :hasImg="false"
+              ></balances>
+           </template>
           </el-table-column>
           <el-table-column sortable="custom" min-width="150" prop="free" :label="$t('balance')">
             <template slot="header">
@@ -59,7 +62,10 @@
               />
             </template>
             <template slot-scope="scope">
-              {{scope.row.balance|accuracyFormat(tokenDetail.accuracy)}}
+              <balances
+                :amount="scope.row.balance" :hasSymbol="false"
+                :currencyId="currency.id" :hasImg="false"
+              ></balances>
             </template>
           </el-table-column>
         </el-table>
@@ -80,17 +86,14 @@ import { mapState } from "vuex";
 import SearchInput from "@/views/Components/SearchInput";
 import CsvDownload from "Components/CsvDownload";
 import Pagination from "Components/Pagination";
-import { getCurrencyTokenDetail } from "../../utils/tools";
-import { accuracyFormat } from "Utils/filters";
+import Balances from "../ExtrinsicDetail/Balances";
 export default {
   name: "Asset",
   components: {
     SearchInput,
     CsvDownload,
-    Pagination
-  },
-   filters: {
-    accuracyFormat
+    Pagination,
+    Balances
   },
   data() {
     return {
@@ -133,10 +136,7 @@ export default {
     }),
     isStakingCurr() {
       return this.$customizeConfig.isStakingCurrencyById(this.currency?.id)
-    },
-    tokenDetail() {
-        return getCurrencyTokenDetail(this.token,this.currency.name);
-    },
+    }
   },
   watch:{
     "$route.params.key": function() {

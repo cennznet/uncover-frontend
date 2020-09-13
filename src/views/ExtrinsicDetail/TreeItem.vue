@@ -50,9 +50,11 @@
             <table class ="table">
                 <tr>
                     <td class="td-border">
-                        <div v-if="treeType === 'amount'" class ="table-cell">   
-                            {{treeList|accuracyFormat(tokenDetailByCurrency(assetId).accuracy)}}
-                            {{getCurrencyName(assetId)}}  
+                        <div v-if="treeType === 'amount'" class ="table-cell">  
+                            <balances
+                                :amount="treeList"
+                                :currencyId="assetId" :hasImg="false"
+                            ></balances>  
                         </div>
                         <div v-else-if="treeType === 'accountId'" class ="table-cell">
                             <accountHash :size="24" :hash="treeList" :adjustHeight="'1px'"></accountHash>
@@ -66,16 +68,13 @@
 </template>>
 <script>
 import { mapState } from "vuex";
-import { accuracyFormat } from "Utils/filters";
-import { getCurrencyTokenDetail } from "../../utils/tools";
 import AccountHash from "../AccountDetailNew/AccountHash";
+import Balances from "./Balances";
 export default {
     name: 'treeItem',
-    filters: {
-        accuracyFormat
-    },
     components: {
-        AccountHash
+        AccountHash,
+        Balances
     },
     props:{
         treeList: {
@@ -135,12 +134,6 @@ export default {
             }
 
             return false;
-        },
-        getCurrencyName(currencyId){
-            return this.$customizeConfig.getCurrencyById(currencyId).name
-        },
-        tokenDetailByCurrency(currencyId) {
-            return getCurrencyTokenDetail(this.token, this.getCurrencyName(currencyId));
         }
     }
 

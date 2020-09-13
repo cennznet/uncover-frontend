@@ -39,16 +39,16 @@
               <div class="value">
                 <div class="align-items-center">
                     <balances
-                      :amount="`${addAccuracy(stakingDetail.free, this.stakingCurrency.id)}`"
-                      :currencyType="this.stakingCurrency.type"
+                      :amount="stakingDetail.free"
+                      :currencyId="this.stakingCurrency.id"
                     ></balances>
                 </div>
               </div>
               <div v-if="spendingDetail && spendingDetail.free" class="value">
                 <div class="align-items-center">
                   <balances
-                    :amount="`${addAccuracy(spendingDetail.free, this.spendingCurrency.id)}`"
-                    :currencyType="this.spendingCurrency.type"
+                    :amount="spendingDetail.free"
+                    :currencyId="this.spendingCurrency.id"
                   ></balances>
                 </div>
               </div>
@@ -61,16 +61,16 @@
               <div v-if="stakingDetail.lock" class="value">
                 <div class="align-items-center">
                     <balances
-                      :amount="`${addAccuracy(stakingDetail.lock, this.stakingCurrency.id)}`"
-                      :currencyType="this.stakingCurrency.type" :hasImg="false"
+                      :amount="stakingDetail.lock"
+                      :currencyId="this.stakingCurrency.id" :hasImg="false"
                     ></balances>
                 </div>
               </div>
               <div v-if="spendingDetail && spendingDetail.lock" class="value">
                 <div class="align-items-center">
                     <balances
-                      :amount="`${addAccuracy(spendingDetail.lock, this.spendingCurrency.id)}`"
-                      :currencyType="this.spendingCurrency.type" :hasImg="false"
+                      :amount="spendingDetail.lock"
+                      :currencyId="this.spendingCurrency.id" :hasImg="false"
                     ></balances>
                 </div>
               </div>
@@ -223,9 +223,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column min-width="120" prop="amount" :label="$t('value')" fit>
-                  <template
-                    slot-scope="scope"
-                  >{{addAccuracy(scope.row.amount,scope.row.asset_id)}} {{getCurrencyName(scope.row.asset_id)}}</template>
+                  <template slot-scope="scope">
+                  <balances :amount="scope.row.amount" :currencyId="scope.row.asset_id" :hasImg="false"></balances>
+                 </template>
                 </el-table-column>
                 <el-table-column min-width="70" prop="success" :label="$t('result')">
                   <template slot-scope="scope">
@@ -341,7 +341,7 @@ import { timeAgo, parseTimeToUtc, hashFormat, accuracyFormat } from "Utils/filte
 import clipboard from "Directives/clipboard";
 import Balances from "../ExtrinsicDetail/Balances";
 import { fmtPercentage, getCommission, bnPlus } from "../../utils/format";
-import { getTokenDetail, formatSymbol, getCurrencyTokenDetail } from "../../utils/tools";
+import { getTokenDetail, formatSymbol } from "../../utils/tools";
 import AccountHash from "./AccountHash";
 import TreeItem from "../ExtrinsicDetail/TreeItem"
 export default {
@@ -538,15 +538,6 @@ export default {
         type: "success",
         message: this.$t("copy_success")
       });
-    }, 
-    tokenDetailNew(currencyId) {
-      return getCurrencyTokenDetail(this.token,this.$customizeConfig.getCurrencyById(currencyId).name);
-    },
-    addAccuracy(amount, currencyId) {
-      return accuracyFormat(amount, this.tokenDetailNew(currencyId).accuracy).toString()
-    }, 
-    getCurrencyName(currencyId){
-      return this.$customizeConfig.getCurrencyById(currencyId).name
     }
   }
 };
