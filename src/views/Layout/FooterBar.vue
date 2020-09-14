@@ -196,6 +196,8 @@ export default {
   background: #302b3c;
   .container {
     flex-direction: column;
+    width: 1180px;
+    max-width: 100%;
     .partner {
       width: 100%;
       color: #fff;
