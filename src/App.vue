@@ -152,6 +152,7 @@ export default {
   }
   .subscan-content {
     padding: 20px 0;
+    overflow: scroll;
   }
   .subscan-card {
     background: #fff;

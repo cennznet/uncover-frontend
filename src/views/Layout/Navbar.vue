@@ -264,6 +264,8 @@ export default {
   color: #fff;
   .container {
     height: 100%;
+    width: 1180px;
+    max-width: 100%;
     .logo {
       height: 25px;
       width: 125px;
@@ -377,9 +379,6 @@ export default {
         }
         .dropdown {
           margin-left: 0;
-        }
-        .network-button{
-          width: 100px;
         }
         .mobile-menu {
           display: block;
