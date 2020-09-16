@@ -2,13 +2,13 @@
   <div class="align-items-center">
     <div class="currency-icon" v-if="hasImg">
       <img
-        :src="icon"
-        :alt="symbol"
+        :src="this.icon"
+        :alt="this.symbol"
       />
     </div>
     <div
       class="currency-num"
-    >{{this.accuracyAmount}} {{this.hasSymbol?this.symbol:''}}
+    >{{`${accuracyAmount}`}} {{this.hasSymbol?this.symbol:''}}
     </div>
   </div>
 </template>
@@ -38,7 +38,6 @@
     },
     data() {
       return {
-        accuracyAmount: 0,
         symbol: '',
         icon: ''
       }
@@ -46,21 +45,19 @@
     computed: {
       ...mapState({
         token: state => state.polka.token
-      })
-    },
-    created() {
-      this.init();
+      }),
+      accuracyAmount: function(){return this.amountFormat(this.currencyId)}
     },
     methods: {
-      init() {
-        const curDetail = this.$customizeConfig.getCurrencyById(this.currencyId)
+      amountFormat(currency_id) {
+        const curDetail = this.$customizeConfig.getCurrencyById(currency_id)
         if(typeof curDetail !== 'undefined'){
           const accuracy = getCurrencyTokenDetail(this.token, curDetail.name)?.accuracy
-          this.accuracyAmount = accuracyFormat(this.amount, typeof accuracy === 'undefined'? 0: accuracy)
           this.symbol = curDetail.name
           this.icon = curDetail.icon
+          return accuracyFormat(this.amount, typeof accuracy === 'undefined'? 0: accuracy)
         }else {
-          this.accuracyAmount = this.amount
+          return this.amount
         }
       }
      }
