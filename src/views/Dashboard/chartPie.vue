@@ -199,7 +199,7 @@ export default {
         ],
         legend: {
           orient: "vertical",
-          left: "50%",
+          left: "47%",
           top: "10%",
           align: "left",
           itemGap: 28,
@@ -212,7 +212,7 @@ export default {
           textStyle: {
             color: "#302b3c",
             fontWeight: "bold",
-            fontSize: 14
+            fontSize: 13,
           },
           formatter(name) {
             let result = "";
@@ -372,7 +372,7 @@ export default {
         },
         legend: {
           orient: "vertical",
-          left: "50%",
+          left: "47%",
           top: "10%",
           align: "left",
           itemGap: 28,
@@ -386,7 +386,7 @@ export default {
           textStyle: {
             color: "#302b3c",
             fontWeight: "bold",
-            fontSize: 14
+            fontSize: 13,
           },
           formatter(name) {
             let result = "";
