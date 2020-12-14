@@ -1,0 +1,4 @@
+hostname: service.centralityapp.com
+customDomain: uncoverexplorer.com
+customDomainWWW: www.uncoverexplorer.com
+issueCertificate: true

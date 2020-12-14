@@ -6,7 +6,8 @@ const customizeConfig ={
             buttonIcon: "/images/Azalea.png",
             bannerBackground: "/images/banner-background.png",
             mobileBannerBackground: "/images/banner-mobile-background.png",
-            baseURL : 'https://scan-azalea.onfinality.me/api',
+            baseURL : 'https://service.eks.centralityapp.com/cennznet-explorer-api/api',
+            // baseURL : 'https://service.eks.centrality.me/cennznet-explorer-api/api'// dev
             currencies : [
                 {
                     id: 1,
