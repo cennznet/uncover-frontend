@@ -170,7 +170,7 @@
                       class="link"
                     >
                       <el-tooltip
-                        v-if="scope.row.extrinsic_hash!==undefined"
+                        v-if="scope.row.extrinsic_hash"
                         class="item"
                         effect="light"
                         :content="scope.row.extrinsic_hash"
