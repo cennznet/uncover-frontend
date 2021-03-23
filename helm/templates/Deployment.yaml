@@ -13,6 +13,9 @@ spec:
       labels:
         app: {{.Values.appName}}-service
     spec:
+      selector:
+        matchLabels:
+          app: {{.Values.appName}}-service
       containers:
       - name: {{.Values.appName}}
         image: {{ .Values.image.repository }}{{ .Values.image.name }}:{{ .Chart.Version }}
