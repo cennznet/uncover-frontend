@@ -8,14 +8,14 @@ spec:
   replicas: {{.Values.replicas | default "2"}}
   revisionHistoryLimit: 2
   minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: {{.Values.appName}}-service
   template:
     metadata:
       labels:
         app: {{.Values.appName}}-service
     spec:
-      selector:
-        matchLabels:
-          app: {{.Values.appName}}-service
       containers:
       - name: {{.Values.appName}}
         image: {{ .Values.image.repository }}{{ .Values.image.name }}:{{ .Chart.Version }}
