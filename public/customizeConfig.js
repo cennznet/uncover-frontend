@@ -46,3 +46,6 @@ const customizeConfig ={
     }
 }
 window.customizeConfig =customizeConfig;
+if (window.location.hostname.endsWith('centrality.me')) {
+    window.customizeConfig.chains[0].baseURL = 'https://service.eks.centrality.me/cennznet-explorer-api/api'
+}
