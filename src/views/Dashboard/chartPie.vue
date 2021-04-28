@@ -39,20 +39,23 @@ export default {
   computed: {
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
-      token: state => state.polka.token
+      tokens: state => state.polka.token
     }),
     tokenDetail() {
-      return getCurrencyTokenDetail(
-        this.token,
-        this.currency.name
-      );
+      if (this.token.symbol) {
+        return getCurrencyTokenDetail(
+          this.tokens,
+          this.token.symbol
+        );
+      }
+      return {};
     },
     chartName() {
-      let name = this.$customizeConfig.selected.name;
+      let name = this.token.symbol;
       return name;
     },
     iconImg() {
-      let icon = this.currency.icon
+      let icon = `/images/${this.token.symbol}.svg`
       return icon;
     },
     isSwitch(){
@@ -61,8 +64,7 @@ export default {
   },
   data() {
     return {
-      currency: this.$customizeConfig.getCurrencyByType(1)
-      || this.$customizeConfig.getCurrencyByType(3),
+      token: {},
       // colorMap: {
       //   icefrog: {
       //     mainColor: "#5930dd",
@@ -124,30 +126,30 @@ export default {
   watch: {
     tokenDetail(newV) {
       let others = bnMinus(
-        newV.total_issuance,
+        newV.totalIssuance,
         bnPlus(newV.locked_balance, newV.available_balance)
       );
       const data = [
         {
           name: this.$t("locked"),
-          formatVal: fmtNumber(
+          formatVal: newV.accuracy ? fmtNumber(
             bnShift(newV.locked_balance, -(newV.accuracy + 3)),
             0
-          ),
-          value: fmtPercentage(newV.locked_balance, newV.total_issuance, 1)
+          ) : 0,
+          value: fmtPercentage(newV.locked_balance, newV.totalIssuance, 1)
         },
         {
           name: this.$t("transferrable"),
-          formatVal: fmtNumber(
+          formatVal: newV.accuracy ? fmtNumber(
             bnShift(newV.available_balance, -(newV.accuracy + 3)),
             0
-          ),
-          value: fmtPercentage(newV.available_balance, newV.total_issuance, 1)
+          ) : 0,
+          value: fmtPercentage(newV.available_balance, newV.totalIssuance, 1)
         },
         {
           name: this.$t("others"),
-          formatVal: fmtNumber(bnShift(others, -(newV.accuracy + 3)), 0),
-          value: fmtPercentage(others, newV.total_issuance, 1)
+          formatVal: newV.accuracy ? fmtNumber(bnShift(others, -(newV.accuracy + 3)), 0) : 0,
+          value: fmtPercentage(others, newV.totalIssuance, 1)
         }
       ];
       myChart.setOption({
@@ -274,17 +276,24 @@ export default {
     }
   },
   mounted() {
+    this.getStakingToken();
     this.initChart();
   },
   methods: {
+    async getStakingToken() {
+      this.$api["polkaGetStakingToken"]().then(async data => {
+        this.token = data;
+      })
+    },
     initChart() {
       let newV = this.tokenDetail;
+      if (newV === {}) return;
       let others = bnMinus(
-        newV.total_issuance,
+        newV.totalIssuance,
         bnPlus(newV.locked_balance, newV.available_balance)
       );
       let data = [];
-      if (newV.total_issuance) {
+      if (newV.totalIssuance) {
         data = [
           {
             name: this.$t("locked"),
@@ -293,7 +302,7 @@ export default {
               0
             ),
             value:
-              fmtPercentage(newV.locked_balance, newV.total_issuance, 1) || 0
+              fmtPercentage(newV.locked_balance, newV.totalIssuance, 1) || 0
           },
           {
             name: this.$t("transferrable"),
@@ -302,12 +311,12 @@ export default {
               0
             ),
             value:
-              fmtPercentage(newV.available_balance, newV.total_issuance, 1) || 0
+              fmtPercentage(newV.available_balance, newV.totalIssuance, 1) || 0
           },
           {
             name: this.$t("others"),
             formatVal: fmtNumber(bnShift(others, -(newV.accuracy + 3)), 0),
-            value: fmtPercentage(others, newV.total_issuance, 1) || 0
+            value: fmtPercentage(others, newV.totalIssuance, 1) || 0
           }
         ];
       }

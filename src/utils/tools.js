@@ -212,7 +212,16 @@ export function isMobile() {
 
 export function getCurrencyTokenDetail(token, currency) {
   if (token && token.detail && currency) {
-      return token.detail[currency.toUpperCase()];
+      return token.detail[currency];
+  }
+  return {};
+}
+
+export function getTokenDetailFromId(token, tokenId) {
+  if (token && token.detail && tokenId) {
+    const tokenValues = Object.values(token.detail);
+    const valueAt = tokenValues.findIndex(value => value.id === tokenId);
+    return tokenValues[valueAt];
   }
   return {};
 }
@@ -224,7 +233,7 @@ export function getTokenDetail(token, sourceSelected, currency) {
     } else if (sourceSelected === "icefrog") {
       return token.detail['POWER'];
     } else {
-      return token.detail[currency.toUpperCase()];
+      return token.detail[currency];
     }
   }
   return {};

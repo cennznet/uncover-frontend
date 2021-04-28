@@ -7,7 +7,9 @@ const {
   polkaGetBlocks,
   polkaGetTransfers,
   polkaGetDaily,
-  polkaGetToken
+  polkaGetToken,
+  polkaGetStakingToken,
+  polkaGetSpendingToken
 } = api;
 
 export default {
@@ -15,6 +17,8 @@ export default {
     metadata: {},
     latestBlocks: [],
     token: {},
+    stakingToken: {},
+    spendingToken: {},
     // latestExtrinsics: [],
     transfers: undefined,
     dailyChart: []
@@ -40,7 +44,13 @@ export default {
     },
     SET_DAILY_CHART: (state, data) => {
       state.dailyChart = data;
-    }
+    },
+    SET_STAKING_TOKEN: (state, data) => {
+      state.stakingToken = data;
+    },
+    SET_SPENDING_TOKEN: (state, data) => {
+      state.spendingToken = data;
+    },
   },
   actions: {
     async SetMetadata({
@@ -60,6 +70,18 @@ export default {
     }) {
       const data = await polkaGetToken();
       commit("SET_TOKEN", data);
+    },
+    async SetStakingToken({
+      commit
+    }) {
+      const data = await polkaGetStakingToken();
+      commit("SET_STAKING_TOKEN", data);
+    },
+    async SetSpendingToken({
+       commit
+    }) {
+      const data = await polkaGetSpendingToken();
+      commit("SET_SPENDING_TOKEN", data);
     },
     // async SetLatestExtrinsics({ commit }, payload) {
     //   const data = await polkaGetExtrinsics(payload);

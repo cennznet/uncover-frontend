@@ -28,7 +28,7 @@ const customizeConfig ={
                  bIcon: "/images/Lock.png",
                  tIcon: "/images/Transferrable.png",
                  oIcon: "/images/Others.png"
-            }, 
+            },
             themeColor: {
                 mainColor: "#e90979",
                 mainColorLight: "#e9097980",
@@ -47,5 +47,5 @@ const customizeConfig ={
 }
 window.customizeConfig =customizeConfig;
 if (window.location.hostname.endsWith('centrality.me')) {
-    window.customizeConfig.chains[0].baseURL = 'https://service.eks.centrality.me/cennznet-explorer-api/api'
+    window.customizeConfig.chains[0].baseURL = 'https://service.eks.centrality.me/cennznet-explorer-api/api';
 }

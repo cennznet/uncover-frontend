@@ -73,7 +73,7 @@
               </div>
             </div>
           </div>
-          <template v-if="extrinsicInfo.call_module_function==='transfer' 
+          <template v-if="extrinsicInfo.call_module_function==='transfer'
           && extrinsicInfo.transfer">
             <div class="info-item">
               <div class="label">{{$t('destination')}}</div>
@@ -108,8 +108,9 @@
               <div class="label">{{$t('fee')}}</div>
               <div class="value">
                 <balances
-                  :amount="extrinsicInfo.fee" 
-                  :currencyId="this.currency.id" :hasImg="false"
+                  :amount="extrinsicInfo.fee"
+                  :currencyId="this.token.id" :hasImg="false"
+                  :symbol="this.token.symbol"
                 ></balances>
               </div>
             </div>
@@ -249,8 +250,7 @@ export default {
         success: true
       },
       activeTab: "event",
-      currency: this.$customizeConfig.getCurrencyByType(2)
-      || this.$customizeConfig.getCurrencyByType(3),
+      token: {},
       notFound: false,
       isLoading: false,
       isFold: true,
@@ -277,10 +277,10 @@ export default {
   computed: {
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
-      token: state => state.polka.token
+      tokens: state => state.polka.token
     }),
     tokenDetail() {
-      return getCurrencyTokenDetail(this.token, this.currency.name);
+      return getCurrencyTokenDetail(this.tokens, this.token.name);
     }
   },
 
@@ -290,6 +290,7 @@ export default {
     const isNum = reg.test(key);
     isNum && (this.extrinsicNum = key);
     this.isLoading = true;
+    this.getSpendingToken();
     this.init();
   },
   watch: {
@@ -298,6 +299,11 @@ export default {
     }
   },
   methods: {
+    async getSpendingToken() {
+      this.$api["polkaGetSpendingToken"]().then(async data => {
+        this.token = data;
+      })
+    },
     init() {
       this.getExtrinsicInfo();
       this.activeTab = "event";

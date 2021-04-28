@@ -37,34 +37,38 @@
           <el-table-column v-if="this.isStakingCurr" sortable="custom" min-width="150" prop="lockBalance" :label="$t('balance_lock')" >
             <template slot="header">
               {{`${$t('bonded_currency',
-              {currency: this.currency.name})}`}}
+              {token: this.token.symbol})}`}}
               <img
                 class="currency-icon"
-                :src="this.currency.icon"
-                :alt="this.currency.name"
+                :src="this.token.icon"
+                :alt="this.token.symbol"
               />
             </template>
             <template slot-scope="scope" v-if="scope.row.lock">
               <balances
-                :amount="scope.row.lock" :hasSymbol="false"
-                :currencyId="currency.id" :hasImg="false"
+                :amount="scope.row.lock"
+                :symbol="token.symbol"
+                :showSymbol="false"
+                :currencyId="token.id" :hasImg="false"
               ></balances>
            </template>
           </el-table-column>
           <el-table-column sortable="custom" min-width="150" prop="free" :label="$t('balance')">
             <template slot="header">
               {{`${$t('balance_currency',
-              {currency: this.currency.name})}`}}
+              {token: this.token.symbol})}`}}
               <img
                 class="currency-icon"
-                :src="this.currency.icon"
-                :alt="this.currency.name"
+                :src="this.token.icon"
+                :alt="this.token.symbol"
               />
             </template>
             <template slot-scope="scope">
               <balances
-                :amount="scope.row.balance" :hasSymbol="false"
-                :currencyId="currency.id" :hasImg="false"
+                :amount="scope.row.balance"
+                :showSymbol="false"
+                :symbol="token.symbol"
+                :currencyId="token.id" :hasImg="false"
               ></balances>
             </template>
           </el-table-column>
@@ -97,10 +101,12 @@ export default {
   },
   data() {
     return {
-      currency: {},
+      token: {},
       inputParam: '',
       assets_data:[],
       isLoading: false,
+      tokenList: {},
+      stakingToken: {},
       accountsData: [],
       total: 0,
       allAccounts: 0,
@@ -132,10 +138,10 @@ export default {
     ...mapState({
       accounts: state => state.polka.accounts,
       sourceSelected: state => state.global.sourceSelected,
-      token: state => state.polka.token
+      tokens: state => state.polka.token,
     }),
     isStakingCurr() {
-      return this.$customizeConfig.isStakingCurrencyById(this.currency?.id)
+      return this.token?.id === this.stakingToken?.id
     }
   },
   watch:{
@@ -154,11 +160,13 @@ export default {
       } else {
         this.isLoading = true;
       }
+      this.getTokenData();
+      this.getStakingToken();
       this.getAccountData();
     },
     async getAccountData(page = 0) {
       const data = await this.$api["polkaGetAccounts"]({
-        currencyId: this.currency?.id,
+        currencyId: this.token?.id,
         row: 25,
         page,
         order: this.currentOrder,
@@ -172,23 +180,40 @@ export default {
         this.$store.commit("SET_ACCOUNTS", data.list);
       }
     },
-    pathRouter(){
+    async getTokenData() {
+      const data = await this.$api["polkaGetToken"]();
+      this.tokenList = data.detail;
+    },
+    async getStakingToken() {
+      const data = await this.$api["polkaGetStakingToken"]();
+      this.stakingToken = data;
+    },
+    setToken() {
+      if (this.tokenList) {
+        this.token = '';
+        const tokenValues = Object.values(this.tokenList);
+        const valueAt = tokenValues.findIndex(value => value.id.toString() === this.inputParam || value.symbol === this.inputParam);
+        const assetInfo = tokenValues[valueAt];
+        assetInfo.icon = `/images/${assetInfo.symbol}.svg`
+        this.token = assetInfo;
+      }
+    },
+    async pathRouter(){
       var numReg = /^\d+$/
       var numRe = new RegExp(numReg)
       this.inputParam = this.$route.params.key
       this.notFound = false
+      await this.getTokenData()
+      this.setToken();
 
-      this.currency = this.$customizeConfig.getCurrencyById(this.inputParam) 
-      || this.$customizeConfig.getCurrencyByName(this.inputParam)
-      
-      if(!this.currency){
+      if(!this.token){
           this.notFound = true
       }else if(numRe.test(this.inputParam)) {
-        this.$router.push(`/asset/${this.currency.name}`)
+        this.$router.push(`/asset/${this.token.symbol}`)
       }else{
         this.init()
       }
-        
+
     },
     downloadClick() {
       const tableData = [
@@ -238,7 +263,7 @@ export default {
       this.getAccountData(this.currentPage);
     }
   }
-  
+
 };
 </script>
 <style lang="scss" scoped>
@@ -294,8 +319,8 @@ export default {
         user-select: none;
       }
       .currency-icon {
-        width: 20px;
-        height: 20px;
+        width: 44px;
+        height: 24px;
         vertical-align: -5px;
       }
     }
