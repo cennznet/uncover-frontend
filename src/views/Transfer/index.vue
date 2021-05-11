@@ -28,10 +28,10 @@
           <div>{{`(${total})`}}</div>
         </div>
         <div>
-            <el-select v-model="currencyId"  placeholder="currency filter" @change="getData">
+            <el-select v-model="tokenId"  placeholder="currency filter" @change="getData">
               <el-option key="-1" label="all" :value="-1"></el-option>
-               <el-option v-for="(item) in this.$customizeConfig.selected.currencies"
-                :key="item.id" :label="item.name" :value="item.id">
+               <el-option v-for="(item) in Object.values(tokenDetails)"
+                :key="item.id" :label="item.symbol" :value="item.id">
                 </el-option>
             </el-select>
           </div>
@@ -159,8 +159,9 @@ export default {
     return {
       isLoading: false,
       transfersData: [],
+      tokenDetails: {},
       total: 0,
-      currencyId: -1,
+      tokenId: -1,
       selectList: [
         {
           label: this.$t("all"),
@@ -209,11 +210,13 @@ export default {
       await Promise.all([this.getTransferData()]);
     },
     async getTransferData(page = 0) {
+      let tokenInfo = await this.$api["polkaGetToken"]();
+      this.tokenDetails = tokenInfo?.detail;
       const data = await this.$api["polkaGetTransfers"]({
         row: 25,
         page,
         address: this.$route.query.address,
-        currencyId: this.currencyId === -1? undefined: this.currencyId 
+        currencyId: this.tokenId === -1? undefined: parseInt(this.tokenId)
       });
       this.transfersData = data.transfers || [];
       this.total = +data.count;

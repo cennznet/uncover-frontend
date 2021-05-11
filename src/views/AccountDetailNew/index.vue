@@ -13,65 +13,36 @@
           <div class="no-data">{{$t('no_data')}}</div>
         </div>
       </template>
-      <template v-else-if="stakingDetail">
+      <template v-else-if="tokenDetails">
         <div class="account-info subscan-card">
           <div class="account-intro">
             <accountHash :size="40" :hash="address" :adjustHeight="'10px'"></accountHash>
-           <!-- <div class="icon">
-              <identicon :size="40" theme="polkadot" :value="this.address" />
-            </div>
-            <div class="detail">
-              <div class="name-wrapper align-items-center"></div>
-              <div class="address-wrapper align-items-center">
-                 <div class="address">{{address}}</div>
-                 <div class="copy-btn" v-clipboard:copy="address" v-clipboard:success="clipboardSuccess">
-                <icon-svg class="iconfont" icon-class="copy" />
-                </div>
-              </div>
-               <div class="contact-wrapper align-items-center"></div>
-            </div> -->
           </div>
-          <div class="split-line"></div>  
+          <div class="split-line"></div>
             <div class="balance">
               <div class="label align-items-center">
                 <div class="text">{{$t('balance')}}</div>
               </div>
-              <div class="value">
-                <div class="align-items-center">
-                    <balances
-                      :amount="stakingDetail.free"
-                      :currencyId="this.stakingCurrency.id"
-                    ></balances>
-                </div>
-              </div>
-              <div v-if="spendingDetail && spendingDetail.free" class="value">
+              <div v-for="(item) in tokenDetails" v-bind:key="item.assetId" class="value">
                 <div class="align-items-center">
                   <balances
-                    :amount="spendingDetail.free"
-                    :currencyId="this.spendingCurrency.id"
+                    :amount="item.free"
+                    :currencyId="item.assetId"
                   ></balances>
                 </div>
               </div>
             </div>
-            
+
             <div class="bonded">
               <div class="label align-items-center">
                 <div class="text">{{$t('bonded')}}</div>
               </div>
-              <div v-if="stakingDetail.lock" class="value">
+              <div v-if="tokenDetails && tokenDetails.length>0" v-for="(item) in tokenDetails" v-bind:key="item.assetId" class="value">
                 <div class="align-items-center">
-                    <balances
-                      :amount="stakingDetail.lock"
-                      :currencyId="this.stakingCurrency.id" :hasImg="false"
-                    ></balances>
-                </div>
-              </div>
-              <div v-if="spendingDetail && spendingDetail.lock" class="value">
-                <div class="align-items-center">
-                    <balances
-                      :amount="spendingDetail.lock"
-                      :currencyId="this.spendingCurrency.id" :hasImg="false"
-                    ></balances>
+                  <balances
+                    :amount="item.lock"
+                    :currencyId="item.assetId" :hasImg="false"
+                  ></balances>
                 </div>
               </div>
             </div>
@@ -82,9 +53,9 @@
               <div class="value">
                 <div class="align-items-center">{{nonce}} </div>
               </div>
-            </div>  
+            </div>
         </div>
-        
+
         <div class="transfer-extrinsic-wrapper subscan-card" v-loading="isLoading">
           <el-tabs v-model="activeTab">
             <el-tab-pane
@@ -148,7 +119,7 @@
                       <div v-if="props.row.params && props.row.params.length > 0">
                         <div class="struct-table-content">
                           <TreeItem :treeList="props.row.params" :isFirst="true"
-                            treeType="extrinsic" :moudleName="props.row.call_module" 
+                            treeType="extrinsic" :moudleName="props.row.call_module"
                             :functionName="props.row.call_module_function"></TreeItem>
                         </div>
                       </div>
@@ -366,12 +337,8 @@ export default {
     return {
       address: "",
       showKton: false,
-      stakingCurrency: this.$customizeConfig.getCurrencyByType(1) 
-        || this.$customizeConfig.getCurrencyByType(3),
-      spendingCurrency: this.$customizeConfig.getCurrencyByType(2),
       nonce: "",
-      stakingDetail: {},
-      spendingDetail: {},
+      tokenDetails: [],
       transfersInfo: {
         count: 0,
         transfers: []
@@ -416,7 +383,7 @@ export default {
     }),
     tokenDetail() {
       return getTokenDetail(this.token, this.sourceSelected, this.currency);
-    }    
+    }
   },
   created() {
     this.address = this.$route.params.key;
@@ -459,16 +426,9 @@ export default {
           if (res === undefined || typeof res !== "object") {
             return Promise.reject();
           }
-          let stakingDetail = res.balances.find(ele => ele.assetId === this.stakingCurrency.id)
-          if(stakingDetail === undefined || typeof stakingDetail !== "object"){
-             return Promise.reject();
-          }
-          let spendingDetail = res.balances.find(ele => ele.assetId === this.spendingCurrency?.id)
-
-          this.address = res.address;  
-          this.nonce = res.nonce   
-          this.stakingDetail = stakingDetail 
-          this.spendingDetail = spendingDetail
+          this.tokenDetails = res.balances;
+          this.address = res.address;
+          this.nonce = res.nonce
           this.notFound = false;
           this.isIntroLoading = false;
           this.isbalanceLoading = false;
@@ -647,7 +607,7 @@ export default {
           width: 20px;
           height: 20px;
           vertical-align: middle;
-          
+
         }
       }
       .value{
@@ -671,7 +631,7 @@ export default {
           width: 20px;
           height: 20px;
           vertical-align: middle;
-          
+
         }
       }
       .value{
@@ -847,7 +807,7 @@ export default {
         padding-top: 0;
         padding-bottom: 0;
         width: auto;
-      } 
+      }
       .nounce {
         padding-bottom: 20px;
         padding-top: 0;

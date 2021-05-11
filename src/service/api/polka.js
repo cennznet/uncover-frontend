@@ -152,7 +152,7 @@ export default [
     baseURL: "",
     path: "/scan/staking/voted",
     options: {}
-  }, 
+  },
   {
     name: "getAccountDetail",
     method: "POST",
@@ -162,5 +162,25 @@ export default [
     options: {
       noShowDefaultError: true
     }
-  }
+  },
+  {
+    name: "getStakingToken",
+    method: "GET",
+    desc: "获取token信息",
+    baseURL: "",
+    path: "/scan/token/staking",
+    options: {
+      noShowDefaultError: true
+    }
+  },
+  {
+    name: "getSpendingToken",
+    method: "GET",
+    desc: "获取token信息",
+    baseURL: "",
+    path: "/scan/token/spending",
+    options: {
+      noShowDefaultError: true
+    }
+  },
 ];

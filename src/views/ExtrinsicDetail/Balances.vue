@@ -8,7 +8,7 @@
     </div>
     <div
       class="currency-num"
-    >{{`${accuracyAmount}`}} {{this.hasSymbol?this.symbol:''}}
+    >{{`${accuracyAmount}`}} {{this.showSymbol?this.symbol:''}}
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@
 <script>
   import {mapState} from "vuex";
   import { accuracyFormat } from "../../utils/filters";
-  import { getCurrencyTokenDetail } from "../../utils/tools";
+  import {getCurrencyTokenDetail, getTokenDetailFromId} from "../../utils/tools";
   export default {
     props: {
       amount: {
@@ -31,14 +31,16 @@
         type: [Number,String],
         default: -1
       },
-      hasSymbol: {
+      symbol:{
+        type: String,
+      },
+      showSymbol: {
         type: Boolean,
         default: true
       }
     },
     data() {
       return {
-        symbol: '',
         icon: ''
       }
     },
@@ -46,19 +48,15 @@
       ...mapState({
         token: state => state.polka.token
       }),
-      accuracyAmount: function(){return this.amountFormat(this.currencyId)}
+      accuracyAmount: function(){return this.amountFormat(this.currencyId, this.symbol)}
     },
     methods: {
-      amountFormat(currency_id) {
-        const curDetail = this.$customizeConfig.getCurrencyById(currency_id)
-        if(typeof curDetail !== 'undefined'){
-          const accuracy = getCurrencyTokenDetail(this.token, curDetail.name)?.accuracy
-          this.symbol = curDetail.name
-          this.icon = curDetail.icon
-          return accuracyFormat(this.amount, typeof accuracy === 'undefined'? 0: accuracy)
-        }else {
-          return this.amount
-        }
+      amountFormat(tokenId, symbol) {
+        const tokenDetail = symbol ? getCurrencyTokenDetail(this.token, symbol) : getTokenDetailFromId(this.token, tokenId);
+        const accuracy = tokenDetail?.accuracy;
+        const iconImage = tokenDetail?.symbol;
+        this.icon = `/images/${iconImage}.svg`
+        return accuracyFormat(this.amount, typeof accuracy === 'undefined'? 0: accuracy)
       }
      }
   };
@@ -68,7 +66,7 @@
   .currency-icon {
     margin-right: 10px;
     img {
-      width: 24px;
+      width: 40px;
       height: 24px;
       vertical-align: middle;
       transform: translateY(-2px);
