@@ -2,25 +2,11 @@ const customizeConfig ={
     logo: "/images/Uncover.png",
     chains: [
         {
-            name: "azalea",
+            name: "Azalea",
             buttonIcon: "/images/Azalea.png",
             bannerBackground: "/images/banner-background.png",
             mobileBannerBackground: "/images/banner-mobile-background.png",
             baseURL : 'https://service.eks.centralityapp.com/cennznet-explorer-api/api',
-            currencies : [
-                {
-                    id: 1,
-                    name: "CENNZ",
-                    type: 1,
-                    icon: "/images/CENNZ.png"
-                },
-                {
-                    id: 2,
-                    name: "CPAY",
-                    type: 2,
-                    icon: "/images/CPAY.png"
-                }
-            ],
             pieColor : {
                 mainColor: "#000000",
                 colors: ["#000000", "#a6a6a6", "#d7d7d7"],
@@ -38,25 +24,11 @@ const customizeConfig ={
             }
         },
       {
-        name: "nikau",
+        name: "Nikau",
         buttonIcon: "/images/Azalea.png",
-        bannerBackground: "/images/banner-background.png",
-        mobileBannerBackground: "/images/banner-mobile-background.png",
+        bannerBackground: "/images/banner-background-nikau.png",
+        mobileBannerBackground: "/images/banner-mobile-background-nikau.png",
         baseURL : 'https://service.eks.centrality.me/cennznet-explorer-api/api',
-        currencies : [
-          {
-            id: 1,
-            name: "CENNZ",
-            type: 1,
-            icon: "/images/CENNZ.png"
-          },
-          {
-            id: 2,
-            name: "CPAY",
-            type: 2,
-            icon: "/images/CPAY.png"
-          }
-        ],
         pieColor : {
           mainColor: "#000000",
           colors: ["#000000", "#a6a6a6", "#d7d7d7"],
@@ -65,11 +37,11 @@ const customizeConfig ={
           oIcon: "/images/Others.png"
         },
         themeColor: {
-          mainColor: "#e90979",
-          mainColorLight: "#e9097980",
-          mainColorWhite: "#e909790d",
-          mainButtonColor: "#4572de",
-          linkColor: "#4572de",
+          mainColor: "#05b210",
+          mainColorLight: "#05b21080",
+          mainColorWhite: "#05b2100d",
+          mainButtonColor: "#05b210",
+          linkColor: "#05b210",
           navbarBg: "#000"
         }
       }

@@ -14,21 +14,8 @@ class customizeConfig {
     setSelected(sourceSelected){
       this.selected = this.chains.find(ele => ele.name === sourceSelected);
     }
-    getCurrencyById(currencyId){
-      return this.selected?.currencies?.find(ele => ele.id === Number(currencyId));
-    }
-    isStakingCurrencyById(currencyId){
-      const currency = this.getCurrencyById(currencyId);
-      return currency?.type === 1 || currency?.type === 3;
-    }
-    getCurrencyByType(currencyType){
-      return this.selected?.currencies.find(ele => ele.type === currencyType);
-    }
     hasModule(moduleName){
       return this.config.modules[moduleName] || false;
-    }
-    getCurrencyByName(currencyName){
-      return this.selected?.currencies?.find(ele => ele.name === currencyName);
     }
 }
 export default new customizeConfig(window.customizeConfig);

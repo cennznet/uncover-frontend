@@ -29,31 +29,27 @@
                 </el-dropdown-item>
                 <el-dropdown-item class="menu-item">
                 <router-link class="account-nav-item"
-                  :to="`/asset/${getCurrencyName}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
+                  :to="`/asset/${this.stakingToken.symbol}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-          </ul>
-          <el-dropdown class="dropdown" trigger="click">
+            <el-dropdown class="dropdown" trigger="click">
             <span class="el-dropdown-link align-items-center">
-              <!--<div class="choosed-source">{{sourceSelectedLabel}}</div>-->
-              <div>
-                <img class ="network-button" :src="this.$customizeConfig.selected.buttonIcon"/>
-              </div>
-
-
+                <icon-svg icon-class="network" class="icon" />
+                <li class="network">{{this.$customizeConfig.selected.name}}</li>
             </span>
-            <el-dropdown-menu slot="dropdown" class="menu-dropdown">
-              <li
-                class="menu-dropdown-item align-items-center"
-                v-for="item in this.$customizeConfig.chains"
-                :key="item.name"
-              >
-                <i class="choosed-icon" :class="{show: sourceSelected===item.name}"></i>
-                <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
-              </li>
-            </el-dropdown-menu>
-          </el-dropdown>
+              <el-dropdown-menu slot="dropdown" class="menu-dropdown">
+                <li
+                  class="menu-dropdown-item align-items-center"
+                  v-for="item in this.$customizeConfig.chains"
+                  :key="item.name"
+                >
+                  <i class="choosed-icon" :class="{show: sourceSelected===item.name}"></i>
+                  <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
+                </li>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </ul>
           <div class="mobile-menu">
             <div class="menu-area" @click="drawer = true">
               <icon-svg icon-class="menu" class="icon"/>
@@ -76,7 +72,16 @@
                       <el-collapse-item :title="$t('accounts')" name="1">
                         <router-link v-if="this.$customizeConfig.hasModule('staking')"
                          class="sub-item" to="/validator" tag="div" @click.native="drawer = false">{{$t('validators')}}</router-link>
-                        <router-link class="sub-item" :to="`/asset/${getCurrencyName}`" tag="div" @click.native="drawer = false">{{$t('holders')}}</router-link>
+                        <router-link class="sub-item" :to="`/asset/${this.stakingToken.symbol}`" tag="div" @click.native="drawer = false">{{$t('holders')}}</router-link>
+                      </el-collapse-item>
+                      <el-collapse-item :title="this.$customizeConfig.selected.name" >
+                        <li
+                          class="sub-item"
+                          v-for="item in this.$customizeConfig.chains"
+                          :key="item.name"
+                        >
+                          <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
+                        </li>
                       </el-collapse-item>
                     </el-collapse>
                 </div>
@@ -112,6 +117,7 @@ export default {
   },
   data() {
     return {
+      stakingToken: {},
       currentTime: Date.now(),
       drawer: false,
       direction: 'rtl',
@@ -180,18 +186,13 @@ export default {
         return '';
       }
     },
-    getCurrencyName(){
-      let currency = this.$customizeConfig.getCurrencyByType( 1)
-      if(typeof currency === 'undefined'){
-        currency = this.$customizeConfig.getCurrencyByType( 3)
-      }
-      return currency.name
-
-    },
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
       token: state => state.polka.token
     })
+  },
+  mounted() {
+    this.getStakingToken();
   },
   created() {
     this.init();
@@ -210,7 +211,6 @@ export default {
   },
   methods: {
     async init() {
-      // await this.getData();
       this.$loop.addLoop(
         "metadata",
         () => {
@@ -230,6 +230,10 @@ export default {
       await Promise.all([
         this.$store.dispatch("SetToken")
       ]);
+    },
+    async getStakingToken() {
+      const data = await this.$api["polkaGetStakingToken"]();
+      this.stakingToken = data;
     },
     async getMetaData() {
       await Promise.all([
@@ -332,11 +336,12 @@ export default {
         display: none;
       }
 
-      .network-button{
+      .network{
         height: 30px;
         border-radius: 2px;
-        background-color: #fff;
+        background-color: transparent;
         display: flex;
+        color: white;
         align-items: center;
       }
     }
@@ -435,7 +440,8 @@ export default {
       .el-collapse-item__content{
         padding-bottom: 0;
         max-height: 200px;
-        overflow: scroll;
+        background-color: transparent;
+        color: transparent;
       }
     }
     .item {
@@ -466,7 +472,7 @@ export default {
 }
 
 </style>
-<style lang="scss"> 
+<style lang="scss">
 .nav-bar-wrapper {
   background: var(--navbar-bg);
   &.is-home-page {
