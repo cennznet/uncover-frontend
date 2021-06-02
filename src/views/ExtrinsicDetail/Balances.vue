@@ -55,6 +55,7 @@
         const tokenDetail = symbol ? getCurrencyTokenDetail(this.token, symbol) : getTokenDetailFromId(this.token, tokenId);
         const accuracy = tokenDetail?.accuracy;
         const iconImage = tokenDetail?.symbol;
+        this.symbol = tokenDetail?.symbol;
         this.icon = `/images/${iconImage}.svg`
         return accuracyFormat(this.amount, typeof accuracy === 'undefined'? 0: accuracy)
       }
