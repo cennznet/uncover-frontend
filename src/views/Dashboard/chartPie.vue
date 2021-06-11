@@ -98,6 +98,7 @@ export default {
     };
   },
   created() {
+    this.init()
     GLOBAL.vbus.$on("CHANGE_SOURCE",  function() {
       myChart.setOption({
         series: {
@@ -122,6 +123,7 @@ export default {
   beforeDestroy() {
     myChart = null;
     GLOBAL.vbus.$off("CHANGE_SOURCE");
+    this.$loop.removeLoop("token");
   },
   watch: {
     tokenDetail(newV) {
@@ -280,6 +282,20 @@ export default {
     this.initChart();
   },
   methods: {
+    async init() {
+      this.$loop.addLoop(
+        "token",
+        () => {
+          return this.getToken();
+        },
+        true
+      );
+    },
+    async getToken() {
+      await Promise.all([
+        this.$store.dispatch("SetToken")
+      ]);
+    },
     async getStakingToken() {
       this.$api["polkaGetStakingToken"]().then(async data => {
         this.token = data;
