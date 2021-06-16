@@ -75,28 +75,21 @@ export default {
     if (this.w && typeof this.w.terminate === "function") {
       this.w.terminate();
     }
-    this.$loop.removeLoop("dashborad");
+    this.$loop.removeLoop("dashboard");
   },
   methods: {
     async init() {
-      // await this.getData();
       this.$loop.addLoop(
-        "dashborad",
+        "dashboard",
         () => {
           return this.getData();
         },
         true
       );
     },
-    async getToken() {
-      await Promise.all([
-        this.$store.dispatch("SetToken")
-      ]);
-    },
     async getData() {
       await Promise.all([
         this.$store.dispatch("SetLatestBlocks", { row: 25, page: 0 }),
-        // this.$store.dispatch("SetLatestExtrinsics", { row: 25, page: 0 }),
         this.$customizeConfig.hasModule('transfer') ? this.$store.dispatch("SetTransfers", { row: 25, page: 0 }) : undefined,
       ]);
 

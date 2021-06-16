@@ -195,7 +195,6 @@ export default {
     this.getStakingToken();
   },
   created() {
-    this.init();
     this.w = new Worker('/' + "timeWorker.js");
     this.w.onmessage = () => {
       this.changeTime();
@@ -206,39 +205,14 @@ export default {
     if (this.w && typeof this.w.terminate === "function") {
       this.w.terminate();
     }
-    this.$loop.removeLoop("metadata");
-    this.$loop.removeLoop("token");
   },
   methods: {
-    async init() {
-      this.$loop.addLoop(
-        "metadata",
-        () => {
-          return this.getMetaData();
-        },
-        true
-      );
-      this.$loop.addLoop(
-        "token",
-        () => {
-          return this.getToken();
-        },
-        true
-      );
-    },
-    async getToken() {
-      await Promise.all([
-        this.$store.dispatch("SetToken")
-      ]);
+    init() {
+      this.getStakingToken();
     },
     async getStakingToken() {
       const data = await this.$api["polkaGetStakingToken"]();
       this.stakingToken = data;
-    },
-    async getMetaData() {
-      await Promise.all([
-        this.$store.dispatch("SetMetadata")
-      ]);
     },
     changeLanguage(language) {
       GLOBAL.vbus.$emit("CHANGE_LANGUAGE", language);

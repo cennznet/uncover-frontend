@@ -103,6 +103,29 @@
 import countTo from "Components/CountTo";
 import { mapState } from "vuex";
 export default {
+  methods: {
+    async init() {
+      this.$loop.addLoop(
+        "metadata",
+        () => {
+          return this.getMetaData();
+        },
+        true
+      );
+    },
+    async getMetaData() {
+      await Promise.all([
+        this.$store.dispatch("SetMetadata")
+      ]);
+    },
+  },
+  created() {
+    this.init();
+  },
+  beforeDestroy() {
+    this.$loop.removeLoop("metadata");
+  },
+
   components: { countTo },
   computed: {
     ...mapState({
