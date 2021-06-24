@@ -8,7 +8,7 @@
     </div>
     <div
       class="currency-num"
-    >{{`${accuracyAmount}`}} {{this.showSymbol?this.symbol:''}}
+    >{{`${numberWithCommas(accuracyAmount)}`}} {{this.showSymbol?this.symbol:''}}
     </div>
   </div>
 </template>
@@ -50,6 +50,9 @@
       }),
       accuracyAmount: function(){return this.amountFormat(this.currencyId, this.symbol)}
     },
+    mounted() {
+      this.setToken();
+    },
     methods: {
       amountFormat(tokenId, symbol) {
         const tokenDetail = symbol ? getCurrencyTokenDetail(this.token, symbol) : getTokenDetailFromId(this.token, tokenId);
@@ -58,8 +61,16 @@
         this.symbol = tokenDetail?.symbol;
         this.icon = `/images/${iconImage}.svg`
         return accuracyFormat(this.amount, typeof accuracy === 'undefined'? 0: accuracy)
-      }
-     }
+      },
+     numberWithCommas(x) {
+        return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+     },
+     async setToken() {
+      await Promise.all([
+        this.$store.dispatch("SetToken")
+      ]);
+     },
+    }
   };
 </script>
 
