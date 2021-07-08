@@ -53,3 +53,29 @@ const customizeConfig ={
     }
 }
 window.customizeConfig =customizeConfig;
+if (window.location.hostname.endsWith('cennzscan.centrality.cloud') || window.location.hostname.endsWith('localhost')) {
+  window.customizeConfig.chains.push(
+    {
+      name: "Azalea Staging",
+      buttonIcon: "/images/Azalea.png",
+      bannerBackground: "/images/banner-background.png",
+      mobileBannerBackground: "/images/banner-mobile-background.png",
+      baseURL: 'https://service.eks.centrality.cloud/cennznet-explorer-api/api',
+      pieColor : {
+        mainColor: "#000000",
+        colors: ["#000000", "#a6a6a6", "#d7d7d7"],
+        bIcon: "/images/Lock.png",
+        tIcon: "/images/Transferrable.png",
+        oIcon: "/images/Others.png"
+      },
+      themeColor: {
+        mainColor: "#e90979",
+        mainColorLight: "#e9097980",
+        mainColorWhite: "#e909790d",
+        mainButtonColor: "#4572de",
+        linkColor: "#4572de",
+        navbarBg: "#000"
+      }
+    }
+  )
+}
