@@ -14,8 +14,28 @@
                         <div v-if="treeType === 'extrinsic'">
                             <div v-if="moudleName === 'genericAsset'
                                 && functionName=== 'transfer' && item.name==='amount'">
-                                <tree-item :treeList="item.value" treeType="amount" 
+                                <tree-item :treeList="item.value" treeType="amount"
                                 :assetId="treeList.find(ele => ele.name === 'asset_id').value"></tree-item>
+                            </div>
+                            <div v-else-if="moudleName === 'cennzx'
+                               && functionName=== 'sellAsset' && item.name==='sell_amount'">
+                              <tree-item :treeList="item.value" treeType="sell_amount"
+                              :assetId="treeList.find(ele => ele.name === 'asset_to_sell').value"></tree-item>
+                            </div>
+                            <div v-else-if="moudleName === 'cennzx'
+                               && functionName=== 'sellAsset' && item.name==='minimum_buy'">
+                            <tree-item :treeList="item.value" treeType="sell_amount"
+                             :assetId="treeList.find(ele => ele.name === 'asset_to_buy').value"></tree-item>
+                            </div>
+                            <div v-else-if="moudleName === 'cennzx'
+                                && functionName=== 'buyAsset' && item.name==='buy_amount'">
+                                <tree-item :treeList="item.value" treeType="buy_amount"
+                                :assetId="treeList.find(ele => ele.name === 'asset_to_buy').value"></tree-item>
+                            </div>
+                            <div v-else-if="moudleName === 'cennzx'
+                                && functionName=== 'buyAsset' && item.name==='maximum_sell'">
+                            <tree-item :treeList="item.value" treeType="buy_amount"
+                                       :assetId="treeList.find(ele => ele.name === 'asset_to_sell').value"></tree-item>
                             </div>
                             <div v-else-if="item.type === 'AccountId'">
                                 <tree-item :treeList="item.value" treeType="accountId"></tree-item>
@@ -27,7 +47,7 @@
                         <div v-else-if="treeType === 'event'">
                             <div v-if="moudleName === 'genericAsset'
                             && functionName=== 'Transferred' && item.type==='Balance'">
-                                <tree-item :treeList="item.value" treeType="amount" 
+                                <tree-item :treeList="item.value" treeType="amount"
                                 :assetId="treeList.find(ele => ele.type === 'AssetId').value"></tree-item>
                             </div>
                             <div v-else-if="item.type === 'AccountId'">
@@ -50,11 +70,11 @@
             <table class ="table">
                 <tr>
                     <td class="td-border">
-                        <div v-if="treeType === 'amount'" class ="table-cell">  
+                        <div v-if="treeType === 'amount' || treeType === 'sell_amount' || treeType === 'buy_amount' || treeType === 'maximum_sell' || treeType === 'minimum_buy'" class ="table-cell">
                             <balances
                                 :amount="treeList"
                                 :currencyId="assetId" :hasImg="false"
-                            ></balances>  
+                            ></balances>
                         </div>
                         <div v-else-if="treeType === 'accountId'" class ="table-cell">
                             <accountHash :size="24" :hash="treeList" :adjustHeight="'1px'"></accountHash>
@@ -118,7 +138,7 @@ export default {
     },
     methods: {
         isObjOrArray(value){
-            return value !== null && typeof value === 'object';   
+            return value !== null && typeof value === 'object';
         },
         checkAttr(item){
             let num =0;
@@ -142,7 +162,7 @@ export default {
 <style lang="scss" scoped>
  .struct-table-content .table{
         background-color: #fff;
-        color: #363636; 
+        color: #363636;
         width: 100%;
         table-layout: fixed;
         border-collapse: separate;
@@ -161,7 +181,7 @@ export default {
     border: 1px solid #e7eaf3;
     border-width: 0 1px 1px 0
 }
- 
+
  .struct-table-content .table-cell {
     overflow: hidden;
     text-overflow: ellipsis;
