@@ -23,35 +23,25 @@
               <div class="label align-items-center">
                 <div class="text">{{$t('balance')}}</div>
               </div>
-              <div v-for="(item) in tokenDetails" v-bind:key="item.assetId" class="value">
                 <div class="align-items-center">
-                  <balances
-                    :amount="item.free"
-                    :currencyId="item.assetId"
-                  ></balances>
+                  <dropdown :options="assetBalances" :selected="assetBalanceSelected" v-on:updateOption="onAssetChange"></dropdown>
                 </div>
-              </div>
             </div>
 
             <div class="bonded">
               <div class="label align-items-center">
-                <div class="text">{{$t('bonded')}}</div>
+                <div class="text">{{$t('Bonded CENNZ')}}</div>
               </div>
-              <div v-if="tokenDetails && tokenDetails.length>0" v-for="(item) in tokenDetails" v-bind:key="item.assetId" class="value">
-                <div class="align-items-center">
-                  <balances
-                    :amount="item.lock"
-                    :currencyId="item.assetId" :hasImg="false"
-                  ></balances>
+                <div class="balanceHeight align-items-center">
+                  {{lockBalance}} CENNZ
                 </div>
-              </div>
             </div>
             <div class="nounce">
               <div class="label align-items-center">
                 <div class="text">{{$t('nonce')}}</div>
               </div>
               <div class="value">
-                <div class="align-items-center">{{nonce}} </div>
+                <div class="balanceHeight align-items-center">{{nonce}} </div>
               </div>
             </div>
         </div>
@@ -312,9 +302,10 @@ import { timeAgo, parseTimeToUtc, hashFormat, accuracyFormat } from "Utils/filte
 import clipboard from "Directives/clipboard";
 import Balances from "../ExtrinsicDetail/Balances";
 import { fmtPercentage, getCommission, bnPlus } from "../../utils/format";
-import { getTokenDetail, formatSymbol } from "../../utils/tools";
+import {getTokenDetail, formatSymbol, getTokenDetailFromId} from "../../utils/tools";
 import AccountHash from "./AccountHash";
 import TreeItem from "../ExtrinsicDetail/TreeItem"
+import dropdown from "./Dropdown";
 export default {
   name: "AccountDetailNew",
   components: {
@@ -322,7 +313,8 @@ export default {
     Identicon,
     Balances,
     AccountHash,
-    TreeItem
+    TreeItem,
+    'dropdown': dropdown,
   },
   filters: {
     timeAgo,
@@ -338,6 +330,7 @@ export default {
       address: "",
       showKton: false,
       nonce: "",
+      lockBalance: 0,
       tokenDetails: [],
       transfersInfo: {
         count: 0,
@@ -372,7 +365,9 @@ export default {
           label: this.$t("account"),
           value: "account"
         }
-      ]
+      ],
+      assetBalances: [],
+      assetBalanceSelected: {}
     };
   },
   computed: {
@@ -395,6 +390,9 @@ export default {
     }
   },
   methods: {
+    onAssetChange(payload) {
+      this.assetBalanceSelected = payload;
+    },
     init() {
       this.getAccountInfo();
       this.activeTab = "extrinsic";
@@ -417,6 +415,7 @@ export default {
     async getAccountInfo() {
       this.isLoading = true;
       this.isIntroLoading = true;
+      this.assetBalances = [{symbol: 'CENNZ', name: 0, icon: `/images/CENNZ.svg`}];
       const key = this.$route.params.key;
       let loadingInstance = this.$loading({
         target: '.main'
@@ -427,6 +426,19 @@ export default {
             return Promise.reject();
           }
           this.tokenDetails = res.balances;
+          this.assetBalances = this.tokenDetails.map(token => {
+            const tokenInfo =  getTokenDetailFromId(this.token, token.assetId);
+            const accuracy = tokenInfo?.accuracy;
+            const symbol = tokenInfo.symbol;
+            const freeBalance = `${accuracyFormat(token.free, typeof accuracy === 'undefined'? 0: accuracy)} ${symbol}`;
+            const icon = `/images/${tokenInfo.symbol}.svg`;
+            if (token.assetId === 1 || token.assetId === 16000) {
+              this.lockBalance = accuracyFormat(token.lock, typeof accuracy === 'undefined'? 0: accuracy);
+            }
+            return { symbol, name: freeBalance, icon};
+          });
+          const firstAssetBalance = this.assetBalances[0];
+          this.onAssetChange(firstAssetBalance);
           this.address = res.address;
           this.nonce = res.nonce
           this.notFound = false;
@@ -620,6 +632,9 @@ export default {
       color: #2a2727;
       width: auto;
       min-width: 100px;
+      .balanceHeight {
+        height: 24px;
+      }
       .label{
         height: 40px;
         .text{
@@ -643,6 +658,9 @@ export default {
       padding: 30px 0 0 30px;
       color: #2a2727;
       width: 100px;
+      .balanceHeight {
+        height: 24px;
+      }
       .label{
         height: 40px;
         .text{
