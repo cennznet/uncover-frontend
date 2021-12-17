@@ -387,6 +387,21 @@ export default {
   watch: {
     "$route.params.key": function() {
       this.init();
+    },
+    token(newV) {
+      this.assetBalances = this.tokenDetails.map(token => {
+        const tokenInfo =  getTokenDetailFromId(newV, token.assetId);
+        const accuracy = tokenInfo?.accuracy;
+        const symbol = tokenInfo.symbol;
+        const freeBalance = `${accuracyFormat(token.free, typeof accuracy === 'undefined'? 0: accuracy)} ${symbol}`;
+        const icon = `/images/${tokenInfo.symbol}.svg`;
+        if (token.assetId === 1 || token.assetId === 16000) {
+          this.lockBalance = accuracyFormat(token.lock, typeof accuracy === 'undefined'? 0: accuracy);
+        }
+        return { symbol, name: freeBalance, icon};
+      });
+      const firstAssetBalance = this.assetBalances[0];
+      this.onAssetChange(firstAssetBalance);
     }
   },
   methods: {
