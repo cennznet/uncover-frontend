@@ -16,7 +16,7 @@
 <script>
   import {mapState} from "vuex";
   import { accuracyFormat } from "../../utils/filters";
-  import {getCurrencyTokenDetail, getTokenDetailFromId} from "../../utils/tools";
+  import {getTokenDetailFromId} from "../../utils/tools";
   export default {
     props: {
       amount: {
@@ -31,9 +31,6 @@
         type: [Number,String],
         default: -1
       },
-      symbol:{
-        type: String,
-      },
       showSymbol: {
         type: Boolean,
         default: true
@@ -41,21 +38,22 @@
     },
     data() {
       return {
-        icon: ''
+        icon: '',
+        symbol: ''
       }
     },
     computed: {
       ...mapState({
-        token: state => state.polka.token
+        token: state => state.polka.tokenV2
       }),
-      accuracyAmount: function(){return this.amountFormat(this.currencyId, this.symbol)}
+      accuracyAmount: function(){return this.amountFormat(this.currencyId)}
     },
     mounted() {
       this.setToken();
     },
     methods: {
-      amountFormat(tokenId, symbol) {
-        const tokenDetail = symbol ? getCurrencyTokenDetail(this.token, symbol) : getTokenDetailFromId(this.token, tokenId);
+      amountFormat(tokenId) {
+        const tokenDetail = getTokenDetailFromId(this.token, tokenId);
         const accuracy = tokenDetail?.accuracy;
         const iconImage = tokenDetail?.symbol;
         this.symbol = tokenDetail?.symbol;
@@ -67,7 +65,7 @@
      },
      async setToken() {
       await Promise.all([
-        this.$store.dispatch("SetToken")
+        this.$store.dispatch("SetTokenV2")
       ]);
      },
     }

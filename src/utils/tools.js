@@ -212,7 +212,9 @@ export function isMobile() {
 
 export function getCurrencyTokenDetail(token, currency) {
   if (token && token.detail && currency) {
-      return token.detail[currency];
+      const tokenValues = Object.values(token.detail);
+      const valueAt = tokenValues.findIndex(value => value.symbol === currency);
+      return tokenValues[valueAt];
   }
   return {};
 }

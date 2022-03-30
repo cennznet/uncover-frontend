@@ -31,7 +31,7 @@
             <el-select v-model="tokenId"  placeholder="currency filter" @change="getData">
               <el-option key="-1" label="all" :value="-1"></el-option>
                <el-option v-for="(item) in Object.values(tokenDetails)"
-                :key="item.id" :label="item.symbol" :value="item.id">
+                :key="item.id" :label="item.symbol+ -item.id" :value="item.id">
                 </el-option>
             </el-select>
           </div>
@@ -186,7 +186,7 @@ export default {
     ...mapState({
       transfers: state => state.polka.transfers,
       sourceSelected: state => state.global.sourceSelected,
-      token: state => state.polka.token
+      token: state => state.polka.tokenV2
     })
   },
   filters: {
@@ -210,7 +210,7 @@ export default {
       await Promise.all([this.getTransferData()]);
     },
     async getTransferData(page = 0) {
-      let tokenInfo = await this.$api["polkaGetToken"]();
+      let tokenInfo = await this.$api["polkaGetTokenV2"]();
       this.tokenDetails = tokenInfo?.detail;
       const data = await this.$api["polkaGetTransfers"]({
         row: 25,

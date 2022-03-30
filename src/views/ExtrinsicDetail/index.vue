@@ -224,7 +224,7 @@ import {
 import clipboard from "Directives/clipboard";
 import { mapState } from "vuex";
 import Balances from "./Balances";
-import { getCurrencyTokenDetail } from "../../utils/tools";
+import { getTokenDetailFromId } from "../../utils/tools";
 import TreeItem from "./TreeItem"
 export default {
   name: "ExtrinsicDetail",
@@ -277,10 +277,10 @@ export default {
   computed: {
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
-      tokens: state => state.polka.token
+      tokens: state => state.polka.tokenV2
     }),
     tokenDetail() {
-      return getCurrencyTokenDetail(this.tokens, this.token.name);
+      return getTokenDetailFromId(this.tokens, this.token.id);
     }
   },
 

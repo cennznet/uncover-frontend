@@ -3,7 +3,7 @@
     <li @click="toggleMenu()" class="dropdown-toggle" v-if="selectedOption.name !== undefined">
       <img
         :src="selectedOption.icon"
-        :alt="selectedOption.symbol"
+        @error="$event.target.src='/images/logomissing.svg'"
       />
       {{ selectedOption.name }}
       <span class="caret"></span>
@@ -23,7 +23,7 @@
         <a href="javascript:void(0)" @click="updateOption(option)">
           <img
             :src="option.icon"
-            :alt="option.symbol"
+            @error="$event.target.src='/images/logomissing.svg'"
           />
           {{ option.name }}
         </a>

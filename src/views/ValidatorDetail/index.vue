@@ -315,7 +315,7 @@ export default {
   computed: {
     ...mapState({
       metadata: state => state.polka.metadata,
-      token: state => state.polka.token,
+      token: state => state.polka.tokenV2,
       sourceSelected: state => state.global.sourceSelected
     }),
     shouldShowKton() {

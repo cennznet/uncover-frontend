@@ -96,11 +96,11 @@ export default [
     }
   },
   {
-    name: "getToken",
+    name: "getTokenV2",
     method: "POST",
     desc: "获取token信息",
     baseURL: "",
-    path: "/scan/token",
+    path: "/scan/token-v2",
     options: {
       noShowDefaultError: true
     }

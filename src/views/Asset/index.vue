@@ -138,7 +138,7 @@ export default {
     ...mapState({
       accounts: state => state.polka.accounts,
       sourceSelected: state => state.global.sourceSelected,
-      tokens: state => state.polka.token,
+      tokens: state => state.polka.tokenV2,
     }),
     isStakingCurr() {
       return this.token?.id === this.stakingToken?.id
@@ -181,7 +181,7 @@ export default {
       }
     },
     async getTokenData() {
-      const data = await this.$api["polkaGetToken"]();
+      const data = await this.$api["polkaGetTokenV2"]();
       this.tokenList = data.detail;
     },
     async getStakingToken() {

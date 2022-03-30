@@ -7,7 +7,7 @@ const {
   polkaGetBlocks,
   polkaGetTransfers,
   polkaGetDaily,
-  polkaGetToken,
+  polkaGetTokenV2,
   polkaGetStakingToken,
   polkaGetSpendingToken
 } = api;
@@ -16,7 +16,7 @@ export default {
   state: {
     metadata: {},
     latestBlocks: [],
-    token: {},
+    tokenV2: {},
     stakingToken: {},
     spendingToken: {},
     // latestExtrinsics: [],
@@ -27,8 +27,8 @@ export default {
     SET_METADATA: (state, data) => {
       state.metadata = data;
     },
-    SET_TOKEN: (state, data) => {
-      state.token = data;
+    SET_TOKEN_V2: (state, data) => {
+      state.tokenV2 = data;
     },
     SET_LATEST_BLOCKS: (state, data) => {
       state.latestBlocks = data;
@@ -65,11 +65,11 @@ export default {
       const data = await polkaGetBlocks(payload);
       commit("SET_LATEST_BLOCKS", data.blocks);
     },
-    async SetToken({
-      commit
+    async SetTokenV2({
+       commit
     }) {
-      const data = await polkaGetToken();
-      commit("SET_TOKEN", data);
+      const data = await polkaGetTokenV2();
+      commit("SET_TOKEN_V2", data);
     },
     async SetStakingToken({
       commit

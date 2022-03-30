@@ -373,7 +373,7 @@ export default {
   computed: {
     ...mapState({
       metadata: state => state.polka.metadata,
-      token: state => state.polka.token,
+      token: state => state.polka.tokenV2,
       sourceSelected: state => state.global.sourceSelected
     }),
     tokenDetail() {
@@ -392,9 +392,9 @@ export default {
       this.assetBalances = this.tokenDetails.map(token => {
         const tokenInfo =  getTokenDetailFromId(newV, token.assetId);
         const accuracy = tokenInfo?.accuracy;
-        const symbol = tokenInfo.symbol;
+        const symbol = tokenInfo?.symbol;
         const freeBalance = `${accuracyFormat(token.free, typeof accuracy === 'undefined'? 0: accuracy)} ${symbol}`;
-        const icon = `/images/${tokenInfo.symbol}.svg`;
+        const icon = `/images/${tokenInfo?.symbol}.svg`;
         if (token.assetId === 1 || token.assetId === 16000) {
           this.lockBalance = accuracyFormat(token.lock, typeof accuracy === 'undefined'? 0: accuracy);
         }
@@ -409,6 +409,8 @@ export default {
       this.assetBalanceSelected = payload;
     },
     init() {
+      this.assetBalances = [];
+      this.assetBalanceSelected = {};
       this.getAccountInfo();
       this.activeTab = "extrinsic";
     },
@@ -444,9 +446,9 @@ export default {
           this.assetBalances = this.tokenDetails.map(token => {
             const tokenInfo =  getTokenDetailFromId(this.token, token.assetId);
             const accuracy = tokenInfo?.accuracy;
-            const symbol = tokenInfo.symbol;
+            const symbol = tokenInfo ? tokenInfo.symbol: '';
             const freeBalance = `${accuracyFormat(token.free, typeof accuracy === 'undefined'? 0: accuracy)} ${symbol}`;
-            const icon = `/images/${tokenInfo.symbol}.svg`;
+            const icon = `/images/${tokenInfo?.symbol}.svg`;
             if (token.assetId === 1 || token.assetId === 16000) {
               this.lockBalance = accuracyFormat(token.lock, typeof accuracy === 'undefined'? 0: accuracy);
             }

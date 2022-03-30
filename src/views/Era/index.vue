@@ -142,7 +142,7 @@ export default {
   computed: {
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
-      token: state => state.polka.token
+      token: state => state.polka.tokenV2
     }),
     tokenDetail() {
       return getTokenDetail(this.token, this.sourceSelected, this.currency);

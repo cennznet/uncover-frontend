@@ -33,19 +33,19 @@ import {
 // import lIconPink from "../../assets/images/l-pink.png";
 // import tIconPink from "../../assets/images/t-pink.png";
 // import oIcon from "../../assets/images/o.png";
-import { getCurrencyTokenDetail } from "../../utils/tools";
+import { getTokenDetailFromId } from "../../utils/tools";
 
 export default {
   computed: {
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
-      tokens: state => state.polka.token
+      tokens: state => state.polka.tokenV2
     }),
     tokenDetail() {
       if (this.token.symbol) {
-        return getCurrencyTokenDetail(
+        return getTokenDetailFromId(
           this.tokens,
-          this.token.symbol
+          this.token.id
         );
       }
       return {};
@@ -293,7 +293,7 @@ export default {
     },
     async getToken() {
       await Promise.all([
-        this.$store.dispatch("SetToken")
+        this.$store.dispatch("SetTokenV2")
       ]);
     },
     async getStakingToken() {

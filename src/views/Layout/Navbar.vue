@@ -188,7 +188,7 @@ export default {
     },
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
-      token: state => state.polka.token
+      token: state => state.polka.tokenV2
     })
   },
   mounted() {

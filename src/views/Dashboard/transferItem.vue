@@ -37,10 +37,9 @@
       </div>
       <div class="right">
          <balances
-                :amount="transferData.amount" 
+                :amount="transferData.amount"
                 :currencyId="transferData.asset_id" :hasImg="false"
          ></balances>
-        
       </div>
     </div>
   </div>
@@ -65,7 +64,7 @@ export default {
   computed: {
     ...mapState({
       sourceSelected: state => state.global.sourceSelected,
-      token: state => state.polka.token
+      token: state => state.polka.tokenV2
     })
   },
   filters: {
@@ -75,7 +74,6 @@ export default {
     Balances
   },
   methods: {
-    
     isMobile() {
       return isMobile();
     }
