@@ -233,8 +233,7 @@ export function getTokenDetailFromId(token, tokenId) {
 export function fetchAccurateBalanceFromParams(tokens, erc20META, params) {
   let tokenDetail, erc20Detail;
   params.map((param) => {
-    console.log('param::',param);
-    if (param.name === "asset_id" || param.name === "assetId") {
+    if (param.name === "asset_id" || param.name === "assetId" || param.typeName === "AssetId") {
       tokenDetail = getTokenDetailFromId(tokens, param.value);
     } else if  (param.name === "amount" || param.name === "fixedPrice") { // field is of type Balance (genericAsset/transfer|burn|mint) (nft/sell) extrinsic
       const accuracy = tokenDetail?.accuracy;

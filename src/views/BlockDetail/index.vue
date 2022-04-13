@@ -145,7 +145,7 @@
                       <div v-if="props.row.params && props.row.params.length > 0">
                         <div class="struct-table-content">
                           <TreeItem :treeList="props.row.params" :isFirst="true"
-                            treeType="extrinsic" :moudleName="props.row.call_module" 
+                            treeType="extrinsic" :moudleName="props.row.call_module"
                             :functionName="props.row.call_module_function"></TreeItem>
                         </div>
                       </div>
@@ -190,7 +190,7 @@
                       <div class="form-items" v-if="props.row.params && props.row.params.length > 0">
                           <div  class="struct-table-content">
                             <TreeItem :treeList="props.row.params" :isFirst="true"
-                            treeType="event" :moudleName="props.row.module_id" 
+                            treeType="event" :moudleName="props.row.module_id"
                             :functionName="props.row.event_id"></TreeItem>
                           </div>
                       </div>
@@ -241,7 +241,8 @@ import SearchInput from "@/views/Components/SearchInput";
 import { timeAgo, parseTimeToUtc, hashFormat } from "Utils/filters";
 import clipboard from "Directives/clipboard";
 import _ from 'lodash';
-import TreeItem from "../ExtrinsicDetail/TreeItem"
+import TreeItem from "../ExtrinsicDetail/TreeItem";
+import { fetchAccurateBalanceFromParams } from "../../utils/tools";
 export default {
   name: "BlockDetail",
   components: {
@@ -308,19 +309,24 @@ export default {
 
     },
     async getBlockInfo() {
+    try {
       const key = this.$route.params.key;
       const reg = /^[0-9]+$/;
       const isNum = reg.test(key);
-      this.$api["polkaGetBlockByKey"]({
-        [isNum ? "block_num" : "block_hash"]: isNum ? +key : key
-      })
-        .then(res => {
+       const promiseOne = this.$api["polkaGetBlockByKey"]({
+            [isNum ? "block_num" : "block_hash"]: isNum ? +key : key
+       });
+       const promiseTwo = this.$api["polkaGetERC20Meta"]();
+       const promiseThree = this.$api["polkaGetTokenV2"]();
+       const [res, erc20Data, tokenData] = await Promise.all([promiseOne, promiseTwo, promiseThree]);
           if (res === null) {
             return Promise.reject(res);
           }
+          this.erc20META = erc20Data.erc20tokenMap;
           this.notFound = false;
           _.forEach(res.extrinsics, (item) => {
             item.params = JSON.parse(item.params);
+            item.params = fetchAccurateBalanceFromParams(tokenData, this.erc20META, item.params);
           });
           _.forEach(res.events, (item) => {
             let params = JSON.parse(item.params);
@@ -334,15 +340,15 @@ export default {
           this.blockInfo = res;
           this.blockNum = res.block_num;
           this.isLoading = false;
-        })
-        .catch(err => {
+        }
+        catch(err) {
           this.isLoading = false;
           this.blockNum = undefined;
           this.blockInfo = {};
           if (err === null || err.code === -400) {
             this.notFound = true;
           }
-        });
+        }
     },
     goBlockNum(direction) {
       if (this.blockNum !== undefined) {
