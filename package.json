@@ -1,7 +1,6 @@
 {
-  "name": "polka-explorer",
-  "version": "0.1.0",
-  "author": "nj.wangwenhan@gmail.com",
+  "name": "@cennznet/uncover-frontend",
+  "version": "1.0.0",
   "license": "ISC",
   "scripts": {
     "serve": "vue-cli-service serve",
