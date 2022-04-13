@@ -1,3 +1,5 @@
+import {accuracyFormat} from "./filters";
+
 const BigNumber = require('bignumber.js')
 
 export function getNumb() {
@@ -226,6 +228,40 @@ export function getTokenDetailFromId(token, tokenId) {
     return tokenValues[valueAt];
   }
   return {};
+}
+
+export function fetchAccurateBalanceFromParams(tokens, erc20META, params) {
+  let tokenDetail, erc20Detail;
+  params.map((param) => {
+    console.log('param::',param);
+    if (param.name === "asset_id" || param.name === "assetId") {
+      tokenDetail = getTokenDetailFromId(tokens, param.value);
+    } else if  (param.name === "amount" || param.name === "fixedPrice") { // field is of type Balance (genericAsset/transfer|burn|mint) (nft/sell) extrinsic
+      const accuracy = tokenDetail?.accuracy;
+      param.value = accuracyFormat(param.value.toString(), typeof accuracy === 'undefined'? 0: accuracy);
+      if (typeof accuracy !== 'undefined') {
+        const key = 'value (decimal)'
+        param[key] = param.value;
+        delete param.value;
+      }
+    }
+    if (typeof param.value === 'object' && param.value !== null) {
+      if (param.value && param.value.tokenAddress) {
+        erc20Detail = erc20META[param.value.tokenAddress];
+      }
+      if (param.value && param.value.amount && !(param.value.amount.startsWith('0x'))) {
+        const accuracy = erc20Detail?.decimal;
+        const amount = accuracyFormat(param.value.amount.toString(), typeof accuracy === 'undefined'? 0: accuracy);
+        param.value.amount = amount;
+        if (typeof accuracy !== 'undefined') {
+          const key = 'amount (decimal)';
+          param.value[key] = amount;
+          delete param.value.amount;
+        }
+      }
+    }
+  });
+  return params;
 }
 
 export function getTokenDetail(token, sourceSelected, currency) {

@@ -8,6 +8,7 @@ const {
   polkaGetTransfers,
   polkaGetDaily,
   polkaGetTokenV2,
+  polkaGetERC20Meta,
   polkaGetStakingToken,
   polkaGetSpendingToken
 } = api;
@@ -17,6 +18,7 @@ export default {
     metadata: {},
     latestBlocks: [],
     tokenV2: {},
+    erc20META: {},
     stakingToken: {},
     spendingToken: {},
     // latestExtrinsics: [],
@@ -29,6 +31,9 @@ export default {
     },
     SET_TOKEN_V2: (state, data) => {
       state.tokenV2 = data;
+    },
+    SET_ERC20_META: (state, data) => {
+      state.erc20META = data;
     },
     SET_LATEST_BLOCKS: (state, data) => {
       state.latestBlocks = data;
@@ -70,6 +75,12 @@ export default {
     }) {
       const data = await polkaGetTokenV2();
       commit("SET_TOKEN_V2", data);
+    },
+    async SetERC20Meta({
+        commit
+    }) {
+      const data = await polkaGetERC20Meta();
+      commit("SET_ERC20_META", data);
     },
     async SetStakingToken({
       commit

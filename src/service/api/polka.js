@@ -106,6 +106,16 @@ export default [
     }
   },
   {
+    name: "getERC20Meta",
+    method: "GET",
+    desc: "获取token信息",
+    baseURL: "",
+    path: "/scan/token-erc20",
+    options: {
+      noShowDefaultError: true
+    }
+  },
+  {
     name: "getValidators",
     method: "POST",
     desc: "获取validators列表",

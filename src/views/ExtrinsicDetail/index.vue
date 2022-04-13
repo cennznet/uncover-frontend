@@ -224,7 +224,7 @@ import {
 import clipboard from "Directives/clipboard";
 import { mapState } from "vuex";
 import Balances from "./Balances";
-import { getTokenDetailFromId } from "../../utils/tools";
+import { getTokenDetailFromId, fetchAccurateBalanceFromParams } from "../../utils/tools";
 import TreeItem from "./TreeItem"
 export default {
   name: "ExtrinsicDetail",
@@ -312,13 +312,17 @@ export default {
       this.isFold = isFold;
     },
     async getExtrinsicInfo() {
+    try {
       const key = this.$route.params.key;
       const reg = /^[0-9]+-[0-9]+$/;
       const isNum = reg.test(key);
-      this.$api["polkaGetExtrinsicByKey"]({
-        [isNum ? "extrinsic_index" : "hash"]: key
-      })
-        .then(res => {
+      const promiseOne = this.$api["polkaGetExtrinsicByKey"]({
+          [isNum ? "extrinsic_index" : "hash"]: key
+      });
+      const promiseTwo = this.$api["polkaGetERC20Meta"]();
+      const promiseThree = this.$api["polkaGetTokenV2"]();
+      const [res, erc20Data, tokenData] = await Promise.all([promiseOne, promiseTwo, promiseThree]);
+
           if (res === null) {
             return Promise.reject(res);
           }
@@ -331,21 +335,24 @@ export default {
               });
             });
           }
+          this.erc20META = erc20Data.erc20tokenMap;
+          console.log('this.erc20META::',this.erc20META);
           if (typeof res.params === 'string') {
-            res.params = JSON.parse(res.params)
+            res.params = JSON.parse(res.params);
+            res.params = fetchAccurateBalanceFromParams(tokenData, this.erc20META, res.params);
           }
           this.extrinsicInfo = res;
           this.extrinsicNum = res.extrinsic_index;
           this.isLoading = false;
-        })
-        .catch(err => {
+        }
+        catch(err) {
           this.isLoading = false;
           this.extrinsicNum = undefined;
           this.extrinsicInfo = {};
           if (err === null || err.code === -400) {
             this.notFound = true;
           }
-        });
+        }
     },
     clipboardSuccess() {
       this.$message({
