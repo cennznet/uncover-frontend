@@ -3,6 +3,7 @@ export const customizeConfig = {
   chains: [
     {
       name: "Azalea",
+      link: "https://uncoverexplorer.com/",
       buttonIcon: "/images/Azalea.png",
       bannerBackground: "/images/banner-background.png",
       mobileBannerBackground: "/images/banner-mobile-background.png",
@@ -24,6 +25,7 @@ export const customizeConfig = {
     },
     {
       name: "Nikau",
+      link: "https://nikau.uncoverexplorer.com/",
       buttonIcon: "/images/Azalea.png",
       bannerBackground: "/images/banner-background-nikau.png",
       mobileBannerBackground: "/images/banner-mobile-background-nikau.png",

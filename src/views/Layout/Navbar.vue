@@ -1,13 +1,22 @@
 <template>
-  <div class="nav-bar-wrapper"
-    :class="{'is-home-page': isHomePage}"
-    :style="`background-image:url(${this.$customizeConfig.selected.bannerBackground};`"
+  <div
+    class="nav-bar-wrapper"
+    :class="{ 'is-home-page': isHomePage }"
+    :style="
+      `background-image:url(${this.$customizeConfig.selected.bannerBackground};`
+    "
   >
-    <div class="nav-bar-mobile"
-      :style="`background-image:url(${this.$customizeConfig.selected.mobileBannerBackground};`">
+    <div
+      class="nav-bar-mobile"
+      :style="
+        `background-image:url(${
+          this.$customizeConfig.selected.mobileBannerBackground
+        };`
+      "
+    >
       <div class="container align-items-center">
-        <a class="logo-container" :href="`/`" >
-          <img class ="logo" :src="this.$customizeConfig.logo"/>
+        <a class="logo-container" :href="`/`">
+          <img class="logo" :src="this.$customizeConfig.logo" />
         </a>
         <div class="rate">
           <!--<div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
@@ -17,42 +26,84 @@
         </div>
         <div class="right-menu align-items-center">
           <ul class="nav-item-list align-items-center">
-            <router-link class="nav-item" to="/block" tag="a" active-class="choosed">{{$t('blocks')}}</router-link>
-            <router-link class="nav-item" to="/extrinsic" tag="a" active-class="choosed">{{$t('extrinsics')}}</router-link>
-            <router-link v-if="this.$customizeConfig.hasModule('transfer')"
-            class="nav-item" to="/transfer" tag="a" active-class="choosed">{{$t('transfers')}}</router-link>
+            <router-link
+              class="nav-item"
+              to="/block"
+              tag="a"
+              active-class="choosed"
+              >{{ $t("blocks") }}</router-link
+            >
+            <router-link
+              class="nav-item"
+              to="/extrinsic"
+              tag="a"
+              active-class="choosed"
+              >{{ $t("extrinsics") }}</router-link
+            >
+            <router-link
+              v-if="this.$customizeConfig.hasModule('transfer')"
+              class="nav-item"
+              to="/transfer"
+              tag="a"
+              active-class="choosed"
+              >{{ $t("transfers") }}</router-link
+            >
             <el-dropdown class="account-dropdown" trigger="click">
-              <li class="nav-item">{{$t('accounts')}}</li>
+              <li class="nav-item">{{ $t("accounts") }}</li>
               <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
-                <el-dropdown-item v-if="this.$customizeConfig.hasModule('staking')"  class="menu-item">
-                  <router-link class="account-nav-item" to="/validator" tag="a" active-class="choosed">{{$t('validators')}}</router-link>
+                <el-dropdown-item
+                  v-if="this.$customizeConfig.hasModule('staking')"
+                  class="menu-item"
+                >
+                  <router-link
+                    class="account-nav-item"
+                    to="/validator"
+                    tag="a"
+                    active-class="choosed"
+                    >{{ $t("validators") }}</router-link
+                  >
                 </el-dropdown-item>
                 <el-dropdown-item class="menu-item">
-                <router-link class="account-nav-item"
-                  :to="`/asset/${this.stakingToken.symbol}`" tag="a" active-class="choosed">{{$t('holders')}}</router-link>
+                  <router-link
+                    class="account-nav-item"
+                    :to="`/asset/${this.stakingToken.symbol}`"
+                    tag="a"
+                    active-class="choosed"
+                    >{{ $t("holders") }}</router-link
+                  >
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <el-dropdown class="dropdown" trigger="click">
-            <span class="el-dropdown-link align-items-center">
+              <span class="el-dropdown-link align-items-center">
                 <icon-svg icon-class="network" class="icon" />
-                <li class="network">{{this.$customizeConfig.selected.name}}</li>
-            </span>
+                <li class="network">
+                  {{ this.$customizeConfig.selected.name }}
+                </li>
+              </span>
               <el-dropdown-menu slot="dropdown" class="menu-dropdown">
                 <li
                   class="menu-dropdown-item align-items-center"
                   v-for="item in this.$customizeConfig.chains"
                   :key="item.name"
                 >
-                  <i class="choosed-icon" :class="{show: sourceSelected===item.name}"></i>
-                  <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
+                  <i
+                    class="choosed-icon"
+                    :class="{ show: sourceSelected === item.name }"
+                  ></i>
+                  <a
+                    class="menu-dropdown-item-label"
+                    :href="item.link"
+                    target="_blank"
+                    >{{ item.name }}</a
+                  >
                 </li>
               </el-dropdown-menu>
             </el-dropdown>
           </ul>
           <div class="mobile-menu">
             <div class="menu-area" @click="drawer = true">
-              <icon-svg icon-class="menu" class="icon"/>
+              <icon-svg icon-class="menu" class="icon" />
             </div>
           </div>
           <el-drawer
@@ -60,35 +111,80 @@
             class="mobile-drawer"
             size="260px"
             :visible.sync="drawer"
-            :direction="direction">
+            :direction="direction"
+          >
             <div class="drawer-content">
               <div class="menu-section">
                 <div class="row">
-                    <router-link class="item" to="/" tag="div" @click.native="drawer = false">{{$t('home')}}</router-link>
-                    <el-collapse v-model="activeNames" @change="handleChange">
-                      <router-link class="item" to="/block" tag="div" @click.native="drawer = false">{{$t('blocks')}}</router-link>
-                      <router-link class="item" to="/extrinsic" tag="div" @click.native="drawer = false">{{$t('extrinsics')}}</router-link>
-                      <router-link class="item" to="/transfer" tag="div" @click.native="drawer = false">{{$t('transfers')}}</router-link>
-                      <el-collapse-item :title="$t('accounts')" name="1">
-                        <router-link v-if="this.$customizeConfig.hasModule('staking')"
-                         class="sub-item" to="/validator" tag="div" @click.native="drawer = false">{{$t('validators')}}</router-link>
-                        <router-link class="sub-item" :to="`/asset/${this.stakingToken.symbol}`" tag="div" @click.native="drawer = false">{{$t('holders')}}</router-link>
-                      </el-collapse-item>
-                      <el-collapse-item :title="this.$customizeConfig.selected.name" >
-                        <li
-                          class="sub-item"
-                          v-for="item in this.$customizeConfig.chains"
-                          :key="item.name"
+                  <router-link
+                    class="item"
+                    to="/"
+                    tag="div"
+                    @click.native="drawer = false"
+                    >{{ $t("home") }}</router-link
+                  >
+                  <el-collapse v-model="activeNames" @change="handleChange">
+                    <router-link
+                      class="item"
+                      to="/block"
+                      tag="div"
+                      @click.native="drawer = false"
+                      >{{ $t("blocks") }}</router-link
+                    >
+                    <router-link
+                      class="item"
+                      to="/extrinsic"
+                      tag="div"
+                      @click.native="drawer = false"
+                      >{{ $t("extrinsics") }}</router-link
+                    >
+                    <router-link
+                      class="item"
+                      to="/transfer"
+                      tag="div"
+                      @click.native="drawer = false"
+                      >{{ $t("transfers") }}</router-link
+                    >
+                    <el-collapse-item :title="$t('accounts')" name="1">
+                      <router-link
+                        v-if="this.$customizeConfig.hasModule('staking')"
+                        class="sub-item"
+                        to="/validator"
+                        tag="div"
+                        @click.native="drawer = false"
+                        >{{ $t("validators") }}</router-link
+                      >
+                      <router-link
+                        class="sub-item"
+                        :to="`/asset/${this.stakingToken.symbol}`"
+                        tag="div"
+                        @click.native="drawer = false"
+                        >{{ $t("holders") }}</router-link
+                      >
+                    </el-collapse-item>
+                    <el-collapse-item
+                      :title="this.$customizeConfig.selected.name"
+                    >
+                      <li
+                        class="sub-item"
+                        v-for="item in this.$customizeConfig.chains"
+                        :key="item.name"
+                      >
+                        <a
+                          class="menu-dropdown-item-label"
+                          :href="`/?network=${item.name}`"
+                          >{{ item.name }}</a
                         >
-                          <a class="menu-dropdown-item-label" :href="`/?network=${item.name}`">{{item.name}}</a>
-                        </li>
-                      </el-collapse-item>
-                    </el-collapse>
+                      </li>
+                    </el-collapse-item>
+                  </el-collapse>
                 </div>
               </div>
               <div class="language-section">
                 <div class="row">
-                  <div class="item" @click="changeLanguage('zh-CN')">简体中文</div>
+                  <div class="item" @click="changeLanguage('zh-CN')">
+                    简体中文
+                  </div>
                   <div class="item" @click="changeLanguage('en')">English</div>
                 </div>
               </div>
@@ -108,8 +204,8 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import SearchInput from '@/views/Components/SearchInput';
-import { fmtNumber, fmtPercentage} from '../../utils/format';
+import SearchInput from "@/views/Components/SearchInput";
+import { fmtNumber, fmtPercentage } from "../../utils/format";
 export default {
   name: "NavBar",
   components: {
@@ -120,22 +216,22 @@ export default {
       stakingToken: {},
       currentTime: Date.now(),
       drawer: false,
-      direction: 'rtl',
+      direction: "rtl",
       selectList: [
         {
-          label: this.$t('all'),
+          label: this.$t("all"),
           value: "all"
         },
         {
-          label: this.$t('block'),
+          label: this.$t("block"),
           value: "block"
         },
         {
-          label: this.$t('extrinsic'),
+          label: this.$t("extrinsic"),
           value: "extrinsic"
         },
         {
-          label: this.$t('account'),
+          label: this.$t("account"),
           value: "account"
         }
       ],
@@ -166,24 +262,25 @@ export default {
       let path = this.$route.path;
       let result = false;
       switch (path) {
-        case '/':
-        case '/404':
-        case '/noData':
+        case "/":
+        case "/404":
+        case "/noData":
           result = true;
           break;
         default:
-            break;
+          break;
       }
-      return result
+      return result;
     },
     price() {
       if (this.token.detail) {
         let tokenDetail = this.token.detail[this.token.token];
-        let price = '$' + fmtNumber(tokenDetail.price, 3);
-        let change = ' (' + fmtPercentage(tokenDetail.price_change, 1, 2) + '%)';
+        let price = "$" + fmtNumber(tokenDetail.price, 3);
+        let change =
+          " (" + fmtPercentage(tokenDetail.price_change, 1, 2) + "%)";
         return price + change;
       } else {
-        return '';
+        return "";
       }
     },
     ...mapState({
@@ -195,7 +292,7 @@ export default {
     this.getStakingToken();
   },
   created() {
-    this.w = new Worker('/' + "timeWorker.js");
+    this.w = new Worker("/" + "timeWorker.js");
     this.w.onmessage = () => {
       this.changeTime();
     };
@@ -223,14 +320,14 @@ export default {
       this.drawer = false;
     },
     getSourceHref(source) {
-      return this.$const[`SYMBOL/${source}`]['domain']['value'];
+      return this.$const[`SYMBOL/${source}`]["domain"]["value"];
     },
     changeTime() {
       this.currentTime = Date.now();
     },
     handleChange(val) {
-        console.log(val);
-      }
+      console.log(val);
+    }
   }
 };
 </script>
@@ -310,7 +407,7 @@ export default {
         display: none;
       }
 
-      .network{
+      .network {
         height: 30px;
         border-radius: 2px;
         background-color: transparent;
@@ -341,7 +438,7 @@ export default {
       }
     }
   }
-  @media screen and (max-width:$screen-xs) {
+  @media screen and (max-width: $screen-xs) {
     .container {
       padding: 0 15px;
       .logo {
@@ -378,7 +475,7 @@ export default {
 }
 .drawer-content {
   height: 100%;
-  color: #FFF;
+  color: #fff;
   display: flex;
   flex-direction: column;
   .menu-section {
@@ -411,7 +508,7 @@ export default {
         text-align: left;
         padding-left: 10px;
       }
-      .el-collapse-item__content{
+      .el-collapse-item__content {
         padding-bottom: 0;
         max-height: 200px;
         background-color: transparent;
@@ -422,7 +519,7 @@ export default {
       font-size: 20px;
       padding: 10px 0;
       margin-left: 30px;
-      color: #FFF;
+      color: #fff;
       text-align: left;
     }
     .sub-item {
@@ -434,7 +531,7 @@ export default {
   }
   .language-section {
     height: 70px;
-    background-color: #1D1D1D;
+    background-color: #1d1d1d;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
@@ -444,7 +541,6 @@ export default {
     }
   }
 }
-
 </style>
 <style lang="scss">
 .nav-bar-wrapper {
@@ -458,15 +554,15 @@ export default {
     background-size: 0 0;
   }
 }
-@media screen and (max-width:$screen-xs) {
+@media screen and (max-width: $screen-xs) {
   .nav-bar-wrapper {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 0 0;
     &.is-home-page {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 0 0;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 0 0;
     }
     .nav-bar-mobile {
       background-size: cover;
@@ -525,13 +621,13 @@ export default {
 }
 .mobile-drawer {
   .el-drawer {
-    color: #FFF;
-    background-color: #302B3C;
+    color: #fff;
+    background-color: #302b3c;
   }
   .el-drawer__header {
     padding: 10px 0;
-    color: #FFF;
-    background-color: #1D1D1D;
+    color: #fff;
+    background-color: #1d1d1d;
     margin-bottom: 0;
     > span {
       margin-left: 10px;
@@ -542,5 +638,4 @@ export default {
     }
   }
 }
-
 </style>
