@@ -115,7 +115,6 @@ import Pagination from "Components/Pagination";
 import { timeAgo, hashFormat, parseTimeToUtc } from "Utils/filters";
 import TreeItem from "../ExtrinsicDetail/TreeItem";
 import { fetchAccurateBalanceFromParams } from "../../utils/tools";
-import { mapState } from "vuex";
 export default {
   name: "Extrinsic",
   components: {
