@@ -239,8 +239,8 @@ export function fetchAccurateBalanceFromParams(tokens, erc20META, params) {
       const accuracy = tokenDetail?.accuracy;
       param.value = accuracyFormat(param.value.toString(), typeof accuracy === 'undefined'? 0: accuracy);
       if (typeof accuracy !== 'undefined') {
-        const key = 'value (decimal)'
-        param[key] = param.value;
+        const key = 'value (decimal) '
+        param[key] = `${param.value} ${tokenDetail?.symbol}`;
         delete param.value;
       }
     }
@@ -254,7 +254,7 @@ export function fetchAccurateBalanceFromParams(tokens, erc20META, params) {
         param.value.amount = amount;
         if (typeof accuracy !== 'undefined') {
           const key = 'amount (decimal)';
-          param.value[key] = amount;
+          param.value[key] = `${amount} ${erc20Detail?.symbol}`;
           delete param.value.amount;
         }
       }
