@@ -231,11 +231,24 @@ export function getTokenDetailFromId(token, tokenId) {
 }
 
 export function fetchAccurateBalanceFromParams(tokens, erc20META, params) {
-  let tokenDetail, erc20Detail;
+  let tokenDetail, erc20Detail, sellAssetDetail, buyAssetDetail;
   params.map((param) => {
     if (param.name === "asset_id" || param.name === "assetId" || param.typeName === "AssetId") {
       tokenDetail = getTokenDetailFromId(tokens, param.value);
-    } else if  (param.name === "amount" || param.name === "fixedPrice") { // field is of type Balance (genericAsset/transfer|burn|mint) (nft/sell) extrinsic
+      if (param.name === 'assetToSell') {
+        sellAssetDetail = tokenDetail;
+      } else if (param.name === 'assetToBuy') {
+        buyAssetDetail = tokenDetail;
+      }
+    } else if  (param.name === "amount" || param.name === "fixedPrice" || param.typeName === "Balance") { // field is of type Balance (genericAsset/transfer|burn|mint) (nft/sell) extrinsic
+
+      if (param.name === "sellAmount" || param.name === "maximum_sell") {
+        tokenDetail =  sellAssetDetail;
+      } else if (param.name === "minimumBuy" || param.name === "buy_amount") {
+        tokenDetail = buyAssetDetail;
+      } else if (param.name === "coreAmount") {
+        tokenDetail = {sybmol: 'CPAY', accuracy: 4 };
+      }
       const accuracy = tokenDetail?.accuracy;
       param.value = accuracyFormat(param.value.toString(), typeof accuracy === 'undefined'? 0: accuracy);
       if (typeof accuracy !== 'undefined') {
