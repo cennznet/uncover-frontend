@@ -240,14 +240,13 @@ export function fetchAccurateBalanceFromParams(tokens, erc20META, params) {
       } else if (param.name === 'assetToBuy') {
         buyAssetDetail = tokenDetail;
       }
-    } else if  (param.name === "amount" || param.name === "fixedPrice" || param.typeName === "Balance") { // field is of type Balance (genericAsset/transfer|burn|mint) (nft/sell) extrinsic
-
-      if (param.name === "sellAmount" || param.name === "maximum_sell") {
+    } else if  (param.name !== "minLiquidity" && param.name !== "liquidityToWithdraw" && (param.name === "amount" || param.name === "fixedPrice" || param.typeName === "Balance")) { // field is of type Balance (genericAsset/transfer|burn|mint) (nft/sell) extrinsic
+      if (param.name === "sellAmount" || param.name === "maximumSell") {
         tokenDetail =  sellAssetDetail;
-      } else if (param.name === "minimumBuy" || param.name === "buy_amount") {
+      } else if (param.name === "minimumBuy" || param.name === "buyAmount") {
         tokenDetail = buyAssetDetail;
-      } else if (param.name === "coreAmount") {
-        tokenDetail = {sybmol: 'CPAY', accuracy: 4 };
+      } else if (param.name === "coreAmount" || param.name === "minCoreWithdraw") {
+        tokenDetail = {symbol: 'CPAY', accuracy: 4 };
       }
       const accuracy = tokenDetail?.accuracy;
       param.value = accuracyFormat(param.value.toString(), typeof accuracy === 'undefined'? 0: accuracy);
