@@ -84,7 +84,7 @@
                 <div v-if="props.row.params && props.row.params.length > 0">
                   <div class="struct-table-content">
                     <TreeItem :treeList="props.row.params" :isFirst="true"
-                   treeType="extrinsic" :moudleName="props.row.call_module" 
+                   treeType="extrinsic" :moudleName="props.row.call_module"
                    :functionName="props.row.call_module_function"></TreeItem>
                   </div>
                 </div>
@@ -113,7 +113,8 @@ import SearchInput from "@/views/Components/SearchInput";
 import CsvDownload from "Components/CsvDownload";
 import Pagination from "Components/Pagination";
 import { timeAgo, hashFormat, parseTimeToUtc } from "Utils/filters";
-import TreeItem from "../ExtrinsicDetail/TreeItem"
+import TreeItem from "../ExtrinsicDetail/TreeItem";
+import { fetchAccurateBalanceFromParams } from "../../utils/tools";
 export default {
   name: "Extrinsic",
   components: {
@@ -125,6 +126,7 @@ export default {
   },
   data() {
     return {
+      erc20META: {},
       isLoading: false,
       extrinsicsData: [],
       currentPage: 0,
@@ -167,11 +169,17 @@ export default {
       this.isLoading = true;
       let data;
       if (this.$route.query.block) {
-        data = await this.$api["polkaGetBlockByKey"]({
-          block_num: +this.$route.query.block
-        });
+        const promiseOne = this.$api["polkaGetBlockByKey"]({
+                                     block_num: +this.$route.query.block
+                                   });
+        const promiseTwo = this.$api["polkaGetERC20Meta"]();
+        const promiseThree = this.$api["polkaGetTokenV2"]();
+        const [extData, erc20Data, tokenData] = await Promise.all([promiseOne, promiseTwo, promiseThree]);
+        data = extData;
+        this.erc20META = erc20Data.erc20tokenMap;
         data.extrinsics.forEach(item => {
           item.params = JSON.parse(item.params);
+          item.params = fetchAccurateBalanceFromParams(tokenData, this.erc20META, item.params);
         });
         this.extrinsicsData = data.extrinsics;
         this.total = data.extrinsics_count;
@@ -186,9 +194,17 @@ export default {
         if (this.$route.query.address) {
           ops.signed = "all";
         }
+        const promiseOne = this.$api["polkaGetExtrinsics"](ops);
+        const promiseTwo = this.$api["polkaGetERC20Meta"]();
+        const promiseThree = this.$api["polkaGetTokenV2"]();
+        const [extData, erc20Data, tokenData] = await  Promise.all([promiseOne, promiseTwo, promiseThree]);
+        data = extData;
+        this.erc20META = erc20Data.erc20tokenMap;
+
         data = await this.$api["polkaGetExtrinsics"](ops);
         data.extrinsics.forEach(item => {
           item.params = JSON.parse(item.params);
+          item.params = fetchAccurateBalanceFromParams(tokenData, this.erc20META, item.params);
         });
         this.extrinsicsData = data.extrinsics;
         this.total = +data.count;

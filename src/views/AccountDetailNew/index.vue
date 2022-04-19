@@ -302,7 +302,7 @@ import { timeAgo, parseTimeToUtc, hashFormat, accuracyFormat } from "Utils/filte
 import clipboard from "Directives/clipboard";
 import Balances from "../ExtrinsicDetail/Balances";
 import { fmtPercentage, getCommission, bnPlus } from "../../utils/format";
-import {getTokenDetail, formatSymbol, getTokenDetailFromId} from "../../utils/tools";
+import {getTokenDetail, fetchAccurateBalanceFromParams, formatSymbol, getTokenDetailFromId} from "../../utils/tools";
 import AccountHash from "./AccountHash";
 import TreeItem from "../ExtrinsicDetail/TreeItem"
 import dropdown from "./Dropdown";
@@ -505,17 +505,22 @@ export default {
       this.voteInfo = data;
     },
     async getExtrinsicInfo() {
-      const data = await this.$api["polkaGetExtrinsics"]({
+      const promiseOne = this.$api["polkaGetExtrinsics"]({
         row: 10,
         page: 0,
         address: this.address,
         signed: "all"
-      }).catch(() => {
+      });
+      const promiseTwo = this.$api["polkaGetERC20Meta"]();
+      const [data, erc20Data] = await Promise.all([promiseOne, promiseTwo])
+       .catch(() => {
         this.extrinsicsInfo = { count: 0, extrinsics: [] };
       });
+      this.erc20META = erc20Data.erc20tokenMap;
       data.extrinsics === null && (data.extrinsics = []);
       data.extrinsics.forEach(item => {
         item.params = JSON.parse(item.params);
+        item.params = fetchAccurateBalanceFromParams(this.token, this.erc20META, item.params);
       });
       this.extrinsicsInfo = data;
     },
