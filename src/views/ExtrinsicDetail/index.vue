@@ -8,14 +8,20 @@
           :placeholder="$t('placeholder.search_by')"
         />
         <div class="not-found">
-          <img class="not-found-img" src="./../../assets/images/404.png" alt="404" />
-          <div class="no-data">{{$t('no_data')}}</div>
+          <img
+            class="not-found-img"
+            src="./../../assets/images/404.png"
+            alt="404"
+          />
+          <div class="no-data">{{ $t("no_data") }}</div>
         </div>
       </template>
       <template v-else>
         <div class="extrinsic-detail-header space-between align-items-center">
           <div class="header-left">
-            <div class="extrinsic-num">{{`${$t('extrinsic_hash_tag')}${extrinsicNum}`}}</div>
+            <div class="extrinsic-num">
+              {{ `${$t("extrinsic_hash_tag")}${extrinsicNum}` }}
+            </div>
           </div>
           <search-input
             class="header-right"
@@ -25,19 +31,23 @@
         </div>
         <div class="extrinsic-info-list subscan-card" v-loading="isLoading">
           <div class="info-item">
-            <div class="label">{{$t('time')}}</div>
-            <div class="value">{{extrinsicInfo.block_timestamp|parseTimeToUtc}}</div>
+            <div class="label">{{ $t("time") }}</div>
+            <div class="value">
+              {{ extrinsicInfo.block_timestamp | parseTimeToUtc }}
+            </div>
           </div>
           <div class="info-item">
-            <div class="label">{{$t('block')}}</div>
+            <div class="label">{{ $t("block") }}</div>
             <div class="value link">
-              <router-link :to="`/block/${extrinsicInfo.block_num}`">{{extrinsicInfo.block_num}}</router-link>
+              <router-link :to="`/block/${extrinsicInfo.block_num}`">{{
+                extrinsicInfo.block_num
+              }}</router-link>
             </div>
           </div>
           <div class="info-item" v-if="extrinsicInfo.signature">
-            <div class="label">{{$t('extrinsic_hash')}}</div>
+            <div class="label">{{ $t("extrinsic_hash") }}</div>
             <div class="value copy align-items-center">
-              <div>{{extrinsicInfo.extrinsic_hash}}</div>
+              <div>{{ extrinsicInfo.extrinsic_hash }}</div>
               <div
                 class="copy-btn"
                 v-if="extrinsicInfo.extrinsic_hash"
@@ -49,20 +59,26 @@
             </div>
           </div>
           <div class="info-item">
-            <div class="label">{{$t('module')}}</div>
-            <div class="value">{{extrinsicInfo.call_module}}</div>
+            <div class="label">{{ $t("module") }}</div>
+            <div class="value">{{ extrinsicInfo.call_module }}</div>
           </div>
           <div class="info-item">
-            <div class="label">{{$t('call')}}</div>
-            <div class="value">{{extrinsicInfo.call_module_function}}</div>
+            <div class="label">{{ $t("call") }}</div>
+            <div class="value">{{ extrinsicInfo.call_module_function }}</div>
           </div>
           <div class="info-item" v-if="extrinsicInfo.signature">
-            <div class="label">{{$t('sender')}}</div>
+            <div class="label">{{ $t("sender") }}</div>
             <div class="value account link copy align-items-center">
               <div class="icon identicon">
-                <identicon :size="24" theme="polkadot" :value="extrinsicInfo.account_id" />
+                <identicon
+                  :size="24"
+                  theme="polkadot"
+                  :value="extrinsicInfo.account_id"
+                />
               </div>
-              <router-link :to="`/account/${extrinsicInfo.account_id}`">{{extrinsicInfo.account_id}}</router-link>
+              <router-link :to="`/account/${extrinsicInfo.account_id}`">{{
+                extrinsicInfo.account_id
+              }}</router-link>
               <div
                 class="copy-btn"
                 v-if="extrinsicInfo.account_id"
@@ -73,17 +89,25 @@
               </div>
             </div>
           </div>
-          <template v-if="extrinsicInfo.call_module_function==='transfer'
-          && extrinsicInfo.transfer">
+          <template
+            v-if="
+              extrinsicInfo.call_module_function === 'transfer' &&
+                extrinsicInfo.transfer
+            "
+          >
             <div class="info-item">
-              <div class="label">{{$t('destination')}}</div>
+              <div class="label">{{ $t("destination") }}</div>
               <div class="value account link copy align-items-center">
                 <div class="icon identicon">
-                  <identicon :size="24" theme="polkadot" :value="extrinsicInfo.transfer.to" />
+                  <identicon
+                    :size="24"
+                    theme="polkadot"
+                    :value="extrinsicInfo.transfer.to"
+                  />
                 </div>
-                <router-link
-                  :to="`/account/${extrinsicInfo.transfer.to}`"
-                >{{extrinsicInfo.transfer.to}}</router-link>
+                <router-link :to="`/account/${extrinsicInfo.transfer.to}`">{{
+                  extrinsicInfo.transfer.to
+                }}</router-link>
                 <div
                   class="copy-btn"
                   v-if="extrinsicInfo.transfer.to"
@@ -95,7 +119,7 @@
               </div>
             </div>
             <div class="info-item">
-              <div class="label">{{$t('value')}}</div>
+              <div class="label">{{ $t("value") }}</div>
               <div class="value align-items-center">
                 <balances
                   :amount="extrinsicInfo.transfer.amount"
@@ -105,57 +129,71 @@
             </div>
           </template>
           <div class="info-item" v-if="extrinsicInfo.fee !== '0'">
-              <div class="label">{{$t('fee')}}</div>
-              <div class="value">
-                <balances
-                  :amount="extrinsicInfo.fee"
-                  :currencyId="this.token.id" :hasImg="false"
-                  :symbol="this.token.symbol"
-                ></balances>
-              </div>
+            <div class="label">{{ $t("fee") }}</div>
+            <div class="value">
+              <balances
+                :amount="extrinsicInfo.fee"
+                :currencyId="this.token.id"
+                :hasImg="false"
+                :symbol="this.token.symbol"
+              ></balances>
             </div>
+          </div>
           <div class="info-item" v-if="extrinsicInfo.signature">
-            <div class="label">{{$t('nonce')}}</div>
-            <div class="value">{{extrinsicInfo.nonce}}</div>
+            <div class="label">{{ $t("nonce") }}</div>
+            <div class="value">{{ extrinsicInfo.nonce }}</div>
           </div>
           <div class="info-item">
-            <div class="label">{{$t('result')}}</div>
+            <div class="label">{{ $t("result") }}</div>
             <div class="value">
-              <icon-svg class="icon" :icon-class="extrinsicInfo.success?'success':'failed'" />
-              {{extrinsicInfo.success?'Success':'Fail'}}
+              <icon-svg
+                class="icon"
+                :icon-class="extrinsicInfo.success ? 'success' : 'failed'"
+              />
+              {{ extrinsicInfo.success ? "Success" : "Fail" }}
             </div>
           </div>
-          <div class="mobile-detail-wrapper" :class="{'is-fold': isFold}">
+          <div class="mobile-detail-wrapper" :class="{ 'is-fold': isFold }">
             <div class="info-item table-item">
-              <div class="label">{{$t('parameters')}}</div>
+              <div class="label">{{ $t("parameters") }}</div>
               <div class="value">
                 <div class="struct-table-content">
-                  <TreeItem :treeList="extrinsicInfo.params"
-                   treeType="extrinsic" :moudleName="extrinsicInfo.call_module" :isFirst="true"
-                   :functionName="extrinsicInfo.call_module_function"></TreeItem>
+                  <TreeItem
+                    :treeList="extrinsicInfo.params"
+                    treeType="extrinsic"
+                    :moudleName="extrinsicInfo.call_module"
+                    :isFirst="true"
+                    :functionName="extrinsicInfo.call_module_function"
+                  ></TreeItem>
                 </div>
               </div>
             </div>
             <div class="info-item table-item" v-if="extrinsicInfo.signature">
-              <div class="label">{{$t('signature')}}</div>
+              <div class="label">{{ $t("signature") }}</div>
               <div class="value">
                 <div class="struct-table-content">
                   <table class="table">
-                      <tbody>
-                        <tr>
-                            <td class="td-border">
-                              <div class="table-cell">{{extrinsicInfo.signature}}</div>
-                            </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <tbody>
+                      <tr>
+                        <td class="td-border">
+                          <div class="table-cell">
+                            {{ extrinsicInfo.signature }}
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
-          <div class="info-item toggle-btn" :class="{'is-fold': isFold}">
-            <div v-if="isFold" class="text" @click="toggleMobileDetail(false)">{{$t('view_more')}}</div>
-            <div v-else class="text" @click="toggleMobileDetail(true)">{{$t('fold_up')}}</div>
+          <div class="info-item toggle-btn" :class="{ 'is-fold': isFold }">
+            <div v-if="isFold" class="text" @click="toggleMobileDetail(false)">
+              {{ $t("view_more") }}
+            </div>
+            <div v-else class="text" @click="toggleMobileDetail(true)">
+              {{ $t("fold_up") }}
+            </div>
           </div>
         </div>
         <div
@@ -165,12 +203,20 @@
         >
           <el-tabs v-model="activeTab">
             <el-tab-pane
-              :label="`${$t('events')}${extrinsicInfo.event.length>0?` (${extrinsicInfo.event.length})`:''}`"
+              :label="
+                `${$t('events')}${
+                  extrinsicInfo.event.length > 0
+                    ? ` (${extrinsicInfo.event.length})`
+                    : ''
+                }`
+              "
               name="event"
             >
               <el-table :data="extrinsicInfo.event" style="width: 100%">
                 <el-table-column min-width="100" :label="$t('event_id')" fit>
-                  <template slot-scope="props">{{props.row.event_index}}</template>
+                  <template slot-scope="props">{{
+                    props.row.event_index
+                  }}</template>
                 </el-table-column>
                 <el-table-column min-width="140" :label="$t('hash')" fit>
                   <template>
@@ -183,21 +229,31 @@
                       >
                         <router-link
                           :to="`/extrinsic/${extrinsicInfo.extrinsic_hash}`"
-                        >{{extrinsicInfo.extrinsic_hash|hashFormat}}</router-link>
+                          >{{
+                            extrinsicInfo.extrinsic_hash | hashFormat
+                          }}</router-link
+                        >
                       </el-tooltip>
                     </div>
                   </template>
                 </el-table-column>
                 <el-table-column min-width="160" :label="$t('action')" fit>
-                  <template slot-scope="props">{{`${props.row.module_id}(${props.row.event_id})`}}</template>
+                  <template slot-scope="props">{{
+                    `${props.row.module_id}(${props.row.event_id})`
+                  }}</template>
                 </el-table-column>
                 <el-table-column width="100" type="expand">
                   <template slot-scope="props">
                     <div class="expand-form">
                       <div class="form-items">
                         <div class="struct-table-content">
-                          <TreeItem :treeList="props.row.params" :isFirst="true"
-                          treeType="event" :moudleName="props.row.module_id" :functionName="props.row.event_id"></TreeItem>
+                          <TreeItem
+                            :treeList="props.row.params"
+                            :isFirst="true"
+                            treeType="event"
+                            :moudleName="props.row.module_id"
+                            :functionName="props.row.event_id"
+                          ></TreeItem>
                         </div>
                       </div>
                     </div>
@@ -224,8 +280,11 @@ import {
 import clipboard from "Directives/clipboard";
 import { mapState } from "vuex";
 import Balances from "./Balances";
-import { getTokenDetailFromId, fetchAccurateBalanceFromParams } from "../../utils/tools";
-import TreeItem from "./TreeItem"
+import {
+  getTokenDetailFromId,
+  fetchAccurateBalanceFromParams
+} from "../../utils/tools";
+import TreeItem from "./TreeItem";
 export default {
   name: "ExtrinsicDetail",
   components: {
@@ -302,7 +361,7 @@ export default {
     async getSpendingToken() {
       this.$api["polkaGetSpendingToken"]().then(async data => {
         this.token = data;
-      })
+      });
     },
     init() {
       this.getExtrinsicInfo();
@@ -312,47 +371,53 @@ export default {
       this.isFold = isFold;
     },
     async getExtrinsicInfo() {
-    try {
-      const key = this.$route.params.key;
-      const reg = /^[0-9]+-[0-9]+$/;
-      const isNum = reg.test(key);
-      const promiseOne = this.$api["polkaGetExtrinsicByKey"]({
+      try {
+        const key = this.$route.params.key;
+        const reg = /^[0-9]+-[0-9]+$/;
+        const isNum = reg.test(key);
+        const promiseOne = this.$api["polkaGetExtrinsicByKey"]({
           [isNum ? "extrinsic_index" : "hash"]: key
-      });
-      const promiseTwo = this.$api["polkaGetERC20Meta"]();
-      const promiseThree = this.$api["polkaGetTokenV2"]();
-      const [res, erc20Data, tokenData] = await Promise.all([promiseOne, promiseTwo, promiseThree]);
+        });
+        const promiseTwo = this.$api["polkaGetERC20Meta"]();
+        const promiseThree = this.$api["polkaGetTokenV2"]();
+        const [res, erc20Data, tokenData] = await Promise.all([
+          promiseOne,
+          promiseTwo,
+          promiseThree
+        ]);
 
-          if (res === null) {
-            return Promise.reject(res);
-          }
-          this.notFound = false;
-          if (res.event) {
-            res.event.forEach(item => {
-              let params = JSON.parse(item.params);
-              item.params = params.filter(param => {
-                return param.type;
-              });
+        if (res === null) {
+          return Promise.reject(res);
+        }
+        this.notFound = false;
+        if (res.event) {
+          res.event.forEach(item => {
+            let params = JSON.parse(item.params);
+            item.params = params.filter(param => {
+              return param.type;
             });
-          }
-          this.erc20META = erc20Data.erc20tokenMap;
-          console.log('this.erc20META::',this.erc20META);
-          if (typeof res.params === 'string') {
-            res.params = JSON.parse(res.params);
-            res.params = fetchAccurateBalanceFromParams(tokenData, this.erc20META, res.params);
-          }
-          this.extrinsicInfo = res;
-          this.extrinsicNum = res.extrinsic_index;
-          this.isLoading = false;
+          });
         }
-        catch(err) {
-          this.isLoading = false;
-          this.extrinsicNum = undefined;
-          this.extrinsicInfo = {};
-          if (err === null || err.code === -400) {
-            this.notFound = true;
-          }
+        this.erc20META = erc20Data.erc20tokenMap;
+        if (typeof res.params === "string") {
+          res.params = JSON.parse(res.params);
+          res.params = fetchAccurateBalanceFromParams(
+            tokenData,
+            this.erc20META,
+            res.params
+          );
         }
+        this.extrinsicInfo = res;
+        this.extrinsicNum = res.extrinsic_index;
+        this.isLoading = false;
+      } catch (err) {
+        this.isLoading = false;
+        this.extrinsicNum = undefined;
+        this.extrinsicInfo = {};
+        if (err === null || err.code === -400) {
+          this.notFound = true;
+        }
+      }
     },
     clipboardSuccess() {
       this.$message({
@@ -539,38 +604,38 @@ export default {
         }
       }
       .struct-table-content {
-          padding: 20px;
-          background-color: #f3f5f9;
-          margin: 10px 0;
-          tr:last-child {
-            .td-border {
-              border-bottom: 1px solid #e7eaf3;
-              height: 41px;
-            }
-          }
-          .table {
-            background-color: #fff;
-            color: #363636;
-            width: 100%;
-            border-collapse: separate;
-            border: 1px solid #e7eaf3;
-            border-width: 1px 0 0 1px;
-            table-layout: fixed;
-          }
+        padding: 20px;
+        background-color: #f3f5f9;
+        margin: 10px 0;
+        tr:last-child {
           .td-border {
-            border: 1px solid #e7eaf3;
-            border-width: 0 1px 1px 0;
+            border-bottom: 1px solid #e7eaf3;
             height: 41px;
           }
-          .table-cell {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: normal;
-            padding: 0 10px;
-            line-height: 1.5;
-            min-height: 21px;
-          }
         }
+        .table {
+          background-color: #fff;
+          color: #363636;
+          width: 100%;
+          border-collapse: separate;
+          border: 1px solid #e7eaf3;
+          border-width: 1px 0 0 1px;
+          table-layout: fixed;
+        }
+        .td-border {
+          border: 1px solid #e7eaf3;
+          border-width: 0 1px 1px 0;
+          height: 41px;
+        }
+        .table-cell {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: normal;
+          padding: 0 10px;
+          line-height: 1.5;
+          min-height: 21px;
+        }
+      }
     }
     .extrinsic-log {
       .log-item {
