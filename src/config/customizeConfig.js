@@ -40,6 +40,27 @@ export const customizeConfig = {
         linkColor: "#05b210",
         navbarBg: "#000"
       }
+    },
+
+    {
+      name: "Rata",
+      link: "https://rata.uncoverexplorer.com/",
+      buttonIcon: "/images/Azalea.png",
+      pieColor: {
+        mainColor: "#000000",
+        colors: ["#000000", "#a6a6a6", "#d7d7d7"],
+        bIcon: "/images/Lock.png",
+        tIcon: "/images/Transferrable.png",
+        oIcon: "/images/Others.png"
+      },
+      themeColor: {
+        mainColor: "#9847FFCC",
+        mainColorLight: "#9847FF80",
+        mainColorWhite: "#9847FF0d",
+        mainButtonColor: "#9847FF",
+        linkColor: "#9847FF",
+        navbarBg: "#000"
+      }
     }
   ],
   modules: {
