@@ -3,202 +3,193 @@
     class="nav-bar-wrapper"
     :class="{ 'is-home-page': isHomePage }"
     :style="
-      `background-image:url(${this.$customizeConfig.selected.bannerBackground};`
+      `background-color:${this.$customizeConfig.selected.themeColor.mainColor};`
     "
   >
-    <div
-      class="nav-bar-mobile"
-      :style="
-        `background-image:url(${
-          this.$customizeConfig.selected.mobileBannerBackground
-        };`
-      "
-    >
-      <div class="container align-items-center">
-        <a class="logo-container" :href="`/`">
-          <img class="logo" :src="this.$customizeConfig.logo" />
-        </a>
-        <div class="rate">
-          <!--<div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
-            <span class="label">{{$t('kusama.short')}}</span>
-            <span class="info">{{price}}</span>
-          </div>-->
-        </div>
-        <div class="right-menu align-items-center">
-          <ul class="nav-item-list align-items-center">
-            <router-link
-              class="nav-item"
-              to="/block"
-              tag="a"
-              active-class="choosed"
-              >{{ $t("blocks") }}</router-link
-            >
-            <router-link
-              class="nav-item"
-              to="/extrinsic"
-              tag="a"
-              active-class="choosed"
-              >{{ $t("extrinsics") }}</router-link
-            >
-            <router-link
-              v-if="this.$customizeConfig.hasModule('transfer')"
-              class="nav-item"
-              to="/transfer"
-              tag="a"
-              active-class="choosed"
-              >{{ $t("transfers") }}</router-link
-            >
-            <el-dropdown class="account-dropdown" trigger="click">
-              <li class="nav-item">{{ $t("accounts") }}</li>
-              <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
-                <el-dropdown-item
-                  v-if="this.$customizeConfig.hasModule('staking')"
-                  class="menu-item"
-                >
-                  <router-link
-                    class="account-nav-item"
-                    to="/validator"
-                    tag="a"
-                    active-class="choosed"
-                    >{{ $t("validators") }}</router-link
-                  >
-                </el-dropdown-item>
-                <el-dropdown-item class="menu-item">
-                  <router-link
-                    class="account-nav-item"
-                    :to="`/asset/${this.stakingToken.symbol}`"
-                    tag="a"
-                    active-class="choosed"
-                    >{{ $t("holders") }}</router-link
-                  >
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-            <el-dropdown class="dropdown" trigger="click">
-              <span class="el-dropdown-link align-items-center">
-                <icon-svg icon-class="network" class="icon" />
-                <li class="network">
-                  {{ this.$customizeConfig.selected.name }}
-                </li>
-              </span>
-              <el-dropdown-menu slot="dropdown" class="menu-dropdown">
-                <li
-                  class="menu-dropdown-item align-items-center"
-                  v-for="item in this.$customizeConfig.chains"
-                  :key="item.name"
-                >
-                  <i
-                    class="choosed-icon"
-                    :class="{ show: sourceSelected === item.name }"
-                  ></i>
-                  <a
-                    class="menu-dropdown-item-label"
-                    :href="item.link"
-                    target="_blank"
-                    >{{ item.name }}</a
-                  >
-                </li>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </ul>
-          <div class="mobile-menu">
-            <div class="menu-area" @click="drawer = true">
-              <icon-svg icon-class="menu" class="icon" />
-            </div>
-          </div>
-          <el-drawer
-            :title="$t('menu')"
-            class="mobile-drawer"
-            size="260px"
-            :visible.sync="drawer"
-            :direction="direction"
+    <div class="container align-items-center">
+      <a class="logo-container" :href="`/`">
+        <img class="logo" :src="this.$customizeConfig.logo" />
+      </a>
+      <div class="rate">
+        <!--<div v-if="this.sourceSelected === 'kusama'" class="kms-rate">
+          <span class="label">{{$t('kusama.short')}}</span>
+          <span class="info">{{price}}</span>
+        </div>-->
+      </div>
+      <div class="right-menu align-items-center">
+        <ul class="nav-item-list align-items-center">
+          <router-link
+            class="nav-item"
+            to="/block"
+            tag="a"
+            active-class="choosed"
+            >{{ $t("blocks") }}</router-link
           >
-            <div class="drawer-content">
-              <div class="menu-section">
-                <div class="row">
+          <router-link
+            class="nav-item"
+            to="/extrinsic"
+            tag="a"
+            active-class="choosed"
+            >{{ $t("extrinsics") }}</router-link
+          >
+          <router-link
+            v-if="this.$customizeConfig.hasModule('transfer')"
+            class="nav-item"
+            to="/transfer"
+            tag="a"
+            active-class="choosed"
+            >{{ $t("transfers") }}</router-link
+          >
+          <el-dropdown class="account-dropdown" trigger="click">
+            <li class="nav-item">{{ $t("accounts") }}</li>
+            <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
+              <el-dropdown-item
+                v-if="this.$customizeConfig.hasModule('staking')"
+                class="menu-item"
+              >
+                <router-link
+                  class="account-nav-item"
+                  to="/validator"
+                  tag="a"
+                  active-class="choosed"
+                  >{{ $t("validators") }}</router-link
+                >
+              </el-dropdown-item>
+              <el-dropdown-item class="menu-item">
+                <router-link
+                  class="account-nav-item"
+                  :to="`/asset/${this.stakingToken.symbol}`"
+                  tag="a"
+                  active-class="choosed"
+                  >{{ $t("holders") }}</router-link
+                >
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown class="dropdown" trigger="click">
+            <span class="el-dropdown-link align-items-center">
+              <icon-svg icon-class="network" class="icon" />
+              <li class="network">
+                {{ this.$customizeConfig.selected.name }}
+              </li>
+            </span>
+            <el-dropdown-menu slot="dropdown" class="menu-dropdown">
+              <li
+                class="menu-dropdown-item align-items-center"
+                v-for="item in this.$customizeConfig.chains"
+                :key="item.name"
+              >
+                <i
+                  class="choosed-icon"
+                  :class="{ show: sourceSelected === item.name }"
+                ></i>
+                <a
+                  class="menu-dropdown-item-label"
+                  :href="item.link"
+                  target="_blank"
+                  >{{ item.name }}</a
+                >
+              </li>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </ul>
+        <div class="mobile-menu">
+          <div class="menu-area" @click="drawer = true">
+            <icon-svg icon-class="menu" class="icon" />
+          </div>
+        </div>
+        <el-drawer
+          :title="$t('menu')"
+          class="mobile-drawer"
+          size="260px"
+          :visible.sync="drawer"
+          :direction="direction"
+        >
+          <div class="drawer-content">
+            <div class="menu-section">
+              <div class="row">
+                <router-link
+                  class="item"
+                  to="/"
+                  tag="div"
+                  @click.native="drawer = false"
+                  >{{ $t("home") }}</router-link
+                >
+                <el-collapse v-model="activeNames" @change="handleChange">
                   <router-link
                     class="item"
-                    to="/"
+                    to="/block"
                     tag="div"
                     @click.native="drawer = false"
-                    >{{ $t("home") }}</router-link
+                    >{{ $t("blocks") }}</router-link
                   >
-                  <el-collapse v-model="activeNames" @change="handleChange">
+                  <router-link
+                    class="item"
+                    to="/extrinsic"
+                    tag="div"
+                    @click.native="drawer = false"
+                    >{{ $t("extrinsics") }}</router-link
+                  >
+                  <router-link
+                    class="item"
+                    to="/transfer"
+                    tag="div"
+                    @click.native="drawer = false"
+                    >{{ $t("transfers") }}</router-link
+                  >
+                  <el-collapse-item :title="$t('accounts')" name="1">
                     <router-link
-                      class="item"
-                      to="/block"
+                      v-if="this.$customizeConfig.hasModule('staking')"
+                      class="sub-item"
+                      to="/validator"
                       tag="div"
                       @click.native="drawer = false"
-                      >{{ $t("blocks") }}</router-link
+                      >{{ $t("validators") }}</router-link
                     >
                     <router-link
-                      class="item"
-                      to="/extrinsic"
+                      class="sub-item"
+                      :to="`/asset/${this.stakingToken.symbol}`"
                       tag="div"
                       @click.native="drawer = false"
-                      >{{ $t("extrinsics") }}</router-link
+                      >{{ $t("holders") }}</router-link
                     >
-                    <router-link
-                      class="item"
-                      to="/transfer"
-                      tag="div"
-                      @click.native="drawer = false"
-                      >{{ $t("transfers") }}</router-link
+                  </el-collapse-item>
+                  <el-collapse-item
+                    :title="this.$customizeConfig.selected.name"
+                  >
+                    <li
+                      class="sub-item"
+                      v-for="item in this.$customizeConfig.chains"
+                      :key="item.name"
                     >
-                    <el-collapse-item :title="$t('accounts')" name="1">
-                      <router-link
-                        v-if="this.$customizeConfig.hasModule('staking')"
-                        class="sub-item"
-                        to="/validator"
-                        tag="div"
-                        @click.native="drawer = false"
-                        >{{ $t("validators") }}</router-link
+                      <a
+                        class="menu-dropdown-item-label"
+                        :href="`/?network=${item.name}`"
+                        >{{ item.name }}</a
                       >
-                      <router-link
-                        class="sub-item"
-                        :to="`/asset/${this.stakingToken.symbol}`"
-                        tag="div"
-                        @click.native="drawer = false"
-                        >{{ $t("holders") }}</router-link
-                      >
-                    </el-collapse-item>
-                    <el-collapse-item
-                      :title="this.$customizeConfig.selected.name"
-                    >
-                      <li
-                        class="sub-item"
-                        v-for="item in this.$customizeConfig.chains"
-                        :key="item.name"
-                      >
-                        <a
-                          class="menu-dropdown-item-label"
-                          :href="`/?network=${item.name}`"
-                          >{{ item.name }}</a
-                        >
-                      </li>
-                    </el-collapse-item>
-                  </el-collapse>
-                </div>
-              </div>
-              <div class="language-section">
-                <div class="row">
-                  <div class="item" @click="changeLanguage('zh-CN')">
-                    简体中文
-                  </div>
-                  <div class="item" @click="changeLanguage('en')">English</div>
-                </div>
+                    </li>
+                  </el-collapse-item>
+                </el-collapse>
               </div>
             </div>
-          </el-drawer>
-        </div>
+            <div class="language-section">
+              <div class="row">
+                <div class="item" @click="changeLanguage('zh-CN')">
+                  简体中文
+                </div>
+                <div class="item" @click="changeLanguage('en')">English</div>
+              </div>
+            </div>
+          </div>
+        </el-drawer>
       </div>
-      <div class="nav-bar-search">
-        <search-input
-          class="search-input"
-          :selectList="selectList"
-          :placeholder="$t('placeholder.search_by')"
-        />
-      </div>
+    </div>
+    <div class="nav-bar-search">
+      <search-input
+        class="search-input"
+        :selectList="selectList"
+        :placeholder="$t('placeholder.search_by')"
+      />
     </div>
   </div>
 </template>
