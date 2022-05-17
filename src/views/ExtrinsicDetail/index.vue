@@ -413,11 +413,7 @@ export default {
         const evmTx = res?.call_module === 'ethereum' && res?.call_module_function === 'transact';
         if (res.signature || evmTx) {
             this.showAdditionalInfo = true;
-            if (evmTx) {
-                this.nonce = res?.params[0]?.value?.eip1559?.nonce;
-            } else {
-                this.nonce = res.nonce;
-            }
+            this.nonce = evmTx ? res?.params[0]?.value?.eip1559?.nonce : res.nonce;
         }
         this.extrinsicNum = res.extrinsic_index;
         this.isLoading = false;
