@@ -44,7 +44,7 @@
               }}</router-link>
             </div>
           </div>
-          <div class="info-item" v-if="extrinsicInfo.signature">
+          <div class="info-item" v-if="showAdditionalInfo">
             <div class="label">{{ $t("extrinsic_hash") }}</div>
             <div class="value copy align-items-center">
               <div>{{ extrinsicInfo.extrinsic_hash }}</div>
@@ -66,7 +66,7 @@
             <div class="label">{{ $t("call") }}</div>
             <div class="value">{{ extrinsicInfo.call_module_function }}</div>
           </div>
-          <div class="info-item" v-if="extrinsicInfo.signature">
+          <div class="info-item" v-if="showAdditionalInfo">
             <div class="label">{{ $t("sender") }}</div>
             <div class="value account link copy align-items-center">
               <div class="icon identicon">
@@ -139,9 +139,9 @@
               ></balances>
             </div>
           </div>
-          <div class="info-item" v-if="extrinsicInfo.signature">
+          <div class="info-item" v-if="showAdditionalInfo">
             <div class="label">{{ $t("nonce") }}</div>
-            <div class="value">{{ extrinsicInfo.nonce }}</div>
+            <div class="value">{{ nonce }}</div>
           </div>
           <div class="info-item">
             <div class="label">{{ $t("result") }}</div>
@@ -199,7 +199,7 @@
         <div
           class="extrinsic-extrinsic-event-log subscan-card"
           v-loading="isLoading"
-          v-if="extrinsicInfo.signature"
+          v-if="showAdditionalInfo"
         >
           <el-tabs v-model="activeTab">
             <el-tab-pane
@@ -305,6 +305,8 @@ export default {
   data() {
     return {
       extrinsicNum: "",
+      nonce: 0,
+      showAdditionalInfo: false,
       extrinsicInfo: {
         success: true
       },
@@ -408,6 +410,11 @@ export default {
           );
         }
         this.extrinsicInfo = res;
+        const evmTx = res?.call_module === 'ethereum' && res?.call_module_function === 'transact';
+        if (res.signature || evmTx) {
+            this.showAdditionalInfo = true;
+            this.nonce = evmTx ? res?.params[0]?.value?.eip1559?.nonce : res.nonce;
+        }
         this.extrinsicNum = res.extrinsic_index;
         this.isLoading = false;
       } catch (err) {
