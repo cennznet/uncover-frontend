@@ -120,7 +120,7 @@ export default {
         if (this.ss58Check(this.inputValue)) {
           this.$router.push(`/account/${this.inputValue}`);
         } else if (web3.utils.isAddress(this.inputValue)) {
-          this.$router.push(`/account/ETH${this.inputValue}`);
+          this.$router.push(`/account/eth_${this.inputValue}`);
         } else {
           this.$router.push(`/noData`);
           // this.$api["polkaGetSearchRes"]({
