@@ -36,6 +36,7 @@
 
 <script>
 const bs58 = require("bs58");
+import web3 from "web3";
 export default {
   data() {
     return {
@@ -118,6 +119,8 @@ export default {
       } else {
         if (this.ss58Check(this.inputValue)) {
           this.$router.push(`/account/${this.inputValue}`);
+        } else if (web3.utils.isAddress(this.inputValue)) {
+          this.$router.push(`/account/eth_${this.inputValue}`);
         } else {
           this.$router.push(`/noData`);
           // this.$api["polkaGetSearchRes"]({
