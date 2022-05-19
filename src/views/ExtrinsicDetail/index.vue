@@ -282,7 +282,8 @@ import { mapState } from "vuex";
 import Balances from "./Balances";
 import {
   getTokenDetailFromId,
-  fetchAccurateBalanceFromParams
+  fetchAccurateBalanceFromParams,
+  updateEVMEventType
 } from "../../utils/tools";
 import TreeItem from "./TreeItem";
 export default {
@@ -400,6 +401,8 @@ export default {
             });
           });
         }
+        updateEVMEventType(res.event);
+
         this.erc20META = erc20Data.erc20tokenMap;
         if (typeof res.params === "string") {
           res.params = JSON.parse(res.params);
