@@ -242,7 +242,7 @@ import { timeAgo, parseTimeToUtc, hashFormat } from "Utils/filters";
 import clipboard from "Directives/clipboard";
 import _ from 'lodash';
 import TreeItem from "../ExtrinsicDetail/TreeItem";
-import { fetchAccurateBalanceFromParams } from "../../utils/tools";
+import { fetchAccurateBalanceFromParams, updateEVMEventType } from "../../utils/tools";
 export default {
   name: "BlockDetail",
   components: {
@@ -334,6 +334,7 @@ export default {
               return param.type;
             });
           });
+          updateEVMEventType(res.events);
           _.forEach(res.logs, (item) => {
             item.data = JSON.parse(item.data);
           });

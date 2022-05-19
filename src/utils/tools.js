@@ -298,3 +298,13 @@ export function formatSymbol(module, $const, sourceSelected, isValidate) {
     return $const[`SYMBOL/${sourceSelected}`][module].value || "";
   }
 }
+
+// EVM executed event has event data in the order [From, To/Contract Address, TxHash]
+export function updateEVMEventType(event) {
+  const findEVMEvent = event.find(evt => evt?.module_id === 'ethereum' && evt?.event_id === 'Executed');
+  if (findEVMEvent) {
+    findEVMEvent.params[0].type = 'From';
+    findEVMEvent.params[1].type = 'To / Contract Address';
+    findEVMEvent.params[2].type = 'TxHash';
+  }
+}
