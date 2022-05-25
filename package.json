@@ -7,6 +7,9 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "engines": {
+    "node": "14"
+  },
   "dependencies": {
     "@polkadot/util": "^1.1.1",
     "@polkadot/util-crypto": "^1.1.1",
