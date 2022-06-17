@@ -389,7 +389,12 @@ export default {
       this.init();
     },
     token(newV) {
-      this.assetBalances = this.tokenDetails.map(token => {
+      this.assetBalances = this.tokenDetails
+      .filter(token => {
+        const {free, assetId} = token;
+        return Number(free) > 0 || (assetId === 1 || assetId === 16000);
+      })
+      .map(token => {
         const tokenInfo =  getTokenDetailFromId(newV, token.assetId);
         const accuracy = tokenInfo?.accuracy;
         const symbol = tokenInfo?.symbol;
