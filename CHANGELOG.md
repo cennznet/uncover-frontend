@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.3] - 2022-06-17
+
+- Make couple UI adjustments with recent changes to how balances are fetched from API
+
 ## [1.0.2] - 2022-05-26
 
 - Search any ethereum wallet address
