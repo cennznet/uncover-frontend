@@ -7,9 +7,6 @@
       </div>
     </div>
     <div class="chart-content subscan-card" ref="chart"></div>
-    <div class="chart-cover">
-      <p>Temporarily unavailable</p>
-    </div>
   </div>
 </template>
 
@@ -537,17 +534,6 @@ export default {
     .chart-content {
       height: 156px;
     }
-  }
-
-  .chart-cover {
-    position: absolute;
-    inset:0;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2em;
   }
 }
 </style>

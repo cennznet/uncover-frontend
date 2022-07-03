@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.3] - 2022-06-21
+
+- Remove the unavailable cover for the Pie Chart
+
 ## [1.0.3] - 2022-06-17
 
 - Make couple UI adjustments with recent changes to how balances are fetched from API

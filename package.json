@@ -1,6 +1,6 @@
 {
   "name": "@cennznet/uncover-frontend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "ISC",
   "scripts": {
     "dev": "vue-cli-service serve",
