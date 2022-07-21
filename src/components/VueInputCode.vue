@@ -9,6 +9,7 @@
                     <input ref="input_code" type="text" :style="{'font-size': inputSize, 'color': inputColor}" @keyup="inputCodeEvent($event)" @blur="blurInput" v-model="inputCode" autofocus maxlength="1" @keyup.delete="deleteInput">
                 </template>
             </div>
+            <!-- eslint-disable vue/require-v-for-key -->
             <span v-for="(item,index) in block" :style="{'font-size': spanSize, 'color': spanColor, 'height': height, 'line-height': height, 'width': blockWidth}" v-text="codeArray[index] ? codeArray[index] : ''" :class="{'first':index === 0, 'last': index === number - 1}"></span>
             <!-- <span :style="{'font-size':spanSize,'color':spanColor,'height':height,'line-height':height}" v-text="codeArray[1]?codeArray[1]:''"></span>
       <span :style="{'font-size':spanSize,'color':spanColor,'height':height,'line-height':height}" v-text="codeArray[2]?codeArray[2]:''"></span>
@@ -20,8 +21,6 @@
 </template>
 
 <script>
-let timer = null;
-
 export default {
     props: {
         code: {
@@ -125,7 +124,7 @@ export default {
             }
         },
         /** 每次输入的事件 */
-        inputCodeEvent(event) {
+        inputCodeEvent() {
             if (!this.inputCode) return;
             if (this.type === "number" && isNaN(this.inputCode)) {
                 // 要求输入数字类型
