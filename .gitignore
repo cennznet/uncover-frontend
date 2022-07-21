@@ -5,6 +5,7 @@ config/server.yml
 web.zip
 
 # local env files
+.env
 .env.local
 .env.*.local
 
