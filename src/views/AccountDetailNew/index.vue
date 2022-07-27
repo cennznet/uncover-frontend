@@ -447,7 +447,11 @@ export default {
           if (res === undefined || typeof res !== "object") {
             return Promise.reject();
           }
-          this.tokenDetails = res.balances;
+          this.tokenDetails = res.balances.filter(token => {
+            const {free, assetId} = token;
+            return Number(free) > 0 || (assetId === 1 || assetId === 16000);
+          });
+
           this.assetBalances = this.tokenDetails.map(token => {
             const tokenInfo =  getTokenDetailFromId(this.token, token.assetId);
             const accuracy = tokenInfo?.accuracy;
